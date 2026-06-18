@@ -1,0 +1,4 @@
+@echo off
+curl http://127.0.0.1:8000/health
+echo.
+pause

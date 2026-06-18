@@ -1,0 +1,12 @@
+{
+  "required_event": "Purchase",
+  "allowed_support_events": ["PageView", "ViewContent", "InitiateCheckout", "Purchase"],
+  "block_campaign_if_purchase_missing": true,
+  "rules": [
+    "Pixel deve estar configurado na plataforma de checkout.",
+    "Campanhas de vendas devem otimizar para Purchase, nao apenas InitiateCheckout.",
+    "Validar Purchase antes de escala.",
+    "CAPI deve deduplicar eventos com event_id quando ativada."
+  ],
+  "health_score_inputs": ["Purchase ativo", "Event Match Quality", "CAPI", "deduplicacao", "atraso de evento"]
+}

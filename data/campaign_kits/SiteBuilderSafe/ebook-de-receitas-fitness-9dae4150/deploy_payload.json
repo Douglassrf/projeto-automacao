@@ -1,0 +1,16 @@
+{
+  "provider_requested": "github_vercel",
+  "dry_run_forced": true,
+  "deploy_real_executed": false,
+  "repository_name": "ebook-receitas-fitness",
+  "branch": "main",
+  "files": [
+    "index.html",
+    "styles.css"
+  ],
+  "warnings": [
+    "Deploy real bloqueado.",
+    "GitHub/Vercel/Netlify não foram chamados.",
+    "Payload preparado apenas para revisão futura."
+  ]
+}

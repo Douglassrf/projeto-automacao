@@ -1,0 +1,77 @@
+{
+  "product_name": "Produto M30 a50552ea",
+  "generated_at": "2026-06-06T10:44:52.710950+00:00",
+  "winners": [
+    {
+      "creative_id": "creative-001",
+      "ad_name": "AD 001",
+      "campaign_name": "Produto M30 a50552ea V3",
+      "purchases": 1,
+      "revenue": 150.0,
+      "avg_roas": 4.2,
+      "avg_cpa": 32.0,
+      "avg_connect_rate": 88.0,
+      "hook": "Hook controlado com prova e clareza",
+      "creative_pattern": "Export local com prova visual e CTA claro",
+      "recommendation": "Criativo forte: gerar V4/V5/V6 e testar escala controlada."
+    },
+    {
+      "creative_id": "creative-002",
+      "ad_name": "AD 002",
+      "campaign_name": "Produto M30 a50552ea V3",
+      "purchases": 1,
+      "revenue": 150.0,
+      "avg_roas": 4.2,
+      "avg_cpa": 32.0,
+      "avg_connect_rate": 88.0,
+      "hook": "Hook controlado com prova e clareza",
+      "creative_pattern": "Export local com prova visual e CTA claro",
+      "recommendation": "Criativo forte: gerar V4/V5/V6 e testar escala controlada."
+    },
+    {
+      "creative_id": "creative-003",
+      "ad_name": "AD 003",
+      "campaign_name": "Produto M30 a50552ea V3",
+      "purchases": 1,
+      "revenue": 150.0,
+      "avg_roas": 4.2,
+      "avg_cpa": 32.0,
+      "avg_connect_rate": 88.0,
+      "hook": "Hook controlado com prova e clareza",
+      "creative_pattern": "Export local com prova visual e CTA claro",
+      "recommendation": "Criativo forte: gerar V4/V5/V6 e testar escala controlada."
+    }
+  ],
+  "variations": [
+    {
+      "version": "V4",
+      "based_on_creative_id": "creative-001",
+      "campaign_name": "Produto M30 a50552ea V4 — learning loop",
+      "hook": "Hook controlado com prova e clareza — nova variação V4",
+      "copy_text": "O criativo base AD 001 gerou compras com ROAS médio 4.2. Esta variação mantém o padrão vencedor: Export local com prova visual e CTA claro. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V4 mantendo o padrão campeão: Export local com prova visual e CTA claro. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Hook controlado com prova e clareza. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 1 compras, ROAS 4.2 e Connect Rate 88.0%."
+    },
+    {
+      "version": "V5",
+      "based_on_creative_id": "creative-002",
+      "campaign_name": "Produto M30 a50552ea V5 — learning loop",
+      "hook": "Hook controlado com prova e clareza — nova variação V5",
+      "copy_text": "O criativo base AD 002 gerou compras com ROAS médio 4.2. Esta variação mantém o padrão vencedor: Export local com prova visual e CTA claro. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V5 mantendo o padrão campeão: Export local com prova visual e CTA claro. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Hook controlado com prova e clareza. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 1 compras, ROAS 4.2 e Connect Rate 88.0%."
+    },
+    {
+      "version": "V6",
+      "based_on_creative_id": "creative-003",
+      "campaign_name": "Produto M30 a50552ea V6 — learning loop",
+      "hook": "Hook controlado com prova e clareza — nova variação V6",
+      "copy_text": "O criativo base AD 003 gerou compras com ROAS médio 4.2. Esta variação mantém o padrão vencedor: Export local com prova visual e CTA claro. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V6 mantendo o padrão campeão: Export local com prova visual e CTA claro. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Hook controlado com prova e clareza. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 1 compras, ROAS 4.2 e Connect Rate 88.0%."
+    }
+  ]
+}

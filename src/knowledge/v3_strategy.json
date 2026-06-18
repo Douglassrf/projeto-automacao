@@ -1,0 +1,39 @@
+{
+  "version": "V3",
+  "name": "Validacao Avancada com Uma Campanha por Criativo",
+  "objective": "Vendas",
+  "destination": "Site",
+  "conversion_event": "Purchase",
+  "campaign_structure": {
+    "campaigns": "1 por criativo",
+    "recommended_creatives": "4 a 6",
+    "subniches": 5,
+    "daily_budget_brl_per_campaign": 25,
+    "minimum_analysis_days": 3,
+    "end_date": null
+  },
+  "targeting": {
+    "audience": "open_no_detailed_interests",
+    "device": "mobile_only",
+    "connection": "wifi_only",
+    "placements_include": ["facebook", "instagram"],
+    "placements_exclude": ["threads", "audience_network", "messenger"]
+  },
+  "rules": {
+    "duplicate_using_original_configuration": true,
+    "change_only_creative": true,
+    "same_copy": true,
+    "same_link": true,
+    "same_pixel": true,
+    "same_event": "Purchase",
+    "disable_flexible_media": true,
+    "disable_auto_creative_optimizations": true,
+    "do_not_pause_before_days": 3,
+    "pause_only_if": ["erro tecnico grave", "pixel errado", "link quebrado", "gasto limite sem compra apos janela minima"]
+  },
+  "scale_logic": {
+    "scale_only_champions": true,
+    "budget_increase_percent_per_day": "20-30%",
+    "requirements": ["Purchase real", "ROAS positivo", "CPA dentro do limite", "Connect Rate saudavel"]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "version": "V1",
+  "name": "Validacao Inicial por Subnichos",
+  "objective": "Vendas",
+  "destination": "Site",
+  "conversion_event": "Purchase",
+  "campaign_structure": {
+    "campaigns": 1,
+    "subniches": 5,
+    "creatives_per_subniche": 1,
+    "budget_mode": "baixo_teste_inicial",
+    "minimum_analysis_days": 3,
+    "end_date": null
+  },
+  "targeting": {
+    "audience": "open_no_detailed_interests",
+    "device": "mobile_only",
+    "connection": "wifi_only",
+    "placements_include": ["facebook", "instagram"],
+    "placements_exclude": ["threads", "audience_network", "messenger"]
+  },
+  "rules": {
+    "do_not_pause_before_days": 3,
+    "connect_rate_warning_below": 75,
+    "threshold_min_active_ads": 15,
+    "threshold_max_active_ads": 40,
+    "creative_policy": "1 criativo principal por subnicho; manter midia original; sem midia flexivel; sem sugestoes automaticas que alterem criativo"
+  },
+  "copy_style": {
+    "tone": "direta, simples e orientada a compra",
+    "cta": "Comprar agora",
+    "description_policy": "nao usar descricao salvo necessidade"
+  },
+  "success_criteria": ["CTR saudavel", "Connect Rate >= 75", "Purchase ativo", "checkout iniciando", "CPA dentro do limite"]
+}

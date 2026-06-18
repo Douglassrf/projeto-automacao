@@ -1,0 +1,42 @@
+{
+  "version": "V2",
+  "name": "Performance com 4 Criativos no Mesmo Conjunto",
+  "objective": "Vendas",
+  "destination": "Site",
+  "conversion_event": "Purchase",
+  "campaign_structure": {
+    "campaigns": 1,
+    "adsets": 1,
+    "creatives": 4,
+    "daily_budget_brl": 50,
+    "minimum_analysis_days": 3,
+    "end_date": null
+  },
+  "targeting": {
+    "audience": "open_no_detailed_interests",
+    "device": "mobile_only",
+    "connection": "wifi_only",
+    "placements_include": ["facebook", "instagram"],
+    "placements_exclude": ["threads", "audience_network", "messenger"]
+  },
+  "rules": {
+    "same_copy": true,
+    "same_link": true,
+    "same_pixel": true,
+    "change_only_media": true,
+    "publish_all_together": true,
+    "media_original_format": true,
+    "disable_flexible_media": true,
+    "disable_auto_creative_optimizations": true,
+    "do_not_pause_before_days": 3
+  },
+  "copy_style": {
+    "tone": "comparativa, persuasiva e clara",
+    "goal": "deixar o algoritmo identificar o criativo vencedor sem contaminar o teste"
+  },
+  "winner_logic": {
+    "primary_metric": "menor CPA com compras reais",
+    "secondary_metrics": ["ROAS", "CTR", "Connect Rate", "Checkout Rate"],
+    "warning": "R$50/dia por 6 paises e 4 criativos pode gerar gargalo de dados; analisar 3 a 7 dias"
+  }
+}

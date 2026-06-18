@@ -1,0 +1,23 @@
+AUDITORIA RESILIENTE
+
+Objetivo:
+- Manter a atualização existente.
+- Impedir que um agente/rota quebrada derrube o motor inteiro.
+- Carregar rotas como plugins opcionais.
+- Expor diagnostico em /diagnostics.
+
+Arquivos adicionados/alterados:
+- src/app/main.py -> runtime seguro
+- src/app/api/router.py -> wrapper seguro
+- src/app/api/safe_router.py -> loader protegido por try/except
+- src/app/main_original_backup.py -> backup
+- src/app/api/router_original_backup.py -> backup
+- src/meta_operator.py -> wrapper limpo
+- INICIAR_MOTOR_SEGURO.bat
+- TESTAR_MOTOR_SEGURO.bat
+
+Validação:
+- Python compile errors: 0
+
+Erros:
+[]

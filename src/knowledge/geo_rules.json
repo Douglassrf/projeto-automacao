@@ -1,0 +1,37 @@
+{
+  "presets": {
+    "LATAM_ESP": {
+      "countries": ["AR", "CL", "CO", "PE", "MX", "EC"],
+      "excluded_countries": ["BR"],
+      "language": "Spanish_All",
+      "currency_cluster": "LATAM",
+      "notes": "Padrao para produtos em espanhol e validacao de volume."
+    },
+    "USD_TIER1": {
+      "countries": ["US", "CA", "AU", "NZ"],
+      "excluded_countries": ["BR"],
+      "language": "English_All",
+      "currency_cluster": "USD",
+      "notes": "Moeda forte; nao misturar com Euro na mesma campanha."
+    },
+    "EURO_TIER": {
+      "countries": ["DE", "FR", "ES", "IT", "NL", "IE", "PT"],
+      "excluded_countries": ["BR"],
+      "language": "English_All",
+      "currency_cluster": "EUR",
+      "notes": "Separar do cluster USD por comportamento de leilao."
+    },
+    "BRAZIL": {
+      "countries": ["BR"],
+      "excluded_countries": [],
+      "language": "Portuguese_All",
+      "currency_cluster": "BRL",
+      "notes": "Ativar manualmente quando quiser anunciar para o Brasil."
+    }
+  },
+  "rules": [
+    "Nao misturar paises de dolar e euro na mesma campanha.",
+    "Idioma deve acompanhar o anuncio campeao e o publico alvo.",
+    "Para evitar trafego brasileiro fora do Brasil, nao usar Portugues em clusters USD/EURO salvo estrategia especifica."
+  ]
+}

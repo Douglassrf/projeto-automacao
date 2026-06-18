@@ -1,0 +1,902 @@
+{
+  "run_id": "orchestration-test-offer-20260605-171844-816bfe",
+  "product_name": "Orchestration Test Offer",
+  "run_mode": "dry_run",
+  "output_dir": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\OrchestrationSafe\\orchestration-test-offer-20260605-171844-816bfe",
+  "safe_mode": true,
+  "executed_bridges": {
+    "content_orchestrator_safe": {
+      "status": "ok",
+      "agent": "ContentOrchestratorBridge",
+      "mode": "safe",
+      "content_orchestrator": {
+        "status": "ok",
+        "acao": "Prompt/roteiro de vídeo criado e pronto para envio ao Hugging Face ZeroGPU ou pipeline FFmpeg.",
+        "proximo_passo": "huggingface_zerogpu_video_or_ffmpeg_pipeline",
+        "log": {
+          "duplicado": false,
+          "duplicado_com": null,
+          "qualidade_nota": 9.8,
+          "threshold": 8.0,
+          "melhorias": [
+            "Brief aprovado; seguir execução."
+          ],
+          "decisao_recurso": "video"
+        },
+        "generated_payload": {
+          "tool": "huggingface_zerogpu_video_or_ffmpeg_pipeline",
+          "type": "video",
+          "prompt_midia": "Tema: Vídeo UGC para Ebook de Receitas Fitness. Brief: Criar vídeo curto para público de emagrecimento e rotina saudável. A dor é falta de organização na alimentação, o benefício é ter receitas práticas, com CTA para acessar agora, prova por ROAS e Connect Rate, e linguagem simples para avatar iniciante.. Plataforma: Meta Ads. Criar conteúdo de alta conversão, direto, com promessa clara, emoção e CTA. Short vertical ad video, strong 3-second hook, dynamic transitions, emotional CTA.",
+          "scenes": [
+            {
+              "start": "0s",
+              "role": "hook",
+              "instruction": "Abrir com dor ou promessa forte."
+            },
+            {
+              "start": "3s",
+              "role": "body",
+              "instruction": "Mostrar solução e prova simples."
+            },
+            {
+              "start": "12s",
+              "role": "cta",
+              "instruction": "Chamada direta para ação."
+            }
+          ]
+        },
+        "created_at": "2026-06-05T17:18:44.858375Z"
+      },
+      "brain_review": {
+        "decision": "SIM",
+        "next_action": "dry_run"
+      }
+    },
+    "video_pipeline_safe": {
+      "status": "ok",
+      "agent": "VideoPipelineBridge",
+      "mode": "video_pipeline_safe",
+      "video_pipeline": {
+        "status": "ok",
+        "agent": "VideoPipelineBridge",
+        "mode": "safe_dry_run",
+        "product_name": "Ebook de Receitas Fitness",
+        "model": "V4",
+        "generated_at": "2026-06-05T17:18:44.923958+00:00",
+        "render_executed": false,
+        "ffmpeg_real_executed": false,
+        "external_tts_executed": false,
+        "voice_provider_forced": "fallback",
+        "scene_provider_blocked": "ffmpeg_local",
+        "output_folder": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-34c3a73f",
+        "script_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-34c3a73f\\script.md",
+        "storyboard_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-34c3a73f\\storyboard.json",
+        "final_mp4": null,
+        "warnings": [
+          "Dry-run seguro: FFmpeg real não foi executado.",
+          "Providers externos bloqueados: ElevenLabs/OpenAI TTS não foram chamados.",
+          "PremiumRender/SiteBuilder/Meta/TikTok permanecem desligados."
+        ],
+        "next_action": "brain_review_before_video_render_real",
+        "manifest_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-34c3a73f\\video_pipeline_safe_manifest.json"
+      },
+      "brain_review": {
+        "decision": "SIM",
+        "next_action": "dry_run"
+      }
+    },
+    "premium_render_safe": {
+      "status": "ok",
+      "agent": "PremiumRenderBridge",
+      "mode": "premium_render_safe",
+      "premium_render": {
+        "status": "ok",
+        "agent": "PremiumRenderBridge",
+        "mode": "safe_dry_run",
+        "render_executed": false,
+        "premium_render_real_executed": false,
+        "external_provider_executed": false,
+        "celery_executed": false,
+        "ffmpeg_real_executed": false,
+        "product_name": "Ebook de Receitas Fitness",
+        "asset_type": "image",
+        "provider_forced": "dry_run",
+        "dispatch_mode_forced": "local",
+        "generated_at": "2026-06-05T17:18:45.000673+00:00",
+        "output_folder": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-16dc57d2",
+        "worker_payload_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-16dc57d2\\premium_render_safe_payload.json",
+        "brief_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-16dc57d2\\premium_render_safe_brief.md",
+        "final_file": null,
+        "warnings": [
+          "Dry-run seguro: PremiumRender real não foi executado.",
+          "Providers externos bloqueados: flux/sdxl/runway/kling/local_ffmpeg não foram chamados.",
+          "Celery real bloqueado.",
+          "FFmpeg real bloqueado.",
+          "Meta/TikTok/SiteBuilder permanecem desligados."
+        ],
+        "next_action": "brain_review_before_premium_render_real",
+        "manifest_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-16dc57d2\\premium_render_safe_manifest.json"
+      },
+      "brain_review": {
+        "decision": "SIM",
+        "next_action": "dry_run"
+      }
+    },
+    "site_builder_safe": {
+      "status": "ok",
+      "agent": "SiteBuilderBridge",
+      "mode": "site_builder_safe",
+      "site_builder": {
+        "status": "ok",
+        "agent": "SiteBuilderBridge",
+        "mode": "site_builder_safe",
+        "product_name": "Ebook de Receitas Fitness",
+        "template": "direct_response",
+        "generated_at": "2026-06-05T17:18:45.067096+00:00",
+        "output_dir": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-e2d737a2",
+        "preview_path": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-e2d737a2\\index.html",
+        "files": [
+          "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-e2d737a2\\index.html",
+          "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-e2d737a2\\styles.css"
+        ],
+        "deploy_provider": "github_vercel",
+        "deploy_status": "dry_run_payload_ready",
+        "deploy_real_executed": false,
+        "github_executed": false,
+        "vercel_executed": false,
+        "netlify_executed": false,
+        "deploy_payload_path": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-e2d737a2\\deploy_payload.json",
+        "manifest_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-e2d737a2\\site_builder_safe_manifest.json",
+        "warnings": [
+          "Deploy real bloqueado.",
+          "Dry-run ativo: nenhum provedor externo foi chamado.",
+          "GitHub/Vercel/Netlify não foram chamados.",
+          "Payload preparado apenas para revisão futura."
+        ],
+        "next_action": "brain_review_before_orchestration_pipeline"
+      },
+      "brain_review": {
+        "decision": "SIM",
+        "next_action": "dry_run"
+      }
+    }
+  },
+  "steps": [
+    {
+      "order": 1,
+      "name": "MasterContext Startup Checklist",
+      "tool": "MasterContextStore",
+      "status": "ok",
+      "output": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs",
+      "notes": [
+        "Memória mestre consultada em modo seguro."
+      ]
+    },
+    {
+      "order": 2,
+      "name": "ContentOrchestrator Safe",
+      "tool": "ContentOrchestratorBridge",
+      "status": "ok",
+      "output": "huggingface_zerogpu_video_or_ffmpeg_pipeline",
+      "notes": [
+        "Roteamento de conteúdo executado em modo safe."
+      ]
+    },
+    {
+      "order": 3,
+      "name": "VideoPipeline Safe",
+      "tool": "VideoPipelineBridge",
+      "status": "ok",
+      "output": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-34c3a73f\\video_pipeline_safe_manifest.json",
+      "notes": [
+        "Render real bloqueado."
+      ]
+    },
+    {
+      "order": 4,
+      "name": "PremiumRender Safe",
+      "tool": "PremiumRenderBridge",
+      "status": "ok",
+      "output": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-16dc57d2\\premium_render_safe_manifest.json",
+      "notes": [
+        "Provider externo, Celery e FFmpeg real bloqueados."
+      ]
+    },
+    {
+      "order": 5,
+      "name": "SiteBuilder Safe",
+      "tool": "SiteBuilderBridge",
+      "status": "ok",
+      "output": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-e2d737a2\\index.html",
+      "notes": [
+        "Deploy real bloqueado."
+      ]
+    },
+    {
+      "order": 6,
+      "name": "CampaignMemory",
+      "tool": "CampaignMemoryStore",
+      "status": "stored",
+      "output": null,
+      "notes": [
+        "Memória registrada."
+      ]
+    },
+    {
+      "order": 7,
+      "name": "DecisionFeed",
+      "tool": "DecisionFeedStore",
+      "status": "stored",
+      "output": null,
+      "notes": [
+        "Decisão registrada."
+      ]
+    },
+    {
+      "order": 8,
+      "name": "CampaignBrain",
+      "tool": "CampaignBrainAgent",
+      "status": "SIM",
+      "output": "dry_run",
+      "notes": [
+        "Brain revisou a orquestração safe."
+      ]
+    }
+  ],
+  "warnings": [],
+  "blocked": {
+    "meta_real": true,
+    "tiktok_real": true,
+    "render_real": true,
+    "deploy_real": true,
+    "external_providers": true
+  },
+  "memory_result": {
+    "status": "stored",
+    "memory_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs\\campaign_brain_memory.log",
+    "recorded_at": "2026-06-05T17:18:45.133359+00:00"
+  },
+  "decision_feed_result": {
+    "status": "stored",
+    "agent": "DecisionFeedStore",
+    "storage": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs\\decision_feed.log",
+    "record": {
+      "recorded_at": "2026-06-05T17:18:45.133828+00:00",
+      "source": "CampaignBrainAgent",
+      "product_name": "Orchestration Test Offer",
+      "niche": "Produto digital",
+      "campaign_stage": "ORCHESTRATION_SAFE",
+      "decision": "SIM",
+      "confidence": 86,
+      "next_action": "factory_complete_dry_run",
+      "positive_points": [
+        "Bridges Safe executados em sequência.",
+        "OrchestrationResponse válido produzido.",
+        "Render/deploy/publicação reais permaneceram bloqueados."
+      ],
+      "negative_points": [],
+      "blocked_reasons": [],
+      "meta_risk": {},
+      "historical_recommendation": "Prosseguir para Missão 25 com Fábrica Completa Dry Run.",
+      "panoramic_view": "Orquestração central reparada em camada safe.",
+      "recommended_solution": "Validar dry-run geral antes de qualquer execução real.",
+      "memory_used_keys": [
+        "orchestration_safe"
+      ]
+    }
+  },
+  "brain_review": {
+    "agent": "CampaignBrainAgent",
+    "status": "ok",
+    "mode": "consultivo_read_only_memoria_evolutiva",
+    "read_only": true,
+    "dry_run": true,
+    "can_execute": false,
+    "reviewed_at": "2026-06-05T17:18:45.200597+00:00",
+    "decision": "SIM",
+    "confidence": 100,
+    "campaign_stage": "V4",
+    "stage_goal": "escala controlada",
+    "recommended_budget_brl": 100,
+    "positive_points": [
+      "CampaignBrainAgent em modo consultivo seguro: read_only, dry_run e sem execução automática.",
+      "Etapa V4 reconhecida como escala controlada.",
+      "Orçamento de referência da etapa: R$ 100.",
+      "Memória evolutiva consultada: 200 registros totais.",
+      "Foram encontrados 66 registros parecidos na memória.",
+      "Connect Rate saudável para análise inicial.",
+      "Purchase Rate com bom sinal inicial.",
+      "ROAS positivo informado no contexto.",
+      "Nenhum risco crítico de política Meta identificado pela análise local.",
+      "MetaUpdateWatcher não encontrou atualização crítica relacionada.",
+      "CampaignIntelligence encontrou dados comparativos para este contexto.",
+      "Campanha comparativa encontrou mais sinais vencedores do que perdedores."
+    ],
+    "negative_points": [
+      "Há bloqueios anteriores parecidos na memória evolutiva."
+    ],
+    "panoramic_view": "A campanha pode seguir apenas em modo dry_run/validação controlada na etapa V4. Foram encontrados 12 sinais positivos e 1 pontos de atenção. Risco Meta preliminar: baixo. Memória parecida: 66 registros.",
+    "recommended_solution": "Investigar bloqueios anteriores antes de dry_run.",
+    "experience_summary": {
+      "source": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs\\campaign_brain_memory.log",
+      "available": true,
+      "total_records": 200,
+      "similar_records": 66,
+      "winners": 0,
+      "losers": 0,
+      "blocked": 11,
+      "recent_lessons": [
+        "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+        "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+        "OrchestrationPipeline Safe conectou os bridges Safe sem render/deploy/publicação real.",
+        "SiteBuilder Safe gerou index, CSS, deploy payload e manifesto sem deploy real."
+      ],
+      "historical_recommendation": "Há bloqueios anteriores parecidos. Exigir revisão de política, promessa e página antes de qualquer campanha real.",
+      "last_similar": [
+        {
+          "product_name": "Produto FB Miner",
+          "niche": "produto digital",
+          "campaign_stage": "MISSAO_29_FACEBOOK_AD_MINER_REAL",
+          "outcome": "APPROVED",
+          "lesson": "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+          "learning": "Para avancar ao Learning Loop real, usar anuncios coletados com origem auditavel e manter rastreabilidade completa.",
+          "metrics": {
+            "ads_collected": 2,
+            "external_calls_made": 0,
+            "scraping_used": false,
+            "browser_used": false,
+            "selenium_used": false,
+            "blocked_reasons": []
+          },
+          "source": "FacebookAdMiner.controlled_real_collect",
+          "output_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs\\facebook_ad_miner\\fbminer29_3950ed5c6b.json",
+          "recorded_at": "2026-06-05T17:18:44.294784+00:00"
+        },
+        {
+          "product_name": "Produto FB Miner",
+          "niche": "produto digital",
+          "campaign_stage": "MISSAO_29_FACEBOOK_AD_MINER_REAL",
+          "outcome": "BLOCKED",
+          "lesson": "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+          "learning": "Para avancar ao Learning Loop real, usar anuncios coletados com origem auditavel e manter rastreabilidade completa.",
+          "metrics": {
+            "ads_collected": 0,
+            "external_calls_made": 0,
+            "scraping_used": false,
+            "browser_used": false,
+            "selenium_used": false,
+            "blocked_reasons": [
+              "external_call_blocked",
+              "browser_blocked",
+              "source_url_blocked_until_manual_approval"
+            ]
+          },
+          "source": "FacebookAdMiner.controlled_real_collect",
+          "output_file": null,
+          "recorded_at": "2026-06-05T17:18:44.387967+00:00"
+        },
+        {
+          "product_name": "Orchestration Test Offer",
+          "niche": "Produto digital",
+          "campaign_stage": "ORCHESTRATION_SAFE",
+          "outcome": "SAFE_DRY_RUN",
+          "lesson": "OrchestrationPipeline Safe conectou os bridges Safe sem render/deploy/publicação real.",
+          "learning": "A fábrica completa pode avançar para dry-run geral mantendo todos os bloqueios reais ativos.",
+          "metrics": {
+            "steps": 5,
+            "run_mode": "dry_run",
+            "meta_real": false,
+            "deploy_real": false,
+            "render_real": false
+          },
+          "source": "OrchestrationPipelineSafe",
+          "output_dir": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\OrchestrationSafe\\orchestration-test-offer-20260605-171844-816bfe",
+          "recorded_at": "2026-06-05T17:18:45.133359+00:00"
+        }
+      ]
+    },
+    "campaign_intelligence": {
+      "status": "ok",
+      "agent": "CampaignIntelligenceSafe",
+      "mode": "comparative_local",
+      "filters": {
+        "product_name": "Orchestration Test Offer",
+        "niche": "produto digital"
+      },
+      "source_counts": {
+        "decision_feed_total": 300,
+        "campaign_memory_total": 300,
+        "decision_feed_matched": 99,
+        "campaign_memory_matched": 104
+      },
+      "stage_distribution": {
+        "MISSAO_28_MINER_CONTROLLED_REAL": 79,
+        "MISSAO_29_FACEBOOK_AD_MINER_REAL": 79,
+        "SITE_BUILDER_SAFE": 22,
+        "ORCHESTRATION_SAFE": 12,
+        "V4": 11
+      },
+      "decision_distribution": {
+        "SIM": 99,
+        "APPROVED": 66,
+        "SAFE_DRY_RUN": 22,
+        "BLOCKED": 16
+      },
+      "next_action_distribution": {
+        "dry_run": 87,
+        "brain_review_before_orchestration_pipeline": 8,
+        "factory_complete_dry_run": 4
+      },
+      "metric_averages": {
+        "ads_processed": 1.0,
+        "external_calls_made": 0.0,
+        "scraping_used": 0.0,
+        "latency_ms": 181.18,
+        "ads_collected": 1.0,
+        "browser_used": 0.0,
+        "selenium_used": 0.0,
+        "steps": 5.0,
+        "meta_real": 0.0,
+        "deploy_real": 0.0,
+        "render_real": 0.0,
+        "deploy_real_executed": 0.0,
+        "files_count": 2.0
+      },
+      "top_positive_patterns": [
+        [
+          "CampaignBrainAgent em modo consultivo seguro: read_only, dry_run e sem execução automática.",
+          87
+        ],
+        [
+          "Memória evolutiva consultada: 200 registros totais.",
+          87
+        ],
+        [
+          "Nenhum risco crítico de política Meta identificado pela análise local.",
+          87
+        ],
+        [
+          "MetaUpdateWatcher não encontrou atualização crítica relacionada.",
+          87
+        ],
+        [
+          "CampaignIntelligence encontrou dados comparativos para este contexto.",
+          87
+        ],
+        [
+          "Campanha comparativa encontrou mais sinais vencedores do que perdedores.",
+          87
+        ],
+        [
+          "Orçamento de referência da etapa: R$ 25.",
+          76
+        ],
+        [
+          "Etapa MISSAO_28_MINER_CONTROLLED_REAL reconhecida como descoberta.",
+          38
+        ]
+      ],
+      "top_negative_patterns": [
+        [
+          "Há bloqueios anteriores parecidos na memória evolutiva.",
+          87
+        ],
+        [
+          "Deploy real bloqueado.",
+          8
+        ],
+        [
+          "Dry-run ativo: nenhum provedor externo foi chamado.",
+          8
+        ],
+        [
+          "GitHub/Vercel/Netlify não foram chamados.",
+          8
+        ],
+        [
+          "Payload preparado apenas para revisão futura.",
+          8
+        ]
+      ],
+      "recent_lessons": [
+        "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+        "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+        "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+        "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+        "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+        "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+        "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+        "OrchestrationPipeline Safe conectou os bridges Safe sem render/deploy/publicação real."
+      ],
+      "winners": 99,
+      "losers": 0,
+      "recommendation": "Histórico positivo superior. Prosseguir com teste controlado e observar gargalos antes de escalar."
+    },
+    "intelligence_recommendation": "Histórico positivo superior. Prosseguir com teste controlado e observar gargalos antes de escalar.",
+    "historical_recommendation": "Há bloqueios anteriores parecidos. Exigir revisão de política, promessa e página antes de qualquer campanha real.",
+    "memory_used": {
+      "rules": {
+        "source": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\src\\knowledge",
+        "available": true,
+        "files_count": 12,
+        "files": [
+          "copy_patterns.json",
+          "creative_patterns.json",
+          "geo_rules.json",
+          "hybrid_stack_rules.json",
+          "learning_loop_rules.json",
+          "metrics_rules.json",
+          "pixel_rules.json",
+          "scaling_rules.json",
+          "v1_strategy.json",
+          "v2_strategy.json",
+          "v3_strategy.json",
+          "zero_cost_stack_rules.json"
+        ],
+        "top_keys": {
+          "copy_patterns.json": [
+            "patterns",
+            "rules"
+          ],
+          "creative_patterns.json": [
+            "patterns",
+            "rules"
+          ],
+          "geo_rules.json": [
+            "presets",
+            "rules"
+          ],
+          "hybrid_stack_rules.json": [
+            "guardrails",
+            "modules",
+            "principles",
+            "purpose",
+            "recommended_models_cpu",
+            "schema_version",
+            "strategy_name"
+          ],
+          "learning_loop_rules.json": [
+            "loop",
+            "versions"
+          ],
+          "metrics_rules.json": [
+            "analysis_rules",
+            "connect_rate",
+            "funnel_diagnostics"
+          ],
+          "pixel_rules.json": [
+            "allowed_support_events",
+            "block_campaign_if_purchase_missing",
+            "health_score_inputs",
+            "required_event",
+            "rules"
+          ],
+          "scaling_rules.json": [
+            "protection_rules",
+            "scale_rules"
+          ],
+          "v1_strategy.json": [
+            "campaign_structure",
+            "conversion_event",
+            "copy_style",
+            "destination",
+            "name",
+            "objective",
+            "rules",
+            "success_criteria",
+            "targeting",
+            "version"
+          ],
+          "v2_strategy.json": [
+            "campaign_structure",
+            "conversion_event",
+            "copy_style",
+            "destination",
+            "name",
+            "objective",
+            "rules",
+            "targeting",
+            "version",
+            "winner_logic"
+          ],
+          "v3_strategy.json": [
+            "campaign_structure",
+            "conversion_event",
+            "destination",
+            "name",
+            "objective",
+            "rules",
+            "scale_logic",
+            "targeting",
+            "version"
+          ],
+          "zero_cost_stack_rules.json": [
+            "cost_policy",
+            "guardrails",
+            "providers",
+            "purpose",
+            "rag_rules",
+            "schema_version",
+            "strategy_name"
+          ]
+        }
+      },
+      "experience": {
+        "source": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs\\campaign_brain_memory.log",
+        "available": true,
+        "total_records": 200,
+        "similar_records": 66,
+        "winners": 0,
+        "losers": 0,
+        "blocked": 11,
+        "recent_lessons": [
+          "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+          "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+          "OrchestrationPipeline Safe conectou os bridges Safe sem render/deploy/publicação real.",
+          "SiteBuilder Safe gerou index, CSS, deploy payload e manifesto sem deploy real."
+        ],
+        "historical_recommendation": "Há bloqueios anteriores parecidos. Exigir revisão de política, promessa e página antes de qualquer campanha real.",
+        "last_similar": [
+          {
+            "product_name": "Produto FB Miner",
+            "niche": "produto digital",
+            "campaign_stage": "MISSAO_29_FACEBOOK_AD_MINER_REAL",
+            "outcome": "APPROVED",
+            "lesson": "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+            "learning": "Para avancar ao Learning Loop real, usar anuncios coletados com origem auditavel e manter rastreabilidade completa.",
+            "metrics": {
+              "ads_collected": 2,
+              "external_calls_made": 0,
+              "scraping_used": false,
+              "browser_used": false,
+              "selenium_used": false,
+              "blocked_reasons": []
+            },
+            "source": "FacebookAdMiner.controlled_real_collect",
+            "output_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs\\facebook_ad_miner\\fbminer29_3950ed5c6b.json",
+            "recorded_at": "2026-06-05T17:18:44.294784+00:00"
+          },
+          {
+            "product_name": "Produto FB Miner",
+            "niche": "produto digital",
+            "campaign_stage": "MISSAO_29_FACEBOOK_AD_MINER_REAL",
+            "outcome": "BLOCKED",
+            "lesson": "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+            "learning": "Para avancar ao Learning Loop real, usar anuncios coletados com origem auditavel e manter rastreabilidade completa.",
+            "metrics": {
+              "ads_collected": 0,
+              "external_calls_made": 0,
+              "scraping_used": false,
+              "browser_used": false,
+              "selenium_used": false,
+              "blocked_reasons": [
+                "external_call_blocked",
+                "browser_blocked",
+                "source_url_blocked_until_manual_approval"
+              ]
+            },
+            "source": "FacebookAdMiner.controlled_real_collect",
+            "output_file": null,
+            "recorded_at": "2026-06-05T17:18:44.387967+00:00"
+          },
+          {
+            "product_name": "Orchestration Test Offer",
+            "niche": "Produto digital",
+            "campaign_stage": "ORCHESTRATION_SAFE",
+            "outcome": "SAFE_DRY_RUN",
+            "lesson": "OrchestrationPipeline Safe conectou os bridges Safe sem render/deploy/publicação real.",
+            "learning": "A fábrica completa pode avançar para dry-run geral mantendo todos os bloqueios reais ativos.",
+            "metrics": {
+              "steps": 5,
+              "run_mode": "dry_run",
+              "meta_real": false,
+              "deploy_real": false,
+              "render_real": false
+            },
+            "source": "OrchestrationPipelineSafe",
+            "output_dir": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\OrchestrationSafe\\orchestration-test-offer-20260605-171844-816bfe",
+            "recorded_at": "2026-06-05T17:18:45.133359+00:00"
+          }
+        ]
+      },
+      "comparative_intelligence": {
+        "status": "ok",
+        "agent": "CampaignIntelligenceSafe",
+        "mode": "comparative_local",
+        "filters": {
+          "product_name": "Orchestration Test Offer",
+          "niche": "produto digital"
+        },
+        "source_counts": {
+          "decision_feed_total": 300,
+          "campaign_memory_total": 300,
+          "decision_feed_matched": 99,
+          "campaign_memory_matched": 104
+        },
+        "stage_distribution": {
+          "MISSAO_28_MINER_CONTROLLED_REAL": 79,
+          "MISSAO_29_FACEBOOK_AD_MINER_REAL": 79,
+          "SITE_BUILDER_SAFE": 22,
+          "ORCHESTRATION_SAFE": 12,
+          "V4": 11
+        },
+        "decision_distribution": {
+          "SIM": 99,
+          "APPROVED": 66,
+          "SAFE_DRY_RUN": 22,
+          "BLOCKED": 16
+        },
+        "next_action_distribution": {
+          "dry_run": 87,
+          "brain_review_before_orchestration_pipeline": 8,
+          "factory_complete_dry_run": 4
+        },
+        "metric_averages": {
+          "ads_processed": 1.0,
+          "external_calls_made": 0.0,
+          "scraping_used": 0.0,
+          "latency_ms": 181.18,
+          "ads_collected": 1.0,
+          "browser_used": 0.0,
+          "selenium_used": 0.0,
+          "steps": 5.0,
+          "meta_real": 0.0,
+          "deploy_real": 0.0,
+          "render_real": 0.0,
+          "deploy_real_executed": 0.0,
+          "files_count": 2.0
+        },
+        "top_positive_patterns": [
+          [
+            "CampaignBrainAgent em modo consultivo seguro: read_only, dry_run e sem execução automática.",
+            87
+          ],
+          [
+            "Memória evolutiva consultada: 200 registros totais.",
+            87
+          ],
+          [
+            "Nenhum risco crítico de política Meta identificado pela análise local.",
+            87
+          ],
+          [
+            "MetaUpdateWatcher não encontrou atualização crítica relacionada.",
+            87
+          ],
+          [
+            "CampaignIntelligence encontrou dados comparativos para este contexto.",
+            87
+          ],
+          [
+            "Campanha comparativa encontrou mais sinais vencedores do que perdedores.",
+            87
+          ],
+          [
+            "Orçamento de referência da etapa: R$ 25.",
+            76
+          ],
+          [
+            "Etapa MISSAO_28_MINER_CONTROLLED_REAL reconhecida como descoberta.",
+            38
+          ]
+        ],
+        "top_negative_patterns": [
+          [
+            "Há bloqueios anteriores parecidos na memória evolutiva.",
+            87
+          ],
+          [
+            "Deploy real bloqueado.",
+            8
+          ],
+          [
+            "Dry-run ativo: nenhum provedor externo foi chamado.",
+            8
+          ],
+          [
+            "GitHub/Vercel/Netlify não foram chamados.",
+            8
+          ],
+          [
+            "Payload preparado apenas para revisão futura.",
+            8
+          ]
+        ],
+        "recent_lessons": [
+          "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+          "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+          "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+          "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+          "MinerEngine executou mineracao real controlada somente com fonte local auditavel e sem chamadas externas.",
+          "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+          "FacebookAdMiner real controlado aceita export local auditavel e bloqueia rede, browser, Selenium, scraping e Meta real.",
+          "OrchestrationPipeline Safe conectou os bridges Safe sem render/deploy/publicação real."
+        ],
+        "winners": 99,
+        "losers": 0,
+        "recommendation": "Histórico positivo superior. Prosseguir com teste controlado e observar gargalos antes de escalar."
+      },
+      "creatives": {
+        "source": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs",
+        "available": true,
+        "files": {
+          "capi_events.log": true,
+          "learning_loop.log": true
+        }
+      },
+      "blocks": {
+        "source": "performance_tickets/meta_action_requests/decision_logs",
+        "available": "requires_database_runtime"
+      },
+      "meta_updates": {
+        "status": "ok",
+        "agent": "MetaUpdateWatcher",
+        "mode": "manual_safe_registry",
+        "updates_available": true,
+        "related_updates_count": 0,
+        "highest_risk": "low",
+        "should_block_real_publish": false,
+        "recommendation": "Nenhuma atualização relacionada encontrada. Manter revisão padrão em dry_run.",
+        "related_updates": []
+      }
+    },
+    "meta_risk": {
+      "level": "baixo",
+      "sensitive_terms": [],
+      "risky_promises": [],
+      "note": "Análise local preliminar. Validar com MetaUpdateWatcher e padrões oficiais antes de publicação real."
+    },
+    "blocked_reasons": [],
+    "next_action": "dry_run",
+    "decision_feed_result": {
+      "status": "stored",
+      "agent": "DecisionFeedStore",
+      "storage": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs\\decision_feed.log",
+      "record": {
+        "recorded_at": "2026-06-05T17:18:45.200620+00:00",
+        "source": "CampaignBrainAgent",
+        "product_name": "Orchestration Test Offer",
+        "niche": "produto digital",
+        "campaign_stage": "V4",
+        "decision": "SIM",
+        "confidence": 100,
+        "next_action": "dry_run",
+        "positive_points": [
+          "CampaignBrainAgent em modo consultivo seguro: read_only, dry_run e sem execução automática.",
+          "Etapa V4 reconhecida como escala controlada.",
+          "Orçamento de referência da etapa: R$ 100.",
+          "Memória evolutiva consultada: 200 registros totais.",
+          "Foram encontrados 66 registros parecidos na memória.",
+          "Connect Rate saudável para análise inicial.",
+          "Purchase Rate com bom sinal inicial.",
+          "ROAS positivo informado no contexto.",
+          "Nenhum risco crítico de política Meta identificado pela análise local.",
+          "MetaUpdateWatcher não encontrou atualização crítica relacionada.",
+          "CampaignIntelligence encontrou dados comparativos para este contexto.",
+          "Campanha comparativa encontrou mais sinais vencedores do que perdedores."
+        ],
+        "negative_points": [
+          "Há bloqueios anteriores parecidos na memória evolutiva."
+        ],
+        "blocked_reasons": [],
+        "meta_risk": {
+          "level": "baixo",
+          "sensitive_terms": [],
+          "risky_promises": [],
+          "note": "Análise local preliminar. Validar com MetaUpdateWatcher e padrões oficiais antes de publicação real."
+        },
+        "historical_recommendation": "Há bloqueios anteriores parecidos. Exigir revisão de política, promessa e página antes de qualquer campanha real.",
+        "panoramic_view": "A campanha pode seguir apenas em modo dry_run/validação controlada na etapa V4. Foram encontrados 12 sinais positivos e 1 pontos de atenção. Risco Meta preliminar: baixo. Memória parecida: 66 registros.",
+        "recommended_solution": "Investigar bloqueios anteriores antes de dry_run.",
+        "memory_used_keys": [
+          "blocks",
+          "comparative_intelligence",
+          "creatives",
+          "experience",
+          "meta_updates",
+          "rules"
+        ]
+      }
+    }
+  }
+}

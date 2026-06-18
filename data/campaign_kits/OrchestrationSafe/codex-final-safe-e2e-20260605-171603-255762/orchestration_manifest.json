@@ -1,0 +1,30 @@
+{
+  "run_id": "codex-final-safe-e2e-20260605-171603-255762",
+  "product_name": "Codex Final Safe E2E",
+  "run_mode": "plan_only",
+  "output_dir": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\OrchestrationSafe\\codex-final-safe-e2e-20260605-171603-255762",
+  "safe_mode": true,
+  "executed_bridges": {},
+  "steps": [
+    {
+      "order": 1,
+      "name": "MasterContext Startup Checklist",
+      "tool": "MasterContextStore",
+      "status": "ok",
+      "output": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\logs",
+      "notes": [
+        "Memória mestre consultada em modo seguro."
+      ]
+    }
+  ],
+  "warnings": [
+    "plan_only: nenhum bridge Safe foi executado; apenas pipeline.json, run.sh e n8n_workflow.json foram gerados."
+  ],
+  "blocked": {
+    "meta_real": true,
+    "tiktok_real": true,
+    "render_real": true,
+    "deploy_real": true,
+    "external_providers": true
+  }
+}

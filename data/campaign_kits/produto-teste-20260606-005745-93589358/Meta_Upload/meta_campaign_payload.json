@@ -1,0 +1,37 @@
+{
+  "dry_run": true,
+  "product_name": "Produto Teste",
+  "pixel_id": "123456",
+  "objective": "OUTCOME_SALES",
+  "conversion_event": "Purchase",
+  "final_link": "https://example.com/checkout",
+  "geo": {
+    "preset": "LATAM_ESP",
+    "countries": [
+      "AR",
+      "CL",
+      "CO",
+      "PE",
+      "MX",
+      "EC"
+    ],
+    "excluded": [
+      "BR"
+    ]
+  },
+  "campaigns": [
+    "V1",
+    "V2",
+    "V3"
+  ],
+  "best_pattern": {
+    "source_ad_id": "ad_001",
+    "active_ads": 25,
+    "hook": "Descubre el método simple",
+    "creative_pattern": "UGC direto com prova visual",
+    "copy_pattern": "dor + prova + CTA",
+    "cta_pattern": "Comprar ahora",
+    "connect_rate": 82.0,
+    "roas": 2.5
+  }
+}

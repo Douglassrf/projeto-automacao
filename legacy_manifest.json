@@ -1,0 +1,334 @@
+{
+  "mission": "G04",
+  "generated_at_utc": "20260618T141737Z",
+  "dry_run": false,
+  "archive_dir": "archived_legacy",
+  "explicit_excluded_paths": {
+    "scripts/create_immutable_backup.py": "Script ativo da missao G01R que CRIA backups imutaveis do projeto; o nome contem 'backup' pela funcao que exerce, nao e um duplicado de outro arquivo."
+  },
+  "summary": {
+    "directories_found": 3,
+    "files_found": 32,
+    "directories_moved": 3,
+    "files_moved": 32,
+    "total_bytes_moved": 179307
+  },
+  "entries": [
+    {
+      "type": "directory",
+      "original_path": "src/app/domain - Copia",
+      "new_path": "archived_legacy/src/app/domain - Copia",
+      "reason": "nome_de_pasta_contem('Copia')",
+      "file_count": 1,
+      "total_bytes": 16656,
+      "moved": true
+    },
+    {
+      "type": "directory",
+      "original_path": "src/app/domain - Copia (2)",
+      "new_path": "archived_legacy/src/app/domain - Copia (2)",
+      "reason": "nome_de_pasta_contem('Copia')",
+      "file_count": 1,
+      "total_bytes": 16656,
+      "moved": true
+    },
+    {
+      "type": "directory",
+      "original_path": "src/app/domain - Copia - Copia",
+      "new_path": "archived_legacy/src/app/domain - Copia - Copia",
+      "reason": "nome_de_pasta_contem('Copia')",
+      "file_count": 1,
+      "total_bytes": 16656,
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/router_original_backup.py",
+      "new_path": "archived_legacy/src/app/api/router_original_backup.py",
+      "reason": "nome_de_arquivo_termina_em_backup",
+      "size_bytes": 3216,
+      "sha256": "41137848d700d3ca888c001709c61e1894b733b917e2655a89ed86e86eae3c75",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/routes/campaign_brain.py.missao07_backup",
+      "new_path": "archived_legacy/src/app/api/routes/campaign_brain.py.missao07_backup",
+      "reason": "extensao_final_de_backup(.missao07_backup)",
+      "size_bytes": 1029,
+      "sha256": "d763e411475de527883e27027ff59332a4c9d0f4fad1208131c23f8a17a58a9d",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/routes/meta_operator.py.bak",
+      "new_path": "archived_legacy/src/app/api/routes/meta_operator.py.bak",
+      "reason": "extensao_final_de_backup(.bak)",
+      "size_bytes": 186,
+      "sha256": "d32817cfbd1b7bacc27bf214af7e11f6e48cd397007782c955c7fe0991736202",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/routes/meta_operator.py.facebook_miner_backup",
+      "new_path": "archived_legacy/src/app/api/routes/meta_operator.py.facebook_miner_backup",
+      "reason": "extensao_final_de_backup(.facebook_miner_backup)",
+      "size_bytes": 558,
+      "sha256": "228bb6a0b48169e6ca043ebb31683ca4b3c4833e8951e70fdcaad791190feaa4",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/routes/meta_operator.py.fase5_backup",
+      "new_path": "archived_legacy/src/app/api/routes/meta_operator.py.fase5_backup",
+      "reason": "extensao_final_de_backup(.fase5_backup)",
+      "size_bytes": 231,
+      "sha256": "4d5f90b17fbb8bfa6795121e968ecc608bae54e66f5e1f73ac15b6e79004e67f",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/routes/meta_operator.py.missao09_backup",
+      "new_path": "archived_legacy/src/app/api/routes/meta_operator.py.missao09_backup",
+      "reason": "extensao_final_de_backup(.missao09_backup)",
+      "size_bytes": 558,
+      "sha256": "228bb6a0b48169e6ca043ebb31683ca4b3c4833e8951e70fdcaad791190feaa4",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/routes/orchestration.py.missao24B_backup",
+      "new_path": "archived_legacy/src/app/api/routes/orchestration.py.missao24B_backup",
+      "reason": "extensao_final_de_backup(.missao24B_backup)",
+      "size_bytes": 1079,
+      "sha256": "128219bb0de9e8cad2fed7e643b57f509a197fb20aef19a816ec70fb7e951d1c",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.brain_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.brain_backup",
+      "reason": "extensao_final_de_backup(.brain_backup)",
+      "size_bytes": 1515,
+      "sha256": "98fd81d3d44826335e18120f0926e83302d0e80859ba609cc424215cccec3396",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao08_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao08_backup",
+      "reason": "extensao_final_de_backup(.missao08_backup)",
+      "size_bytes": 1537,
+      "sha256": "4730516c002b684d0cea7ae948070f1326c15d03542c0f3d8f5504bf4d5839c5",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao10_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao10_backup",
+      "reason": "extensao_final_de_backup(.missao10_backup)",
+      "size_bytes": 1557,
+      "sha256": "0127688b7c78590a13bd965435ce5198b897ccdee5115bbb56b1ef0ea84b1767",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao11_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao11_backup",
+      "reason": "extensao_final_de_backup(.missao11_backup)",
+      "size_bytes": 1583,
+      "sha256": "c800c1f3dd5eb5048d9afed8c555b63a5e74f3a6e7eb4c59c852a6291685711d",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao13_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao13_backup",
+      "reason": "extensao_final_de_backup(.missao13_backup)",
+      "size_bytes": 1617,
+      "sha256": "ca41b9f8bdb5431933ab2623fdf2c9628d6f5d1d150aadb516605c5ac902f6e2",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao14_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao14_backup",
+      "reason": "extensao_final_de_backup(.missao14_backup)",
+      "size_bytes": 1643,
+      "sha256": "3e1582d156ccbbf70aa6e2409fca12bfb2f11e72beb03b3f1ed614ad0165c8ff",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao15_master_memory_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao15_master_memory_backup",
+      "reason": "extensao_final_de_backup(.missao15_master_memory_backup)",
+      "size_bytes": 1671,
+      "sha256": "35d8815d60c77844641e3237c30106cfaa3aefd79e795db6f24f734686fa951f",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao17_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao17_backup",
+      "reason": "extensao_final_de_backup(.missao17_backup)",
+      "size_bytes": 1693,
+      "sha256": "01ecd4ef89d60873a78e4181e8104329df864dd0c5d827eb17d109cad1a86346",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao19_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao19_backup",
+      "reason": "extensao_final_de_backup(.missao19_backup)",
+      "size_bytes": 1726,
+      "sha256": "282770a3f4bf65744aebf36b1ed9d32df4d1a5d4fcb403cc8d08436ff5b1103f",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao21_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao21_backup",
+      "reason": "extensao_final_de_backup(.missao21_backup)",
+      "size_bytes": 1753,
+      "sha256": "d1cf3384702577f8647ff0540cb3253aa55cbb0a230bbb4a2e3924e88227ee4e",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao23_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao23_backup",
+      "reason": "extensao_final_de_backup(.missao23_backup)",
+      "size_bytes": 1780,
+      "sha256": "53d48aa8a366bb9680aa85d4c317a6c26806694f1187c87d205571df2deb3b38",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/api/safe_router.py.missao24B_backup",
+      "new_path": "archived_legacy/src/app/api/safe_router.py.missao24B_backup",
+      "reason": "extensao_final_de_backup(.missao24B_backup)",
+      "size_bytes": 1805,
+      "sha256": "7abfb41b440dfddeb2a05a540845a3c0df42ea751639015b78905071213326da",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/main.py.fase5_backup",
+      "new_path": "archived_legacy/src/app/main.py.fase5_backup",
+      "reason": "extensao_final_de_backup(.fase5_backup)",
+      "size_bytes": 550,
+      "sha256": "9812dae8415126221aefb1d1be219d7632e19fac05a6e55b093343e5ba321600",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/main_original_backup.py",
+      "new_path": "archived_legacy/src/app/main_original_backup.py",
+      "reason": "nome_de_arquivo_termina_em_backup",
+      "size_bytes": 907,
+      "sha256": "df46f03ca573678792a484087073ba16c5a5dab6679df67fc17ebb6e4badcd40",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/campaign_brain.py.missao07_backup",
+      "new_path": "archived_legacy/src/app/services/campaign_brain.py.missao07_backup",
+      "reason": "extensao_final_de_backup(.missao07_backup)",
+      "size_bytes": 13545,
+      "sha256": "1cf6e4e942eed313f155ed8e7a237cb6ebda79215c74340fdc3a78b4bfe5b53c",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/campaign_brain.py.missao08_backup",
+      "new_path": "archived_legacy/src/app/services/campaign_brain.py.missao08_backup",
+      "reason": "extensao_final_de_backup(.missao08_backup)",
+      "size_bytes": 15693,
+      "sha256": "67f6c40c854a146af8d6a2d25217365d3a706ffc9005a4e35bf32698f3f0e0c0",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/campaign_brain.py.missao10_backup",
+      "new_path": "archived_legacy/src/app/services/campaign_brain.py.missao10_backup",
+      "reason": "extensao_final_de_backup(.missao10_backup)",
+      "size_bytes": 16550,
+      "sha256": "283623854f72b9c97c056951e5ab766ebf77f33f9dd88e1de563c8e35b13d6e7",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/campaign_brain.py.missao11_backup",
+      "new_path": "archived_legacy/src/app/services/campaign_brain.py.missao11_backup",
+      "reason": "extensao_final_de_backup(.missao11_backup)",
+      "size_bytes": 17023,
+      "sha256": "4bf00ffefa3b8ca60884302f1ee3402c60d5ada72cc627010d0a4c7e1210ab06",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/campaign_brain.py.missao15_master_memory_backup",
+      "new_path": "archived_legacy/src/app/services/campaign_brain.py.missao15_master_memory_backup",
+      "reason": "extensao_final_de_backup(.missao15_master_memory_backup)",
+      "size_bytes": 18174,
+      "sha256": "ea34c32d0d64b4c7cb4e1fc34c76259ef126286a09f2643fc6d458044d199a62",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/decision_feed_store.py.missao14_backup",
+      "new_path": "archived_legacy/src/app/services/decision_feed_store.py.missao14_backup",
+      "reason": "extensao_final_de_backup(.missao14_backup)",
+      "size_bytes": 5115,
+      "sha256": "25685e86a417bc605e02baf16a6d6b22dfa4b4c467b7e49017e000e932dfe4a6",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/master_context.py.missao17_backup",
+      "new_path": "archived_legacy/src/app/services/master_context.py.missao17_backup",
+      "reason": "extensao_final_de_backup(.missao17_backup)",
+      "size_bytes": 9334,
+      "sha256": "5e6b33a615091cc635dead831ce551f2b1b34d6c5a434140a09626dc13970772",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/miner_engine.py.facebook_miner_backup",
+      "new_path": "archived_legacy/src/app/services/miner_engine.py.facebook_miner_backup",
+      "reason": "extensao_final_de_backup(.facebook_miner_backup)",
+      "size_bytes": 1193,
+      "sha256": "a7c010b321e5fc77345a2bcade89c93b5ea0560a2fd25cde69a339cb1b27d038",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/miner_engine.py.fase5_backup",
+      "new_path": "archived_legacy/src/app/services/miner_engine.py.fase5_backup",
+      "reason": "extensao_final_de_backup(.fase5_backup)",
+      "size_bytes": 73,
+      "sha256": "488aff75513dc8704123f5e551c6ff6602aef9f1ec40a2ed948712365a19fdb9",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/miner_engine.py.missao07_backup",
+      "new_path": "archived_legacy/src/app/services/miner_engine.py.missao07_backup",
+      "reason": "extensao_final_de_backup(.missao07_backup)",
+      "size_bytes": 3145,
+      "sha256": "99f701a6801f55701e8aa7110b880dcae3220b3b73fddf77b6c92e741d859f07",
+      "moved": true
+    },
+    {
+      "type": "file",
+      "original_path": "src/app/services/orchestration_pipeline.py.missao24B_backup",
+      "new_path": "archived_legacy/src/app/services/orchestration_pipeline.py.missao24B_backup",
+      "reason": "extensao_final_de_backup(.missao24B_backup)",
+      "size_bytes": 1300,
+      "sha256": "5d487a83de9b331c72e73838b95483e04aa1a7d74f8f9ae7e8b4040665ace6f2",
+      "moved": true
+    }
+  ],
+  "policy": "Nunca apaga. Apenas move (preserva 100% do conteudo) para archived_legacy/."
+}

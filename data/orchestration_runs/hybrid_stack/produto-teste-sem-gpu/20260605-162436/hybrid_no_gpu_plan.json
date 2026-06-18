@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-05T16:24:36.282466+00:00",
+  "product_name": "Produto Teste Sem GPU",
+  "goal": "Validar pipeline híbrido",
+  "architecture": {
+    "backend": "FastAPI stateless",
+    "frontend": "React/Vite static",
+    "media_heavy_jobs": "colab_comfyui",
+    "llm_learning": "ollama_cpu",
+    "deploy_target": "vercel",
+    "build_runner": "GitHub Actions",
+    "fixed_cost": "R$0 previsto em baixo volume/free tier"
+  },
+  "knowledge_rules": {
+    "schema_version": "1.0",
+    "strategy_name": "Hybrid No-GPU Growth Stack",
+    "purpose": "Executar geração multimídia, RAG, deploy e automação sem depender de GPU própria e sem custo fixo.",
+    "principles": [
+      "GPU pesada deve rodar em Colab, Hugging Face ou serviços gratuitos, não no backend local.",
+      "Aprendizado deve usar RAG antes de fine-tuning.",
+      "Deploy deve ser serverless ou estático para escalar a zero.",
+      "GitHub Actions deve assumir build/test pesado na nuvem.",
+      "Todo provider externo deve ter dry-run e fallback local."
+    ],
+    "modules": {
+      "image_video_ai": {
+        "preferred_free_path": [
+          "Google Colab",
+          "ComfyUI",
+          "Stable Diffusion",
+          "Leonardo.ai",
+          "Hugging Face Spaces"
+        ],
+        "local_fallback": "prompt_only + FFmpeg assembly",
+        "rule": "O backend gera prompts, roteiros e payloads; o render pesado fica em runtime externo opcional."
+      },
+      "autoscaling": {
+        "preferred_free_path": [
+          "Google Cloud Run",
+          "AWS Lambda",
+          "Vercel Serverless",
+          "Render free/web service for dev"
+        ],
+        "rule": "Manter FastAPI stateless quando possível e storage configurável."
+      },
+      "self_learning": {
+        "preferred_free_path": [
+          "RAG",
+          "Gemini API free tier",
+          "Ollama CPU small models"
+        ],
+        "avoid": [
+          "fine-tuning pesado",
+          "treino com GPU própria"
+        ],
+        "rule": "Conhecimento fica em arquivos JSON e memórias recuperáveis; LLM recebe contexto relevante."
+      },
+      "deploy_automation": {
+        "preferred_free_path": [
+          "GitHub Actions",
+          "Vercel API",
+          "Netlify API",
+          "GitHub API"
+        ],
+        "rule": "Build/test/deploy são disparados por push ou workflow manual."
+      }
+    },
+    "recommended_models_cpu": [
+      "llama3.2:3b",
+      "phi3:mini",
+      "gemma2:2b",
+      "qwen2.5:3b"
+    ],
+    "guardrails": [
+      "Nunca publicar campanha real sem feature flag explícita.",
+      "Nunca gastar orçamento sem Kill Switch ativo.",
+      "Nunca depender de um único provider externo.",
+      "Sempre gerar pacote local revisável antes do deploy/publicação."
+    ]
+  },
+  "steps": [
+    {
+      "order": 1,
+      "layer": "Input",
+      "action": "Receber DNA da oferta e tema",
+      "provider": "AdIntelligence Strategic Input",
+      "mode": "local",
+      "output": null,
+      "notes": []
+    },
+    {
+      "order": 2,
+      "layer": "RAG",
+      "action": "Recuperar regras V1/V2/V3, GEO, Pixel e padrões de copy",
+      "provider": "ollama_cpu",
+      "mode": "rag_no_finetune",
+      "output": null,
+      "notes": [
+        "Sem fine-tuning pesado.",
+        "Knowledge Core em JSON editável."
+      ]
+    },
+    {
+      "order": 3,
+      "layer": "Imagem/Vídeo",
+      "action": "Gerar prompts e payloads para render externo",
+      "provider": "colab_comfyui",
+      "mode": "external_gpu_free_tier",
+      "output": null,
+      "notes": [
+        "Colab/ComfyUI/Hugging Face assumem GPU quando necessário."
+      ]
+    },
+    {
+      "order": 4,
+      "layer": "Render",
+      "action": "Montar áudio/imagem/vídeo com FFmpeg quando houver assets",
+      "provider": "FFmpeg CLI",
+      "mode": "local_open_source",
+      "output": null,
+      "notes": []
+    },
+    {
+      "order": 5,
+      "layer": "Deploy",
+      "action": "Build/test via GitHub Actions e deploy serverless/estático",
+      "provider": "vercel",
+      "mode": "scale_to_zero",
+      "output": null,
+      "notes": []
+    },
+    {
+      "order": 6,
+      "layer": "Guardrails",
+      "action": "Manter dry-run, Kill Switch e logs de decisão antes de publicação real",
+      "provider": "Automation Control Center",
+      "mode": "safety_first",
+      "output": null,
+      "notes": []
+    }
+  ],
+  "guardrails": [
+    "Nunca publicar campanha real sem feature flag explícita.",
+    "Nunca gastar orçamento sem Kill Switch ativo.",
+    "Nunca depender de um único provider externo.",
+    "Sempre gerar pacote local revisável antes do deploy/publicação."
+  ]
+}

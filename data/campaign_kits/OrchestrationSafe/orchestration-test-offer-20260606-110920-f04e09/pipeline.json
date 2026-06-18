@@ -1,0 +1,23 @@
+{
+  "run_id": "orchestration-test-offer-20260606-110920-f04e09",
+  "workflow_name": "AdIntelligence Free Stack Pipeline",
+  "run_mode": "plan_only",
+  "product_name": "Orchestration Test Offer",
+  "safe_guards": {
+    "meta_real": false,
+    "tiktok_real": false,
+    "render_real": false,
+    "deploy_real": false,
+    "providers_external": false
+  },
+  "steps": [
+    "master_context",
+    "content_orchestrator_safe",
+    "video_pipeline_safe",
+    "premium_render_safe",
+    "site_builder_safe",
+    "campaign_memory",
+    "decision_feed",
+    "campaign_brain"
+  ]
+}

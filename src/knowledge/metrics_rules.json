@@ -1,0 +1,31 @@
+{
+  "connect_rate": {
+    "formula": "landing_page_views / link_clicks * 100",
+    "warning_below": 75,
+    "critical_below": 55,
+    "interpretation": "baixo Connect Rate indica problema de pagina, hospedagem, carregamento, redirecionamento ou conexao"
+  },
+  "funnel_diagnostics": [
+    {
+      "condition": "cliques altos e poucas paginas vistas",
+      "likely_cause": "carregamento/link/hospedagem",
+      "action": "corrigir pagina antes de culpar criativo"
+    },
+    {
+      "condition": "paginas vistas altas e pouco checkout",
+      "likely_cause": "oferta/pagina/CTA",
+      "action": "melhorar promessa, layout e CTA"
+    },
+    {
+      "condition": "checkout alto e pouca compra",
+      "likely_cause": "preco, confianca ou checkout",
+      "action": "revisar checkout, prova e garantia"
+    }
+  ],
+  "analysis_rules": [
+    "Nao analisar 1 dia isolado",
+    "Usar janela de 3 a 7 dias",
+    "Nao pausar vencedor por oscilacao diaria",
+    "Corrigir gargalos antes de aumentar orcamento"
+  ]
+}

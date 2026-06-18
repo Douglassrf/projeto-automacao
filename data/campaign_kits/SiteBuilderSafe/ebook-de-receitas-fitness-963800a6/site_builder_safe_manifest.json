@@ -1,0 +1,29 @@
+{
+  "status": "ok",
+  "agent": "SiteBuilderBridge",
+  "mode": "site_builder_safe",
+  "product_name": "Ebook de Receitas Fitness",
+  "template": "direct_response",
+  "generated_at": "2026-06-04T23:33:15.502473+00:00",
+  "output_dir": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-963800a6",
+  "preview_path": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-963800a6\\index.html",
+  "files": [
+    "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-963800a6\\index.html",
+    "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-963800a6\\styles.css"
+  ],
+  "deploy_provider": "github_vercel",
+  "deploy_status": "dry_run_payload_ready",
+  "deploy_real_executed": false,
+  "github_executed": false,
+  "vercel_executed": false,
+  "netlify_executed": false,
+  "deploy_payload_path": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-963800a6\\deploy_payload.json",
+  "manifest_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\SiteBuilderSafe\\ebook-de-receitas-fitness-963800a6\\site_builder_safe_manifest.json",
+  "warnings": [
+    "Deploy real bloqueado.",
+    "Dry-run ativo: nenhum provedor externo foi chamado.",
+    "GitHub/Vercel/Netlify não foram chamados.",
+    "Payload preparado apenas para revisão futura."
+  ],
+  "next_action": "brain_review_before_orchestration_pipeline"
+}

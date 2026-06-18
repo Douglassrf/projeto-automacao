@@ -1,0 +1,37 @@
+{
+  "name": "AdIntelligence Zero-Cost AI Pipeline",
+  "nodes": [
+    {
+      "name": "Webhook Input",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "adintelligence-zero-cost",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "name": "Validate Master JSON",
+      "type": "n8n-nodes-base.function",
+      "parameters": {
+        "functionCode": "return items;"
+      }
+    },
+    {
+      "name": "Route Render Jobs",
+      "type": "n8n-nodes-base.noOp",
+      "parameters": {}
+    },
+    {
+      "name": "Notify Decision Feed",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8000/api/v1/orchestration/run"
+      }
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "dryRun": true
+  }
+}

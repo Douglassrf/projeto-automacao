@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "source": "adintelligence.serverless_render",
+  "detail-type": "RenderJob",
+  "detail": {
+    "job_id": "srv-ebook-global-image-7a416f7c",
+    "created_at": "2026-06-05T16:24:44.340623+00:00",
+    "product_name": "Ebook Global",
+    "asset_type": "image",
+    "prompt": "Imagem persuasiva para anúncio de produto digital com alto CTR.",
+    "provider": "dry_run",
+    "runtime": "python311",
+    "storage_target": "local",
+    "callback_url": null,
+    "max_cost_usd": 0.0,
+    "dry_run": true,
+    "render_contract": {
+      "input": "JSON event",
+      "output": "asset_url + metadata + status",
+      "retry_safe": true
+    }
+  }
+}

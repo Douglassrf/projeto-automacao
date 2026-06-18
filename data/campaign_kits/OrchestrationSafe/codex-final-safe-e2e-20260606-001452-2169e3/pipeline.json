@@ -1,0 +1,23 @@
+{
+  "run_id": "codex-final-safe-e2e-20260606-001452-2169e3",
+  "workflow_name": "AdIntelligence Free Stack Pipeline",
+  "run_mode": "plan_only",
+  "product_name": "Codex Final Safe E2E",
+  "safe_guards": {
+    "meta_real": false,
+    "tiktok_real": false,
+    "render_real": false,
+    "deploy_real": false,
+    "providers_external": false
+  },
+  "steps": [
+    "master_context",
+    "content_orchestrator_safe",
+    "video_pipeline_skipped",
+    "premium_render_safe",
+    "site_builder_skipped",
+    "campaign_memory",
+    "decision_feed",
+    "campaign_brain"
+  ]
+}

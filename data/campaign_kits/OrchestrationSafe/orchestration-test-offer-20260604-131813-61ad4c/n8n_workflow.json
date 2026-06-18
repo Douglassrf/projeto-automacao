@@ -1,0 +1,21 @@
+{
+  "name": "AdIntelligence Free Stack Pipeline — SAFE",
+  "run_id": "orchestration-test-offer-20260604-131813-61ad4c",
+  "active": false,
+  "nodes": [
+    {
+      "name": "Start Safe",
+      "type": "manualTrigger"
+    },
+    {
+      "name": "Read Pipeline JSON",
+      "type": "readFile"
+    },
+    {
+      "name": "Call Local API Dry Run",
+      "type": "httpRequest",
+      "disabled": true
+    }
+  ],
+  "notes": "Blueprint n8n gerado em dry-run. Nenhum webhook externo foi chamado."
+}

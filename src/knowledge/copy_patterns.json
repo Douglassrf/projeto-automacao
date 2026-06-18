@@ -1,0 +1,9 @@
+{
+  "patterns": [
+    {"name": "dor direta", "structure": "problema claro -> solucao simples -> CTA direto"},
+    {"name": "curiosidade", "structure": "gancho intrigante -> revelacao parcial -> chamada para compra"},
+    {"name": "transformacao", "structure": "estado atual -> resultado desejado -> mecanismo"},
+    {"name": "urgencia controlada", "structure": "oportunidade -> limite/risco -> acao imediata"}
+  ],
+  "rules": ["Copy deve seguir o idioma do anuncio campeao", "Descricao opcional", "CTA direto para compra quando a oferta estiver validada"]
+}

@@ -1,0 +1,38 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 5,
+  "metadata": {
+    "name": "AdIntelligence_Colab_ComfyUI_produto-teste"
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# AdIntelligence Pro — Colab/ComfyUI Runner\\n",
+        "Execute render pesado fora do seu PC local.\\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# Cole aqui o pipeline_master.json gerado pelo AdIntelligence Pro\\n",
+        "PIPELINE = {}\\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# Aqui você pode conectar ComfyUI/Stable Diffusion/Stable Video Diffusion\\n",
+        "# Saída esperada: assets renderizados para baixar e devolver ao War Kit.\\n",
+        "print('Ready for external GPU render')\\n"
+      ]
+    }
+  ]
+}

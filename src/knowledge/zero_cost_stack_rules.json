@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "strategy_name": "Zero-Cost Hybrid Execution Stack",
+  "purpose": "Manter a lógica do AdIntelligence Pro local/leve e enviar tarefas pesadas de imagem, vídeo, build e deploy para serviços gratuitos ou free tier.",
+  "cost_policy": {
+    "fixed_cost_target": "R$0 em baixo volume",
+    "avoid": ["GPU própria", "fine-tuning pesado", "servidor sempre ligado", "render multimídia dentro do backend"],
+    "prefer": ["Gemini free tier", "Ollama CPU pequeno", "Google Colab", "ComfyUI", "Hugging Face Spaces", "GitHub Actions", "Vercel/Netlify/Cloud Run scale-to-zero", "n8n self-hosted ou trial"]
+  },
+  "providers": {
+    "intelligence": ["Google Gemini API via AI Studio", "Ollama CPU", "local_template fallback"],
+    "image_video_render": ["Google Colab + ComfyUI", "Hugging Face Spaces", "Leonardo.ai manual/free", "FFmpeg assembly"],
+    "orchestration": ["n8n", "Bash runner", "webhooks"],
+    "deploy": ["GitHub Actions", "Vercel", "Netlify", "Google Cloud Run", "AWS Lambda"]
+  },
+  "rag_rules": [
+    "Usar Knowledge Core + Decision Feed + CAPI antes de chamar LLM.",
+    "Nunca usar fine-tuning como primeira estratégia.",
+    "Gerar JSON estruturado como contrato entre os módulos.",
+    "Salvar todos os artefatos em pasta versionada por produto e data."
+  ],
+  "guardrails": [
+    "Dry-run é obrigatório por padrão.",
+    "Não renderizar vídeo pesado dentro do FastAPI local.",
+    "Não publicar campanha real sem token Meta, Kill Switch e confirmação humana no nível 1.",
+    "Se provider gratuito falhar, salvar payload local para execução manual.",
+    "Sempre separar lógica local, render externo e deploy serverless."
+  ]
+}

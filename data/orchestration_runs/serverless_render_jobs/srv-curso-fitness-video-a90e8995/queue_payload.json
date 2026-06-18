@@ -1,0 +1,18 @@
+{
+  "job_id": "srv-curso-fitness-video-a90e8995",
+  "created_at": "2026-06-04T13:30:03.422741+00:00",
+  "product_name": "Curso Fitness",
+  "asset_type": "video",
+  "prompt": "Vídeo vertical curto com hook forte e CTA para compra.",
+  "provider": "aws_lambda",
+  "runtime": "python311",
+  "storage_target": "local",
+  "callback_url": null,
+  "max_cost_usd": 0.0,
+  "dry_run": true,
+  "render_contract": {
+    "input": "JSON event",
+    "output": "asset_url + metadata + status",
+    "retry_safe": true
+  }
+}

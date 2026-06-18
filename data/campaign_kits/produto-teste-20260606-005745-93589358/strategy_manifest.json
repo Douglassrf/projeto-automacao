@@ -1,0 +1,402 @@
+{
+  "product_dna": {
+    "product_name": "Produto Teste",
+    "niche": "Saúde",
+    "offer_promise": "melhorar a rotina em poucos passos",
+    "target_avatar": "adultos buscando uma solução simples",
+    "main_pain": "falta de clareza sobre o problema",
+    "desired_transformation": "ter um plano prático de ação",
+    "ticket_price": 97.0,
+    "pixel_id": "123456",
+    "landing_page_url": "https://example.com/page",
+    "checkout_url": "https://example.com/checkout",
+    "affiliate_link": null,
+    "language": "Spanish (All)",
+    "geo_preset": "LATAM_ESP",
+    "countries": [
+      "AR",
+      "CL",
+      "CO",
+      "PE",
+      "MX",
+      "EC"
+    ],
+    "excluded_countries": [
+      "BR"
+    ],
+    "platform": "Hotmart/Kiwify"
+  },
+  "winning_pattern_used": {
+    "source_ad_id": "ad_001",
+    "active_ads": 25,
+    "hook": "Descubre el método simple",
+    "creative_pattern": "UGC direto com prova visual",
+    "copy_pattern": "dor + prova + CTA",
+    "cta_pattern": "Comprar ahora",
+    "connect_rate": 82.0,
+    "roas": 2.5
+  },
+  "knowledge_core_files": [
+    "copy_patterns",
+    "creative_patterns",
+    "geo_rules",
+    "hybrid_stack_rules",
+    "learning_loop_rules",
+    "metrics_rules",
+    "pixel_rules",
+    "scaling_rules",
+    "v1_strategy",
+    "v2_strategy",
+    "v3_strategy",
+    "zero_cost_stack_rules"
+  ],
+  "campaign_models": {
+    "V1": {
+      "version": "V1",
+      "name": "Validacao Inicial por Subnichos",
+      "objective": "Vendas",
+      "destination": "Site",
+      "conversion_event": "Purchase",
+      "campaign_structure": {
+        "campaigns": 1,
+        "subniches": 5,
+        "creatives_per_subniche": 1,
+        "budget_mode": "baixo_teste_inicial",
+        "minimum_analysis_days": 3,
+        "end_date": null
+      },
+      "targeting": {
+        "audience": "open_no_detailed_interests",
+        "device": "mobile_only",
+        "connection": "wifi_only",
+        "placements_include": [
+          "facebook",
+          "instagram"
+        ],
+        "placements_exclude": [
+          "threads",
+          "audience_network",
+          "messenger"
+        ]
+      },
+      "rules": {
+        "do_not_pause_before_days": 3,
+        "connect_rate_warning_below": 75,
+        "threshold_min_active_ads": 15,
+        "threshold_max_active_ads": 40,
+        "creative_policy": "1 criativo principal por subnicho; manter midia original; sem midia flexivel; sem sugestoes automaticas que alterem criativo"
+      },
+      "copy_style": {
+        "tone": "direta, simples e orientada a compra",
+        "cta": "Comprar agora",
+        "description_policy": "nao usar descricao salvo necessidade"
+      },
+      "success_criteria": [
+        "CTR saudavel",
+        "Connect Rate >= 75",
+        "Purchase ativo",
+        "checkout iniciando",
+        "CPA dentro do limite"
+      ]
+    },
+    "V2": {
+      "version": "V2",
+      "name": "Performance com 4 Criativos no Mesmo Conjunto",
+      "objective": "Vendas",
+      "destination": "Site",
+      "conversion_event": "Purchase",
+      "campaign_structure": {
+        "campaigns": 1,
+        "adsets": 1,
+        "creatives": 4,
+        "daily_budget_brl": 50,
+        "minimum_analysis_days": 3,
+        "end_date": null
+      },
+      "targeting": {
+        "audience": "open_no_detailed_interests",
+        "device": "mobile_only",
+        "connection": "wifi_only",
+        "placements_include": [
+          "facebook",
+          "instagram"
+        ],
+        "placements_exclude": [
+          "threads",
+          "audience_network",
+          "messenger"
+        ]
+      },
+      "rules": {
+        "same_copy": true,
+        "same_link": true,
+        "same_pixel": true,
+        "change_only_media": true,
+        "publish_all_together": true,
+        "media_original_format": true,
+        "disable_flexible_media": true,
+        "disable_auto_creative_optimizations": true,
+        "do_not_pause_before_days": 3
+      },
+      "copy_style": {
+        "tone": "comparativa, persuasiva e clara",
+        "goal": "deixar o algoritmo identificar o criativo vencedor sem contaminar o teste"
+      },
+      "winner_logic": {
+        "primary_metric": "menor CPA com compras reais",
+        "secondary_metrics": [
+          "ROAS",
+          "CTR",
+          "Connect Rate",
+          "Checkout Rate"
+        ],
+        "warning": "R$50/dia por 6 paises e 4 criativos pode gerar gargalo de dados; analisar 3 a 7 dias"
+      }
+    },
+    "V3": {
+      "version": "V3",
+      "name": "Validacao Avancada com Uma Campanha por Criativo",
+      "objective": "Vendas",
+      "destination": "Site",
+      "conversion_event": "Purchase",
+      "campaign_structure": {
+        "campaigns": "1 por criativo",
+        "recommended_creatives": "4 a 6",
+        "subniches": 5,
+        "daily_budget_brl_per_campaign": 25,
+        "minimum_analysis_days": 3,
+        "end_date": null
+      },
+      "targeting": {
+        "audience": "open_no_detailed_interests",
+        "device": "mobile_only",
+        "connection": "wifi_only",
+        "placements_include": [
+          "facebook",
+          "instagram"
+        ],
+        "placements_exclude": [
+          "threads",
+          "audience_network",
+          "messenger"
+        ]
+      },
+      "rules": {
+        "duplicate_using_original_configuration": true,
+        "change_only_creative": true,
+        "same_copy": true,
+        "same_link": true,
+        "same_pixel": true,
+        "same_event": "Purchase",
+        "disable_flexible_media": true,
+        "disable_auto_creative_optimizations": true,
+        "do_not_pause_before_days": 3,
+        "pause_only_if": [
+          "erro tecnico grave",
+          "pixel errado",
+          "link quebrado",
+          "gasto limite sem compra apos janela minima"
+        ]
+      },
+      "scale_logic": {
+        "scale_only_champions": true,
+        "budget_increase_percent_per_day": "20-30%",
+        "requirements": [
+          "Purchase real",
+          "ROAS positivo",
+          "CPA dentro do limite",
+          "Connect Rate saudavel"
+        ]
+      }
+    }
+  },
+  "geo_rules": {
+    "presets": {
+      "LATAM_ESP": {
+        "countries": [
+          "AR",
+          "CL",
+          "CO",
+          "PE",
+          "MX",
+          "EC"
+        ],
+        "excluded_countries": [
+          "BR"
+        ],
+        "language": "Spanish_All",
+        "currency_cluster": "LATAM",
+        "notes": "Padrao para produtos em espanhol e validacao de volume."
+      },
+      "USD_TIER1": {
+        "countries": [
+          "US",
+          "CA",
+          "AU",
+          "NZ"
+        ],
+        "excluded_countries": [
+          "BR"
+        ],
+        "language": "English_All",
+        "currency_cluster": "USD",
+        "notes": "Moeda forte; nao misturar com Euro na mesma campanha."
+      },
+      "EURO_TIER": {
+        "countries": [
+          "DE",
+          "FR",
+          "ES",
+          "IT",
+          "NL",
+          "IE",
+          "PT"
+        ],
+        "excluded_countries": [
+          "BR"
+        ],
+        "language": "English_All",
+        "currency_cluster": "EUR",
+        "notes": "Separar do cluster USD por comportamento de leilao."
+      },
+      "BRAZIL": {
+        "countries": [
+          "BR"
+        ],
+        "excluded_countries": [],
+        "language": "Portuguese_All",
+        "currency_cluster": "BRL",
+        "notes": "Ativar manualmente quando quiser anunciar para o Brasil."
+      }
+    },
+    "rules": [
+      "Nao misturar paises de dolar e euro na mesma campanha.",
+      "Idioma deve acompanhar o anuncio campeao e o publico alvo.",
+      "Para evitar trafego brasileiro fora do Brasil, nao usar Portugues em clusters USD/EURO salvo estrategia especifica."
+    ]
+  },
+  "pixel_rules": {
+    "required_event": "Purchase",
+    "allowed_support_events": [
+      "PageView",
+      "ViewContent",
+      "InitiateCheckout",
+      "Purchase"
+    ],
+    "block_campaign_if_purchase_missing": true,
+    "rules": [
+      "Pixel deve estar configurado na plataforma de checkout.",
+      "Campanhas de vendas devem otimizar para Purchase, nao apenas InitiateCheckout.",
+      "Validar Purchase antes de escala.",
+      "CAPI deve deduplicar eventos com event_id quando ativada."
+    ],
+    "health_score_inputs": [
+      "Purchase ativo",
+      "Event Match Quality",
+      "CAPI",
+      "deduplicacao",
+      "atraso de evento"
+    ]
+  },
+  "metrics_rules": {
+    "connect_rate": {
+      "formula": "landing_page_views / link_clicks * 100",
+      "warning_below": 75,
+      "critical_below": 55,
+      "interpretation": "baixo Connect Rate indica problema de pagina, hospedagem, carregamento, redirecionamento ou conexao"
+    },
+    "funnel_diagnostics": [
+      {
+        "condition": "cliques altos e poucas paginas vistas",
+        "likely_cause": "carregamento/link/hospedagem",
+        "action": "corrigir pagina antes de culpar criativo"
+      },
+      {
+        "condition": "paginas vistas altas e pouco checkout",
+        "likely_cause": "oferta/pagina/CTA",
+        "action": "melhorar promessa, layout e CTA"
+      },
+      {
+        "condition": "checkout alto e pouca compra",
+        "likely_cause": "preco, confianca ou checkout",
+        "action": "revisar checkout, prova e garantia"
+      }
+    ],
+    "analysis_rules": [
+      "Nao analisar 1 dia isolado",
+      "Usar janela de 3 a 7 dias",
+      "Nao pausar vencedor por oscilacao diaria",
+      "Corrigir gargalos antes de aumentar orcamento"
+    ]
+  },
+  "copy_patterns": {
+    "patterns": [
+      {
+        "name": "dor direta",
+        "structure": "problema claro -> solucao simples -> CTA direto"
+      },
+      {
+        "name": "curiosidade",
+        "structure": "gancho intrigante -> revelacao parcial -> chamada para compra"
+      },
+      {
+        "name": "transformacao",
+        "structure": "estado atual -> resultado desejado -> mecanismo"
+      },
+      {
+        "name": "urgencia controlada",
+        "structure": "oportunidade -> limite/risco -> acao imediata"
+      }
+    ],
+    "rules": [
+      "Copy deve seguir o idioma do anuncio campeao",
+      "Descricao opcional",
+      "CTA direto para compra quando a oferta estiver validada"
+    ]
+  },
+  "creative_patterns": {
+    "patterns": [
+      {
+        "name": "UGC simples",
+        "best_for": [
+          "V1",
+          "V2"
+        ],
+        "notes": "parece conteudo nativo, reduz resistencia"
+      },
+      {
+        "name": "thumbnail com dor",
+        "best_for": [
+          "V2",
+          "V3"
+        ],
+        "notes": "destaca o problema nos primeiros segundos"
+      },
+      {
+        "name": "prova visual",
+        "best_for": [
+          "V3"
+        ],
+        "notes": "usar com cuidado e sem promessas proibidas"
+      }
+    ],
+    "rules": [
+      "Manter formato original",
+      "Desativar midia flexivel",
+      "Nao permitir otimizacoes automaticas que alterem o criativo"
+    ]
+  },
+  "guardrails": [
+    "Pixel deve estar configurado na plataforma de checkout.",
+    "Campanhas de vendas devem otimizar para Purchase, nao apenas InitiateCheckout.",
+    "Validar Purchase antes de escala.",
+    "CAPI deve deduplicar eventos com event_id quando ativada.",
+    "Manter formato original",
+    "Desativar midia flexivel",
+    "Nao permitir otimizacoes automaticas que alterem o criativo",
+    "Nao analisar 1 dia isolado",
+    "Usar janela de 3 a 7 dias",
+    "Nao pausar vencedor por oscilacao diaria",
+    "Corrigir gargalos antes de aumentar orcamento"
+  ]
+}

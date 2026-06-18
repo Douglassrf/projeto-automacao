@@ -1,0 +1,23 @@
+{
+  "status": "ok",
+  "agent": "VideoPipelineBridge",
+  "mode": "safe_dry_run",
+  "product_name": "Ebook de Receitas Fitness",
+  "model": "V4",
+  "generated_at": "2026-06-05T23:57:50.517797+00:00",
+  "render_executed": false,
+  "ffmpeg_real_executed": false,
+  "external_tts_executed": false,
+  "voice_provider_forced": "fallback",
+  "scene_provider_blocked": "ffmpeg_local",
+  "output_folder": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-7c930128",
+  "script_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-7c930128\\script.md",
+  "storyboard_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\VideoPipelineSafe\\ebook-de-receitas-fitness-v4-7c930128\\storyboard.json",
+  "final_mp4": null,
+  "warnings": [
+    "Dry-run seguro: FFmpeg real não foi executado.",
+    "Providers externos bloqueados: ElevenLabs/OpenAI TTS não foram chamados.",
+    "PremiumRender/SiteBuilder/Meta/TikTok permanecem desligados."
+  ],
+  "next_action": "brain_review_before_video_render_real"
+}

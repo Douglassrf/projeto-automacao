@@ -1,0 +1,51 @@
+{
+  "product_name": "Produto Teste Learning",
+  "generated_at": "2026-06-06T11:13:04.475113+00:00",
+  "winners": [
+    {
+      "creative_id": "creative-winner-1",
+      "ad_name": "AD01 Hook Dor",
+      "campaign_name": "Produto Teste V3 AD01",
+      "purchases": 77,
+      "revenue": 9240.0,
+      "avg_roas": 4.0,
+      "avg_cpa": 30.0,
+      "avg_connect_rate": 86.0,
+      "hook": "Hook campeão de dor direta",
+      "creative_pattern": "UGC com prova visual e CTA direto",
+      "recommendation": "Criativo forte: gerar V4/V5/V6 e testar escala controlada."
+    }
+  ],
+  "variations": [
+    {
+      "version": "V4",
+      "based_on_creative_id": "creative-winner-1",
+      "campaign_name": "Produto Teste Learning V4 — learning loop",
+      "hook": "Hook campeão de dor direta — nova variação V4",
+      "copy_text": "O criativo base AD01 Hook Dor gerou compras com ROAS médio 4.0. Esta variação mantém o padrão vencedor: UGC com prova visual e CTA direto. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V4 mantendo o padrão campeão: UGC com prova visual e CTA direto. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Hook campeão de dor direta. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 77 compras, ROAS 4.0 e Connect Rate 86.0%."
+    },
+    {
+      "version": "V5",
+      "based_on_creative_id": "creative-winner-1",
+      "campaign_name": "Produto Teste Learning V5 — learning loop",
+      "hook": "Hook campeão de dor direta — nova variação V5",
+      "copy_text": "O criativo base AD01 Hook Dor gerou compras com ROAS médio 4.0. Esta variação mantém o padrão vencedor: UGC com prova visual e CTA direto. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V5 mantendo o padrão campeão: UGC com prova visual e CTA direto. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Hook campeão de dor direta. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 77 compras, ROAS 4.0 e Connect Rate 86.0%."
+    },
+    {
+      "version": "V6",
+      "based_on_creative_id": "creative-winner-1",
+      "campaign_name": "Produto Teste Learning V6 — learning loop",
+      "hook": "Hook campeão de dor direta — nova variação V6",
+      "copy_text": "O criativo base AD01 Hook Dor gerou compras com ROAS médio 4.0. Esta variação mantém o padrão vencedor: UGC com prova visual e CTA direto. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V6 mantendo o padrão campeão: UGC com prova visual e CTA direto. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Hook campeão de dor direta. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 77 compras, ROAS 4.0 e Connect Rate 86.0%."
+    }
+  ]
+}

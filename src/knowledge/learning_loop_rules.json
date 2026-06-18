@@ -1,0 +1,8 @@
+{
+  "versions": {
+    "V4": "gerar novas variacoes com base no criativo vencedor",
+    "V5": "otimizar angulo, CTA e promessa do vencedor",
+    "V6": "aprender padroes de GEO, emocao, hook e escala para novo ciclo"
+  },
+  "loop": ["Mineracao", "Publicacao", "Conversao via CAPI", "Aprendizado", "V4/V5/V6", "Nova otimizacao"]
+}

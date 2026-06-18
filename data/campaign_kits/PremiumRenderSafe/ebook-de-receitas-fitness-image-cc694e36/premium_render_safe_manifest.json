@@ -1,0 +1,27 @@
+{
+  "status": "ok",
+  "agent": "PremiumRenderBridge",
+  "mode": "safe_dry_run",
+  "render_executed": false,
+  "premium_render_real_executed": false,
+  "external_provider_executed": false,
+  "celery_executed": false,
+  "ffmpeg_real_executed": false,
+  "product_name": "Ebook de Receitas Fitness",
+  "asset_type": "image",
+  "provider_forced": "dry_run",
+  "dispatch_mode_forced": "local",
+  "generated_at": "2026-06-05T17:46:35.282657+00:00",
+  "output_folder": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-cc694e36",
+  "worker_payload_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-cc694e36\\premium_render_safe_payload.json",
+  "brief_file": "C:\\Users\\USUÁRIO\\Documents\\Codex\\2026-06-04\\bom-dia\\projeto-automacao\\projeto_automacao\\data\\campaign_kits\\PremiumRenderSafe\\ebook-de-receitas-fitness-image-cc694e36\\premium_render_safe_brief.md",
+  "final_file": null,
+  "warnings": [
+    "Dry-run seguro: PremiumRender real não foi executado.",
+    "Providers externos bloqueados: flux/sdxl/runway/kling/local_ffmpeg não foram chamados.",
+    "Celery real bloqueado.",
+    "FFmpeg real bloqueado.",
+    "Meta/TikTok/SiteBuilder permanecem desligados."
+  ],
+  "next_action": "brain_review_before_premium_render_real"
+}

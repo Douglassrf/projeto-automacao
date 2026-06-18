@@ -1,0 +1,8 @@
+{
+  "patterns": [
+    {"name": "UGC simples", "best_for": ["V1", "V2"], "notes": "parece conteudo nativo, reduz resistencia"},
+    {"name": "thumbnail com dor", "best_for": ["V2", "V3"], "notes": "destaca o problema nos primeiros segundos"},
+    {"name": "prova visual", "best_for": ["V3"], "notes": "usar com cuidado e sem promessas proibidas"}
+  ],
+  "rules": ["Manter formato original", "Desativar midia flexivel", "Nao permitir otimizacoes automaticas que alterem o criativo"]
+}

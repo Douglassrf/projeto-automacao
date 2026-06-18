@@ -1,0 +1,28 @@
+{
+  "status": "ok",
+  "agent": "SiteBuilderBridge",
+  "mode": "site_builder_safe",
+  "product_name": "Ebook de Receitas Fitness",
+  "template": "direct_response",
+  "generated_at": "2026-06-03T22:15:10.390276+00:00",
+  "output_dir": "/mnt/data/projeto_automacao_missao23_sitebuilder_safe_work/projeto_automacao/data/campaign_kits/SiteBuilderSafe/ebook-de-receitas-fitness-9dae4150",
+  "preview_path": "/mnt/data/projeto_automacao_missao23_sitebuilder_safe_work/projeto_automacao/data/campaign_kits/SiteBuilderSafe/ebook-de-receitas-fitness-9dae4150/index.html",
+  "files": [
+    "/mnt/data/projeto_automacao_missao23_sitebuilder_safe_work/projeto_automacao/data/campaign_kits/SiteBuilderSafe/ebook-de-receitas-fitness-9dae4150/index.html",
+    "/mnt/data/projeto_automacao_missao23_sitebuilder_safe_work/projeto_automacao/data/campaign_kits/SiteBuilderSafe/ebook-de-receitas-fitness-9dae4150/styles.css"
+  ],
+  "deploy_provider": "github_vercel",
+  "deploy_status": "dry_run_payload_ready",
+  "deploy_real_executed": false,
+  "github_executed": false,
+  "vercel_executed": false,
+  "netlify_executed": false,
+  "deploy_payload_path": "/mnt/data/projeto_automacao_missao23_sitebuilder_safe_work/projeto_automacao/data/campaign_kits/SiteBuilderSafe/ebook-de-receitas-fitness-9dae4150/deploy_payload.json",
+  "manifest_file": "/mnt/data/projeto_automacao_missao23_sitebuilder_safe_work/projeto_automacao/data/campaign_kits/SiteBuilderSafe/ebook-de-receitas-fitness-9dae4150/site_builder_safe_manifest.json",
+  "warnings": [
+    "Deploy real bloqueado.",
+    "GitHub/Vercel/Netlify não foram chamados.",
+    "Payload preparado apenas para revisão futura."
+  ],
+  "next_action": "brain_review_before_orchestration_pipeline"
+}

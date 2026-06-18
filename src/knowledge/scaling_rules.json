@@ -1,0 +1,10 @@
+{
+  "protection_rules": [
+    {"name": "CPA Protection", "if": "cost_per_purchase > user_limit over last_3_days", "then": "pause_campaign"},
+    {"name": "Zero Purchase Spend Guard", "if": "spend >= user_limit and purchases == 0", "then": "notify_or_pause_adset"}
+  ],
+  "scale_rules": [
+    {"if": "roas >= 3 and connect_rate >= 75 and purchases >= 2", "then": "increase_budget_20_to_30_percent"},
+    {"if": "connect_rate < 75", "then": "do_not_scale_fix_page"}
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-04T13:26:06.829802+00:00",
+  "product_name": "Curso Global",
+  "theme": "Produto digital de alta conversão",
+  "campaign_goal": "Gerar campanha completa sem GPU própria",
+  "providers": {
+    "llm": "gemini_free",
+    "render": "google_colab_comfyui",
+    "orchestrator": "n8n_self_hosted",
+    "deploy": "github_actions_vercel"
+  },
+  "cost_policy": {
+    "fixed_cost_target": "R$0 em baixo volume",
+    "avoid": [
+      "GPU própria",
+      "fine-tuning pesado",
+      "servidor sempre ligado",
+      "render multimídia dentro do backend"
+    ],
+    "prefer": [
+      "Gemini free tier",
+      "Ollama CPU pequeno",
+      "Google Colab",
+      "ComfyUI",
+      "Hugging Face Spaces",
+      "GitHub Actions",
+      "Vercel/Netlify/Cloud Run scale-to-zero",
+      "n8n self-hosted ou trial"
+    ]
+  },
+  "pipeline": {
+    "input": "product_dna + offer + geo + language + validated_ads",
+    "rag": "Knowledge Core JSON + decision logs + CAPI events",
+    "llm_output": "hooks + copy + scenes + image_prompts + video_script + landing_sections",
+    "render_output": "images/videos returned from Colab/HF/Leonardo or prompt-only fallback",
+    "assembly": "FFmpeg + Site Builder + War Kit folders",
+    "deploy": "GitHub Actions -> Vercel/Netlify/Cloud Run, dry-run by default"
+  },
+  "artifacts_expected": [
+    "copies",
+    "pdfs",
+    "image_prompts",
+    "video_scripts",
+    "mp4",
+    "site",
+    "meta_payload"
+  ],
+  "guardrails": [
+    "Dry-run é obrigatório por padrão.",
+    "Não renderizar vídeo pesado dentro do FastAPI local.",
+    "Não publicar campanha real sem token Meta, Kill Switch e confirmação humana no nível 1.",
+    "Se provider gratuito falhar, salvar payload local para execução manual.",
+    "Sempre separar lógica local, render externo e deploy serverless."
+  ]
+}

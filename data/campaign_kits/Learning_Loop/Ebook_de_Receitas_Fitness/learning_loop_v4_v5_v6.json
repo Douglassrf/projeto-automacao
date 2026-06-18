@@ -1,0 +1,77 @@
+{
+  "product_name": "Ebook de Receitas Fitness",
+  "generated_at": "2026-06-03T11:58:46.320658+00:00",
+  "winners": [
+    {
+      "creative_id": "creative-winner-bridge-001",
+      "ad_name": "AD01 Hook Praticidade",
+      "campaign_name": "Ebook de Receitas Fitness V3 AD01",
+      "purchases": 6,
+      "revenue": 441.0,
+      "avg_roas": 4.2,
+      "avg_cpa": 24.5,
+      "avg_connect_rate": 86.0,
+      "hook": "Receitas práticas para organizar sua alimentação",
+      "creative_pattern": "UGC simples com prova visual, benefício direto e CTA discreto",
+      "recommendation": "Criativo forte: gerar V4/V5/V6 e testar escala controlada."
+    },
+    {
+      "creative_id": "creative-winner-missao13-001",
+      "ad_name": "AD01 Hook Praticidade",
+      "campaign_name": "Ebook de Receitas Fitness V3 AD01",
+      "purchases": 4,
+      "revenue": 294.0,
+      "avg_roas": 4.2,
+      "avg_cpa": 24.5,
+      "avg_connect_rate": 86.0,
+      "hook": "Receitas práticas para organizar sua alimentação",
+      "creative_pattern": "UGC simples com prova visual, benefício direto e CTA discreto",
+      "recommendation": "Criativo forte: gerar V4/V5/V6 e testar escala controlada."
+    },
+    {
+      "creative_id": "creative-winner-learning-safe-001",
+      "ad_name": "AD01 Hook Praticidade",
+      "campaign_name": "Ebook de Receitas Fitness V3 AD01",
+      "purchases": 2,
+      "revenue": 147.0,
+      "avg_roas": 4.2,
+      "avg_cpa": 24.5,
+      "avg_connect_rate": 86.0,
+      "hook": "Receitas práticas para organizar sua alimentação",
+      "creative_pattern": "UGC simples com prova visual, benefício direto e CTA discreto",
+      "recommendation": "Criativo forte: gerar V4/V5/V6 e testar escala controlada."
+    }
+  ],
+  "variations": [
+    {
+      "version": "V4",
+      "based_on_creative_id": "creative-winner-bridge-001",
+      "campaign_name": "Ebook de Receitas Fitness V4 — learning loop",
+      "hook": "Receitas práticas para organizar sua alimentação — nova variação V4",
+      "copy_text": "O criativo base AD01 Hook Praticidade gerou compras com ROAS médio 4.2. Esta variação mantém o padrão vencedor: UGC simples com prova visual, benefício direto e CTA discreto. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V4 mantendo o padrão campeão: UGC simples com prova visual, benefício direto e CTA discreto. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Receitas práticas para organizar sua alimentação. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 6 compras, ROAS 4.2 e Connect Rate 86.0%."
+    },
+    {
+      "version": "V5",
+      "based_on_creative_id": "creative-winner-missao13-001",
+      "campaign_name": "Ebook de Receitas Fitness V5 — learning loop",
+      "hook": "Receitas práticas para organizar sua alimentação — nova variação V5",
+      "copy_text": "O criativo base AD01 Hook Praticidade gerou compras com ROAS médio 4.2. Esta variação mantém o padrão vencedor: UGC simples com prova visual, benefício direto e CTA discreto. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V5 mantendo o padrão campeão: UGC simples com prova visual, benefício direto e CTA discreto. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Receitas práticas para organizar sua alimentação. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 4 compras, ROAS 4.2 e Connect Rate 86.0%."
+    },
+    {
+      "version": "V6",
+      "based_on_creative_id": "creative-winner-learning-safe-001",
+      "campaign_name": "Ebook de Receitas Fitness V6 — learning loop",
+      "hook": "Receitas práticas para organizar sua alimentação — nova variação V6",
+      "copy_text": "O criativo base AD01 Hook Praticidade gerou compras com ROAS médio 4.2. Esta variação mantém o padrão vencedor: UGC simples com prova visual, benefício direto e CTA discreto. Clique e veja a oferta completa hoje.",
+      "image_prompt": "Criar imagem V6 mantendo o padrão campeão: UGC simples com prova visual, benefício direto e CTA discreto. Visual limpo, benefício direto, CTA discreto.",
+      "video_script": "0-3s: Receitas práticas para organizar sua alimentação. 3-12s: mostrar problema. 12-22s: apresentar solução. 22-30s: CTA para compra.",
+      "reason": "Baseada em criativo com 2 compras, ROAS 4.2 e Connect Rate 86.0%."
+    }
+  ]
+}

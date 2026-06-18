@@ -1,0 +1,26 @@
+{
+  "rag_strategy": "retrieval_augmented_generation",
+  "why": "Evita fine-tuning/GPU. A IA recebe contexto do Knowledge Core + histórico de conversões + criativos vencedores.",
+  "llm_provider": "ollama_cpu",
+  "recommended_cpu_models": [
+    "llama3.2:3b",
+    "phi3:mini",
+    "gemma2:2b",
+    "qwen2.5:3b"
+  ],
+  "sources": [
+    "server/knowledge/v1_strategy.json",
+    "server/knowledge/v2_strategy.json",
+    "server/knowledge/v3_strategy.json",
+    "server/knowledge/metrics_rules.json",
+    "server/knowledge/copy_patterns.json",
+    "server/knowledge/creative_patterns.json",
+    "logs/capi_events.log",
+    "decision_logs SQLite table"
+  ],
+  "retrieval_prompt_contract": {
+    "input": "product_dna + campaign_goal + geo + latest_conversions",
+    "output": "campaign_plan + creatives + copy + site + video_prompt + risk_flags",
+    "style": "direto, prático, sem jargão desnecessário"
+  }
+}
