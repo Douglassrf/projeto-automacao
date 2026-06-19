@@ -18,6 +18,7 @@ from app.schemas.automation_control import (
     KillSwitchResponse,
 )
 from app.schemas.decision_logs import DecisionLogCreate
+from app.services.observability import immutable_audit_event
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 RUNTIME_DIR = PROJECT_ROOT / "data" / "runtime"
@@ -63,13 +64,45 @@ class AutomationControlService:
     def apply_suggestion(self, payload: ApplySuggestionRequest, user_id: int | None = None) -> ApplySuggestionResponse:
         level = self._automation_level()
         now = datetime.now(UTC)
-        blocked_reason = self._guardrail_block_reason(payload, level)
         requested_dry_run = payload.force_dry_run or self.meta_client.dry_run or level == 0
+        blocked_reason = self._guardrail_block_reason(payload, level)
+
+        # C04 (achado colateral): mesma família de guardrails de ambiente
+        # (meta_env / META_ALLOW_PRODUCTION_REAL) já exigida em
+        # facebook_automation.py e campaign_intelligence.py. Sem este check,
+        # uma ação real (pause_campaign/pause_adset/scale_budget) com
+        # AUTOMATION_LEVEL>=1, META_DRY_RUN=false e kill switch desligado
+        # passava direto para a Meta sem nunca confirmar se o ambiente é
+        # sandbox/produção liberada. Só roda quando a chamada seria real
+        # (nunca bloqueia um pedido de dry_run).
+        real_mode_blocked_reasons: list[str] = []
+        if (
+            blocked_reason is None
+            and not requested_dry_run
+            and payload.action in {"pause_campaign", "pause_adset", "scale_budget"}
+        ):
+            real_mode_blocked_reasons = self._real_mode_guardrails()
+            if real_mode_blocked_reasons:
+                blocked_reason = (
+                    "Execução real bloqueada por guardrails de ambiente: "
+                    + ", ".join(real_mode_blocked_reasons)
+                    + "."
+                )
+
         action_executed = False
         meta_response: dict[str, Any]
 
         if blocked_reason:
             meta_response = {"status": "blocked", "reason": blocked_reason}
+            if real_mode_blocked_reasons:
+                immutable_audit_event(
+                    actor="AutomationControlService",
+                    action="automation_control.apply_suggestion.blocked",
+                    resource_type="meta_action",
+                    resource_id=str(payload.campaign_id),
+                    status="blocked",
+                    details={"action": payload.action, "reasons": real_mode_blocked_reasons},
+                )
         elif payload.action == "notify_only":
             meta_response = {"status": "notified", "message": "Ação registrada no feed; nenhuma alteração enviada à Meta."}
         else:
@@ -83,6 +116,15 @@ class AutomationControlService:
                     dry_run=requested_dry_run,
                 )
                 action_executed = not meta_response.get("dry_run", False)
+                if action_executed:
+                    immutable_audit_event(
+                        actor="AutomationControlService",
+                        action="automation_control.apply_suggestion.published",
+                        resource_type="meta_action",
+                        resource_id=str(payload.campaign_id),
+                        status="ok",
+                        details={"action": payload.action},
+                    )
             except MetaMarketingError as exc:
                 blocked_reason = str(exc)
                 meta_response = {"status": "meta_error", "message": str(exc)}
@@ -140,30 +182,4 @@ class AutomationControlService:
 
     def _guardrail_block_reason(self, payload: ApplySuggestionRequest, level: int) -> str | None:
         if self.is_kill_switch_enabled():
-            return "Kill Switch ativo: nenhuma ação real pode ser enviada à Meta."
-        if payload.daily_spend_brl >= self.settings.automation_daily_spend_limit_brl:
-            return f"Gasto diário R${payload.daily_spend_brl:.2f} atingiu o limite de segurança R${self.settings.automation_daily_spend_limit_brl:.2f}."
-        if level == 0 and payload.action != "notify_only":
-            return "Nível 0 permite somente sugestão/log; nenhuma execução operacional."
-        if level == 1 and payload.action != "notify_only" and not payload.confirmed_by_user:
-            return "Nível 1 exige clique/confirmacão do usuário antes de aplicar a sugestão."
-        if level == 2 and not self.settings.automation_level_2_enabled:
-            return "Nível 2 está bloqueado por AUTOMATION_LEVEL_2_ENABLED=false."
-        if payload.action == "pause_adset" and not payload.adset_id:
-            return "pause_adset exige adset_id."
-        if payload.action == "scale_budget" and not payload.new_daily_budget_brl:
-            return "scale_budget exige new_daily_budget_brl."
-        if payload.action in {"pause_campaign", "pause_adset", "scale_budget"} and not self.meta_client.credentials.configured and not payload.force_dry_run:
-            return "Credenciais Meta ausentes; use dry-run ou configure Access Token/Ad Account."
-        return None
-
-    def _reasoning(self, payload: ApplySuggestionRequest, level: int, blocked_reason: str | None, action_executed: bool, meta_response: dict[str, Any]) -> str:
-        if blocked_reason:
-            return f"Bloqueei a ação por segurança: {blocked_reason}"
-        if payload.action == "notify_only":
-            return "Apenas registrei o alerta. Ainda não mexi na campanha."
-        if meta_response.get("dry_run"):
-            return f"Simulei a ação {payload.action}. Nenhuma mudança real foi enviada à Meta."
-        if action_executed:
-            return f"Apliquei {payload.action} porque {payload.metric_name}={payload.metric_value} cruzou o limite definido."
-        return f"A sugestão foi processada no nível {level}, mas não houve alteração real."
+            return "Kill Switch ativo: 

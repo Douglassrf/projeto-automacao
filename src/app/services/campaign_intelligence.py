@@ -13,6 +13,7 @@ from app.core.config import get_settings
 from app.domain.models import AdLibraryBenchmark, Campaign, CampaignMetric, FinancialMetric, ManualRevenueEntry, MetaActionRequest, PerformanceTicket, ScalingRule
 from app.integrations.meta_marketing import MetaMarketingClient, MetaMarketingError
 from app.repositories.decision_log_repository import DecisionLogRepository
+from app.services.observability import immutable_audit_event
 from app.schemas.decision_logs import DecisionLogCreate
 from app.schemas.campaign_intelligence import (
     AdLibraryBenchmarkCreateRequest,
@@ -400,6 +401,29 @@ class CampaignIntelligenceService:
         self.db.refresh(row)
         return self._meta_action_response(row)
 
+    def _real_mode_guardrails(self) -> list[str]:
+        """Guardrails de ambiente para qualquer escrita real na Meta (C04).
+
+        execute_approved_meta_action() é um segundo caminho capaz de acionar
+        MetaMarketingClient.apply_campaign_action() de verdade, independente
+        do MetaCampaignOperator/FacebookMarketingAutomationEngine — por isso
+        replica aqui as mesmas checagens server-side (meta_env,
+        meta_allow_production_real, meta_autopublish) já exigidas nos outros
+        dois caminhos, em vez de depender só de META_DRY_RUN.
+        """
+        if self.meta_client.dry_run:
+            return []
+        reasons: list[str] = []
+        allowed_envs = {"sandbox", "test_account", "production"}
+        meta_env = getattr(self.settings, "meta_env", None)
+        if meta_env not in allowed_envs:
+            reasons.append(f"meta_env_invalido:{meta_env}")
+        elif meta_env == "production" and not getattr(self.settings, "meta_allow_production_real", False):
+            reasons.append("production_real_not_allowed")
+        if not getattr(self.settings, "meta_autopublish", False):
+            reasons.append("autopublish_disabled")
+        return reasons
+
     def execute_approved_meta_action(self, request_id: int, confirmed_by_user: bool, dry_run: bool = True) -> MetaActionResponse:
         """Execute only an approved Meta action. Pending actions are ignored."""
         row = self.db.query(MetaActionRequest).filter(MetaActionRequest.id == request_id).first()
@@ -412,12 +436,46 @@ class CampaignIntelligenceService:
 
         campaign = self.db.query(Campaign).filter(Campaign.id == row.campaign_id).first()
         proposed = json.loads(row.proposed_payload_json or "{}")
-        response, executed = self._apply_loop_action(
-            action=row.action,
-            campaign=campaign,
-            new_daily_budget_brl=proposed.get("new_daily_budget_brl"),
-            dry_run=dry_run,
-        )
+
+        real_mode_blocked_reasons = self._real_mode_guardrails()
+        guard_blocked = bool(real_mode_blocked_reasons) and not dry_run
+        if guard_blocked:
+            block_message = (
+                "Execução real bloqueada por guardrails de ambiente: "
+                + ", ".join(real_mode_blocked_reasons) + "."
+            )
+            response = {
+                "dry_run": True,
+                "status": "blocked_for_manual_review",
+                "action": row.action,
+                "message": block_message,
+                "messages": [block_message],
+            }
+            executed = False
+            immutable_audit_event(
+                actor="CampaignIntelligenceService",
+                action="campaign_intelligence.execute_approved_meta_action.blocked",
+                resource_type="meta_action_request",
+                resource_id=str(row.id),
+                status="blocked",
+                details={"meta_action": row.action, "reasons": real_mode_blocked_reasons},
+            )
+        else:
+            response, executed = self._apply_loop_action(
+                action=row.action,
+                campaign=campaign,
+                new_daily_budget_brl=proposed.get("new_daily_budget_brl"),
+                dry_run=dry_run,
+            )
+            if response.get("status") == "executed" and not response.get("dry_run", True):
+                immutable_audit_event(
+                    actor="CampaignIntelligenceService",
+                    action="campaign_intelligence.execute_approved_meta_action.published",
+                    resource_type="meta_action_request",
+                    resource_id=str(row.id),
+                    status="ok",
+                    details={"meta_action": row.action},
+                )
         row.executed_response_json = json.dumps(response, ensure_ascii=False, sort_keys=True)
         if response.get("status") in {"executed", "simulated"}:
             row.status = "executed_dry_run" if response.get("dry_run") else "executed"
@@ -1347,63 +1405,4 @@ class CampaignIntelligenceService:
             "desired_budget": campaign.desired_budget,
             "real_budget": campaign.real_budget,
             "budget_drift_detected": campaign.budget_drift_detected,
-            "currency": campaign.currency_code,
-            "currency_cost": campaign.currency_ad_account,
-            "currency_revenue": campaign.currency_sales,
-            "target_cpa": campaign.target_cpa,
-            "target_roas": campaign.target_roas,
-        }
-        if latest:
-            payload.update({
-                "ctr": latest.ctr,
-                "cpc": latest.cpc,
-                "cpm": latest.cpm,
-                "spend": latest.spend,
-                "purchases": latest.purchases,
-                "cpa": latest.cost_per_purchase,
-                "roas": latest.roas,
-                "revenue_amount": latest.revenue_amount,
-                "revenue_currency": latest.revenue_currency,
-                "exchange_rate_snapshot": latest.exchange_rate_to_brl,
-                "revenue_brl": latest.revenue_brl,
-                "unified_roas_brl": latest.unified_roas_brl,
-                "connect_rate": latest.connect_rate,
-                "checkout_rate": latest.checkout_rate,
-                "capi_status": latest.capi_status,
-                "metrics_source": latest.source,
-                "metrics_created_at": latest.created_at.isoformat() if latest.created_at else None,
-            })
-        if extra:
-            payload.update(extra)
-        return json.dumps(payload, ensure_ascii=False, sort_keys=True)
-
-    def _meta_action_response(self, row: MetaActionRequest) -> MetaActionResponse:
-        return MetaActionResponse(
-            id=row.id,
-            request_key=row.request_key,
-            campaign_id=row.campaign_id,
-            meta_campaign_id=row.meta_campaign_id,
-            meta_adset_id=row.meta_adset_id,
-            action=row.action,
-            target=row.target,
-            proposed_payload=json.loads(row.proposed_payload_json or "{}"),
-            payload_hash=row.payload_hash,
-            status=row.status,
-            requested_by=row.requested_by,
-            approved_by=row.approved_by,
-            meta_response=json.loads(row.executed_response_json or "{}"),
-            created_at=row.created_at,
-        )
-
-    def _decision_response(self, campaign: Campaign, latest: CampaignMetric | None, benchmark_ctr: float | None, color: str, tickets: list[PerformanceTicket], actions: list[str], reasoning: str) -> CampaignDecisionResponse:
-        payload = CampaignMetricCreateRequest() if latest else None
-        latest_response = self._metric_response(latest, payload) if latest else None
-        return CampaignDecisionResponse(
-            campaign=self._campaign_response(campaign),
-            latest_metrics=latest_response,
-            benchmark_ctr=benchmark_ctr,
-            health_color=color,
-            tickets_opened=[self._ticket_response(t) for t in tickets],
-            recommended_actions=list(dict.fromkeys(actions)),
-            reasoning=reasoning,
-        )
+            "currency": campaign.

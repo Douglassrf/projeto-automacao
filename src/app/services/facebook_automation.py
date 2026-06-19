@@ -3,9 +3,11 @@ from __future__ import annotations
 from datetime import datetime, timezone
 UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 
+from app.core.config import get_settings
 from app.integrations.affiliate_provider import AffiliateProvider
 from app.integrations.meta_marketing import MetaMarketingClient, MetaMarketingError
 from app.schemas.affiliate import AffiliateReplaceRequest
+from app.services.observability import immutable_audit_event
 from app.schemas.facebook_marketing import (
     CampaignPlanItem,
     CampaignPlanRequest,
@@ -147,29 +149,90 @@ class FacebookMarketingAutomationEngine:
             simulated=True,
         )
 
+    def _real_mode_guardrails(self) -> list[str]:
+        """Motivos de bloqueio quando uma publicação NAO-dry-run seria tentada.
+
+        C04: o motor V1-V3 chamava MetaMarketingClient.publish_campaign_plan()
+        direto, sem checar nenhuma das flags server-side (META_ENV,
+        META_ALLOW_PRODUCTION_REAL, META_AUTOPUBLISH) que o operador
+        (MetaCampaignOperator.launch_v3) já exige antes de publicar de verdade.
+        Isso significava que, com META_DRY_RUN=false e credenciais configuradas,
+        bastava o cliente enviar publish_to_meta=true + execution_mode!=review_only
+        no corpo da requisição para publicar uma campanha real -- sem checar
+        ambiente sandbox/producao nem autopublish. Esta função fecha essa brecha,
+        espelhando exatamente as mesmas flags que o operador usa.
+        """
+        if self.meta_client.dry_run:
+            return []
+        settings = get_settings()
+        reasons: list[str] = []
+        meta_env = str(getattr(settings, "meta_env", "sandbox") or "sandbox").strip().lower()
+        if meta_env not in {"sandbox", "test_account", "production"}:
+            reasons.append("meta_env_invalid")
+        if meta_env == "production" and not settings.meta_allow_production_real:
+            reasons.append("production_real_not_allowed")
+        if not settings.meta_autopublish:
+            reasons.append("autopublish_disabled")
+        return reasons
+
     def v3_execute(self, payload: V3ExecutionRequest) -> V3ExecutionResponse:
         started = datetime.now(UTC)
+        settings = get_settings()
         plan_response = self.v2_campaign_plan(payload)
         results: list[MetaExecutionResult] = []
         published = 0
         blocked = 0
 
+        real_mode_blocked_reasons = self._real_mode_guardrails()
+
         for plan in plan_response.plans:
-            if payload.budget.require_manual_review or payload.execution_mode == "review_only" or not payload.publish_to_meta:
+            active_launch_blocked = plan.campaign_status == "ACTIVE" and not settings.meta_allow_active_launch
+            guard_blocked = bool(real_mode_blocked_reasons) or active_launch_blocked
+            if payload.budget.require_manual_review or payload.execution_mode == "review_only" or not payload.publish_to_meta or guard_blocked:
                 blocked += 1
+                if real_mode_blocked_reasons:
+                    message = f"Publicação real bloqueada por guardrails de ambiente: {', '.join(real_mode_blocked_reasons)}."
+                elif active_launch_blocked:
+                    message = "Status ACTIVE exige META_ALLOW_ACTIVE_LAUNCH=true no servidor; bloqueado."
+                else:
+                    message = "Plano gerado, mas publicação bloqueada por revisão manual/configuração."
+                if guard_blocked:
+                    immutable_audit_event(
+                        actor="FacebookMarketingAutomationEngine",
+                        action="facebook.v3_execute.blocked",
+                        resource_type="facebook_v1_v3",
+                        resource_id=plan.campaign_name,
+                        status="blocked",
+                        details={
+                            "real_mode_blocked_reasons": real_mode_blocked_reasons,
+                            "active_launch_blocked": active_launch_blocked,
+                            "campaign_status": plan.campaign_status,
+                        },
+                    )
                 results.append(MetaExecutionResult(
                     dry_run=True,
                     product_name=plan.product_name,
                     campaign_model=plan.campaign_model,
                     campaign_name=plan.campaign_name,
                     status="blocked_for_manual_review",
-                    messages=["Plano gerado, mas publicação bloqueada por revisão manual/configuração."],
+                    messages=[message],
                 ))
                 continue
             try:
                 meta_result = self.meta_client.publish_campaign_plan(plan)
                 if not meta_result["dry_run"]:
                     published += 1
+                    immutable_audit_event(
+                        actor="FacebookMarketingAutomationEngine",
+                        action="facebook.v3_execute.published",
+                        resource_type="facebook_v1_v3",
+                        resource_id=plan.campaign_name,
+                        status="ok",
+                        details={
+                            "campaign_status": plan.campaign_status,
+                            "meta_campaign_id": meta_result.get("campaign_id"),
+                        },
+                    )
                 results.append(MetaExecutionResult(
                     dry_run=meta_result["dry_run"],
                     product_name=plan.product_name,
@@ -445,58 +508,4 @@ class FacebookMarketingAutomationEngine:
 
     def _angles(self, item: FacebookAdSignal) -> list[str]:
         return [
-            f"Dor direta: {item.lesson_profile.pain_point} ligada ao produto {item.product_name}.",
-            f"Prova: usar {item.lesson_profile.proof_element} sem promessas proibidas.",
-            f"Oferta: {item.lesson_profile.offer_angle}; CTA simples para ação imediata.",
-        ]
-
-    def _creative_variations(self, item: FacebookAdSignal, model: str) -> list[str]:
-        if model == "V3_AUTOMACAO_PRINCIPAL":
-            return [
-                "Vídeo UGC 20-30s: hook nos 3s iniciais, dor, prova, solução e CTA.",
-                "Imagem forte com headline de benefício + contraste antes/depois permitido pela política.",
-                "Criativo de prova: demonstração do método, bastidores ou resultado sem promessa absoluta.",
-            ]
-        return [
-            f"Criativo {item.lesson_profile.creative_style} explicando a dor principal.",
-            "Imagem estática com promessa específica, benefício e CTA.",
-            "Vídeo curto 15-25s com hook direto e prova simples.",
-        ]
-
-    def _copy_variations(self, item: FacebookAdSignal, affiliate_link: str, model: str) -> list[str]:
-        if model == "V3_AUTOMACAO_PRINCIPAL":
-            return [
-                f"Você ainda tenta resolver {item.lesson_profile.pain_point} do jeito difícil? Veja esse método simples e direto: {affiliate_link}",
-                f"O material de {item.product_name} foi estruturado para uma ação rápida: entenda a dor, aplique o passo a passo e avance hoje. {affiliate_link}",
-                f"Se esse problema está travando seu resultado, comece pelo guia prático e veja a solução por dentro: {affiliate_link}",
-            ]
-        return [
-            f"Novo teste validado para {item.product_name}: solução simples, explicada passo a passo. {affiliate_link}",
-            f"Esse material mostra um caminho prático para resolver {item.lesson_profile.pain_point}. Acesse: {affiliate_link}",
-        ]
-
-    @staticmethod
-    def _broad_targeting() -> dict:
-        return {"geo_locations": {"countries": ["BR"]}, "age_min": 24, "age_max": 55}
-
-    @staticmethod
-    def _interest_targeting() -> dict:
-        return {"geo_locations": {"countries": ["BR"]}, "age_min": 24, "age_max": 60, "publisher_platforms": ["facebook", "instagram"]}
-
-    @staticmethod
-    def _conversion_targeting() -> dict:
-        return {"geo_locations": {"countries": ["BR"]}, "age_min": 25, "age_max": 60, "publisher_platforms": ["facebook", "instagram"], "facebook_positions": ["feed", "video_feeds", "marketplace"]}
-
-    @staticmethod
-    def _audience_notes(model: str) -> list[str]:
-        if model == "V3_AUTOMACAO_PRINCIPAL":
-            return ["Principal campanha de conversão.", "Usar criativos renovados para evitar saturação.", "Escalar somente após validar custo por checkout/compra."]
-        if model == "V2_ESCALA_CONTROLADA":
-            return ["Testar 2-3 ângulos por conjunto.", "Monitorar Connect Rate e Checkout antes de aumentar verba."]
-        return ["Validação rápida de criativo e oferta.", "Verificar se cliques viram visualização de página."]
-
-    @staticmethod
-    def _automation_notes(model: str) -> list[str]:
-        if model == "V3_AUTOMACAO_PRINCIPAL":
-            return ["Modelo principal do robô.", "Publicação real depende de META_DRY_RUN=false e credenciais oficiais.", "Por padrão cria PAUSED; ACTIVE só com allow_active_launch=true e backend liberado."]
-        return ["Modelo auxiliar para teste/escala controlada."]
+            f"Dor direta: {item.lesson_profile.pain_p
