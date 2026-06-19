@@ -13,6 +13,8 @@ config.json
 # Bancos de dados locais
 # ============================================================
 *.db
+*.db-wal
+*.db-shm
 *.sqlite
 *.sqlite3
 adintelligence.db
