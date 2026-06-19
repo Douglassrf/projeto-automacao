@@ -1,8 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
-from enum import StrEnum
+from datetime import datetime, timedelta, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
+try:
+    from enum import StrEnum
+except ImportError:  # compat Python 3.10 (StrEnum requer 3.11+)
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
 
 
 class RateLimitScope(StrEnum):

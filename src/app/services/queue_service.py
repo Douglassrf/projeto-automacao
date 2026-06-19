@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from typing import Any
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session

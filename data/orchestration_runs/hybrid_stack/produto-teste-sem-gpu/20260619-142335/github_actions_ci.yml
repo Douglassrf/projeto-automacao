@@ -1,0 +1,26 @@
+name: AdIntelligence CI Free Stack
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install API deps
+        run: cd server && pip install -r requirements.txt
+      - name: Run backend tests
+        run: cd server && pytest -q
+      - name: Install web deps
+        run: npm run install:web
+      - name: Build web
+        run: npm run build:web

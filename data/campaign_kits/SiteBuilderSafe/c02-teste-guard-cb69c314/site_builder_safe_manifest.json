@@ -1,0 +1,29 @@
+{
+  "status": "ok",
+  "agent": "SiteBuilderBridge",
+  "mode": "site_builder_safe",
+  "product_name": "C02 Teste Guard",
+  "template": "direct_response",
+  "generated_at": "2026-06-19T19:09:19.798388+00:00",
+  "output_dir": "/sessions/modest-zealous-noether/mnt/projeto_automacao/data/campaign_kits/SiteBuilderSafe/c02-teste-guard-cb69c314",
+  "preview_path": "/sessions/modest-zealous-noether/mnt/projeto_automacao/data/campaign_kits/SiteBuilderSafe/c02-teste-guard-cb69c314/index.html",
+  "files": [
+    "/sessions/modest-zealous-noether/mnt/projeto_automacao/data/campaign_kits/SiteBuilderSafe/c02-teste-guard-cb69c314/index.html",
+    "/sessions/modest-zealous-noether/mnt/projeto_automacao/data/campaign_kits/SiteBuilderSafe/c02-teste-guard-cb69c314/styles.css"
+  ],
+  "deploy_provider": "local",
+  "deploy_status": "local_ready",
+  "deploy_real_executed": false,
+  "github_executed": false,
+  "vercel_executed": false,
+  "netlify_executed": false,
+  "deploy_payload_path": "/sessions/modest-zealous-noether/mnt/projeto_automacao/data/campaign_kits/SiteBuilderSafe/c02-teste-guard-cb69c314/deploy_payload.json",
+  "manifest_file": "/sessions/modest-zealous-noether/mnt/projeto_automacao/data/campaign_kits/SiteBuilderSafe/c02-teste-guard-cb69c314/site_builder_safe_manifest.json",
+  "warnings": [
+    "Deploy real bloqueado.",
+    "Dry-run ativo: nenhum provedor externo foi chamado.",
+    "GitHub/Vercel/Netlify não foram chamados.",
+    "Payload preparado apenas para revisão futura."
+  ],
+  "next_action": "brain_review_before_orchestration_pipeline"
+}

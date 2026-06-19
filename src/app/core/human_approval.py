@@ -3,8 +3,15 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
-from enum import StrEnum
+from datetime import datetime, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
+try:
+    from enum import StrEnum
+except ImportError:  # compat Python 3.10 (StrEnum requer 3.11+)
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
 from typing import Any
 
 from app.core.immutable_audit import ImmutableAuditLog

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import re
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from difflib import SequenceMatcher
 
 from app.schemas.content_orchestrator import ContentOrchestratorRequest, ContentOrchestratorResponse

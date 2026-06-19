@@ -1,4 +1,5 @@
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 
 from app.integrations.affiliate_provider import AffiliateProvider
 from app.repositories.ad_repository import AdRepository

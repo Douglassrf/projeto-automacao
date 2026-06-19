@@ -1,0 +1,32 @@
+name: Serverless Render Job
+
+on:
+  workflow_dispatch:
+    inputs:
+      asset_type:
+        description: Asset type
+        required: true
+        default: video
+      provider:
+        description: Render provider
+        required: true
+        default: aws_lambda
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate render payload
+        run: python -m json.tool queue_payload.json
+      - name: Dispatch render webhook
+        env:
+          RENDER_WEBHOOK_URL: ${{ secrets.RENDER_WEBHOOK_URL }}
+          RENDER_WEBHOOK_SECRET: ${{ secrets.RENDER_WEBHOOK_SECRET }}
+        run: |
+          echo "Dispatching serverless render job in dry-run safe mode"
+          test -f queue_payload.json

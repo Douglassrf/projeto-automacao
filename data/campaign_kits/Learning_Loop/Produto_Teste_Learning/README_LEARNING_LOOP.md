@@ -1,7 +1,7 @@
 # Learning Loop — Produto Teste Learning
 
 ## Criativos vencedores
-- AD01 Hook Dor: 77 compras | ROAS 4.0 | CPA 30.0
+- AD01 Hook Dor: 81 compras | ROAS 4.0 | CPA 30.0
 
 ## Novas variações
 ### V4

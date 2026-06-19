@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, UTC, timedelta
+from datetime import datetime, timedelta, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from uuid import uuid4
 
 from sqlalchemy import desc

@@ -3,7 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 import threading
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from pathlib import Path
 from typing import Any
 
@@ -229,7 +230,7 @@ class MetaCampaignOperator:
                 results.append(self._blocked_result(plan, creative.name, "Bloqueado pelos guardrails do operador."))
                 continue
             if effective_dry_run:
-                meta_result = self._publish_plan(plan)
+                meta_result = self._simulate_plan(plan)
                 results.append(self._result_from_meta(plan, creative.name, meta_result, forced_status="simulated"))
                 continue
             try:
@@ -823,6 +824,43 @@ class MetaCampaignOperator:
         if plan.existing_campaign_id:
             return self.meta_client.publish_plan_to_existing_campaign(plan)
         return self.meta_client.publish_campaign_plan(plan)
+
+    def _simulate_plan(self, plan: CampaignPlanItem) -> dict[str, Any]:
+        """Constroi o resultado simulado SEM jamais chamar o client de rede.
+
+        CORRECAO R11: antes, o caminho "effective_dry_run=True" chamava
+        _publish_plan(), que delega para MetaMarketingClient.publish_campaign_plan().
+        A decisao real de chamar a rede dentro desse metodo do client depende
+        SOMENTE de `self.meta_client.dry_run` (credentials.dry_run or not
+        credentials.configured) -- ela NAO considera payload.mode nem
+        settings.meta_autopublish. Ou seja, se META_DRY_RUN=false estivesse
+        configurado no ambiente (mesmo com META_AUTOPUBLISH=false), um payload
+        com mode="dry_run" ainda disparava uma chamada POST real para a Meta,
+        e so o rotulo do resultado era forcado para "simulated" depois do fato.
+        Esta funcao fecha essa lacuna: quando o operador decide effective_dry_run,
+        nenhum codigo capaz de rede e executado, independente do estado do client.
+        """
+        suffix = hashlib.sha1(plan.campaign_name.encode("utf-8")).hexdigest()[:10]
+        if plan.existing_campaign_id:
+            return {
+                "dry_run": True,
+                "campaign_id": plan.existing_campaign_id,
+                "adset_id": f"dry_adset_{suffix}",
+                "creative_id": f"dry_creative_{suffix}",
+                "ad_id": f"dry_ad_{suffix}",
+                "messages": ["Dry-run ativo: conjunto/anuncio simulados dentro de campanha existente."],
+            }
+        return {
+            "dry_run": True,
+            "campaign_id": f"dry_campaign_{suffix}",
+            "adset_id": f"dry_adset_{suffix}",
+            "creative_id": f"dry_creative_{suffix}",
+            "ad_id": f"dry_ad_{suffix}",
+            "messages": [
+                "Dry-run ativo: campanha simulada sem publicar no Facebook Ads.",
+                "Configure META_DRY_RUN=false e credenciais oficiais para publicação real.",
+            ],
+        }
 
     def _validate_guardrails(self, payload: MetaOperatorLaunchRequest, payload_sha256: str, account_spend_today_brl: float | None, effective_dry_run: bool) -> list[MetaOperatorGuardrail]:
         checks: list[MetaOperatorGuardrail] = []

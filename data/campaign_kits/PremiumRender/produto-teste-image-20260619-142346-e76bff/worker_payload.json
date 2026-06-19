@@ -1,0 +1,11 @@
+{
+  "product_name": "Produto Teste",
+  "asset_type": "image",
+  "prompt": "Imagem premium de anúncio com iluminação cinematográfica e CTA forte.",
+  "source_asset_path": null,
+  "provider": "dry_run",
+  "upscale": true,
+  "color_grade": "warm_contrast",
+  "dispatch_mode": "local",
+  "dry_run": true
+}

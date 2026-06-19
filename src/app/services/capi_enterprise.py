@@ -4,7 +4,8 @@ import hashlib
 import json
 import re
 import threading
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from pathlib import Path
 from typing import Any
 from uuid import uuid4

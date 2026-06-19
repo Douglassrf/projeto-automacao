@@ -1,5 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from app.api.deps import get_current_user
+from app.domain.models import User
 from app.services.miner_engine import MinerEngine
 from app.services.facebook_ad_miner import FacebookAdMiner
 from app.services.campaign_brain import CampaignBrainAgent
@@ -19,7 +21,7 @@ class MemoryRepository:
 
 
 @router.get("/miner/test")
-async def minerar_nicho():
+async def minerar_nicho(current_user: User = Depends(get_current_user)):
     """Teste controlado do MinerEngine.
 
     Não chama API externa.
@@ -31,7 +33,7 @@ async def minerar_nicho():
 
 
 @router.post("/miner/controlled-real")
-def miner_controlled_real(payload: dict):
+def miner_controlled_real(payload: dict, current_user: User = Depends(get_current_user)):
     """Missao 28: MinerEngine real controlado por fonte local auditavel.
 
     Continua bloqueando chamadas externas, scraping, navegador, Selenium e Meta real.
@@ -49,7 +51,7 @@ def miner_controlled_real(payload: dict):
 
 
 @router.post("/facebook-ad-miner/controlled-real")
-def facebook_ad_miner_controlled_real(payload: dict):
+def facebook_ad_miner_controlled_real(payload: dict, current_user: User = Depends(get_current_user)):
     """Missao 29: FacebookAdMiner real controlado via export local auditavel."""
     miner = FacebookAdMiner(repository=MemoryRepository(), dry_run=True, can_external_call=False)
     return miner.controlled_real_collect(
@@ -67,50 +69,50 @@ def facebook_ad_miner_controlled_real(payload: dict):
 
 
 @router.get("/campaign-operator/status")
-def campaign_operator_status():
+def campaign_operator_status(current_user: User = Depends(get_current_user)):
     return MetaCampaignOperator().status()
 
 
 @router.post("/campaign-operator/v3/launch")
-def campaign_operator_launch_v3(payload: MetaOperatorLaunchRequest):
+def campaign_operator_launch_v3(payload: MetaOperatorLaunchRequest, current_user: User = Depends(get_current_user)):
     return MetaCampaignOperator().launch_v3(payload)
 
 
 @router.post("/campaign-operator/rollback")
-def campaign_operator_rollback(payload: MetaOperatorRollbackRequest):
+def campaign_operator_rollback(payload: MetaOperatorRollbackRequest, current_user: User = Depends(get_current_user)):
     return MetaCampaignOperator().rollback_created_campaigns(payload)
 
 
 @router.post("/campaign-operator/rollback/policy")
-def campaign_operator_rollback_policy(payload: dict):
+def campaign_operator_rollback_policy(payload: dict, current_user: User = Depends(get_current_user)):
     return MetaCampaignOperator().rollback_policy(payload)
 
 
 @router.post("/campaign-operator/production/readiness")
-def campaign_operator_production_readiness(payload: dict):
+def campaign_operator_production_readiness(payload: dict, current_user: User = Depends(get_current_user)):
     response = MetaCampaignOperator().production_readiness(payload)
     return with_security_guard(response, meta_production_security_guard(payload))
 
 
 @router.post("/campaign-operator/production/credential-review")
-def campaign_operator_credential_review(payload: dict):
+def campaign_operator_credential_review(payload: dict, current_user: User = Depends(get_current_user)):
     response = MetaCampaignOperator().credential_payload_review(payload)
     return with_security_guard(response, meta_production_security_guard(payload))
 
 
 @router.post("/campaign-operator/production/assisted-execution")
-def campaign_operator_assisted_execution(payload: dict):
+def campaign_operator_assisted_execution(payload: dict, current_user: User = Depends(get_current_user)):
     response = MetaCampaignOperator().assisted_execution_gate(payload)
     return with_security_guard(response, meta_production_security_guard(payload))
 
 
 @router.post("/campaign-operator/production/post-execution-monitor")
-def campaign_operator_post_execution_monitor(payload: dict):
+def campaign_operator_post_execution_monitor(payload: dict, current_user: User = Depends(get_current_user)):
     return MetaCampaignOperator().post_execution_monitor(payload)
 
 
 @router.post("/campaign-operator/production/hardening-review")
-def campaign_operator_production_hardening(payload: dict):
+def campaign_operator_production_hardening(payload: dict, current_user: User = Depends(get_current_user)):
     return MetaCampaignOperator().production_hardening_review(payload)
 
 
@@ -154,7 +156,7 @@ def _build_dry_run_payload() -> MetaOperatorLaunchRequest:
 
 
 @router.get("/campaign/dry-run/mock")
-def campaign_dry_run_mock():
+def campaign_dry_run_mock(current_user: User = Depends(get_current_user)):
     """Simula campanha após revisão do Brain.
 
     Segurança:
@@ -200,7 +202,7 @@ def campaign_dry_run_mock():
 
 
 @router.post("/campaign/dry-run")
-def campaign_dry_run(payload: dict):
+def campaign_dry_run(payload: dict, current_user: User = Depends(get_current_user)):
     """Dry-run de campanha com dados enviados pelo usuário/sistema.
 
     O Brain revisa antes. O operador só roda se a decisão for SIM.
