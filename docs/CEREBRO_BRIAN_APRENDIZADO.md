@@ -1,27 +1,17 @@
-# Cérebro, Brian e Aprendizado
+# Brain e Aprendizado
 
-## O Cérebro
+## O Brain
 
-O Cérebro é a camada estratégica do projeto. Ele recebe informações de campanhas, métricas, histórico e contexto operacional para emitir recomendações seguras antes de qualquer avanço.
+O Brain é a camada estratégica e consultiva do projeto. Ele recebe informações de campanhas, métricas, histórico e contexto operacional para emitir recomendações seguras antes de qualquer avanço.
 
-No projeto, o papel do cérebro é representado principalmente por:
+No projeto, o papel do Brain é representado principalmente por:
 
 - `CampaignBrainAgent`
 - `DecisionFeedStore`
 - `CampaignMemoryStore`
 - `MasterContextStore`
 
-## O Brian
-
-O Brian é o agente consultivo/mentor operacional do Cérebro. Ele interpreta o estado do projeto, compara com a memória histórica e ensina o Cérebro por meio de:
-
-- decisões registradas;
-- aprendizados salvos;
-- recomendações;
-- análise de risco;
-- próximos passos.
-
-## Como o Brian ensina o Cérebro
+## Como o Brain aprende
 
 1. Uma missão executa uma ação em modo Safe.
 2. O resultado é enviado ao CampaignBrain.
@@ -49,7 +39,7 @@ Esses registros alimentam CampaignMemory, DecisionFeed e MasterContext.
 
 ## Regra permanente para todas as missoes
 
-A partir da Missao 27A, toda missao deve usar o Cerebro e o Brian como copilotos obrigatorios.
+A partir da Missao 27A, toda missao deve usar o Brain como copiloto obrigatorio.
 
 Antes de executar:
 
@@ -58,13 +48,13 @@ Antes de executar:
 3. Ler as ultimas entradas de `logs/campaign_brain_memory.log`.
 4. Confirmar a ultima missao homologada.
 5. Confirmar a proxima missao recomendada.
-6. Pedir uma avaliacao consultiva ao Brain/Brian quando a tarefa envolver risco, mudanca de comportamento, testes, integracao real ou producao.
+6. Pedir uma avaliacao consultiva ao Brain quando a tarefa envolver risco, mudanca de comportamento, testes, integracao real ou producao.
 7. Para seguranca e modo real assistido, consultar `/api/v1/security/status`, `/api/v1/security/real-mode-gate` e `/api/v1/security/brain-review`.
 
 Durante a execucao:
 
 1. Manter tudo em Safe / Dry Run ate homologacao explicita.
-2. Usar o historico do Brain/Brian para evitar repetir erros.
+2. Usar o historico do Brain para evitar repetir erros.
 3. Registrar decisoes relevantes no DecisionFeed.
 4. Registrar aprendizados no CampaignMemory.
 5. Preservar `correlation_id`, `execution_id` e `mission_id` em rotas e logs quando aplicavel.
@@ -80,6 +70,6 @@ Depois de executar:
 Regra de seguranca:
 
 ```txt
-Nenhuma missao deve avancar ignorando o Cerebro/Brian.
+Nenhuma missao deve avancar ignorando o Brain.
 Se a memoria estiver divergente da realidade validada por testes, corrigir a memoria antes de continuar.
 ```

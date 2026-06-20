@@ -83,7 +83,7 @@ Learning Loop real controlado foi validado com eventos auditaveis, geracao V4/V5
 
 MetaCampaignOperator Production Readiness foi validado: bloqueia por padrao e so fica `ready` com credenciais, dry-run desligado, autopublish, confirmacao manual, rollback, hash do payload e ack do Brain. Nenhuma campanha real foi publicada.
 
-Rollback formal de producao foi validado: a rota `/api/v1/campaign-operator/rollback/policy` formaliza checks, exige confirmacao, ack da politica, Brain/Brian, credenciais e autopublish para rollback real. Nao executa rollback real.
+Rollback formal de producao foi validado: a rota `/api/v1/campaign-operator/rollback/policy` formaliza checks, exige confirmacao, ack da politica, Brain, credenciais e autopublish para rollback real. Nao executa rollback real.
 
 Revisao segura de credenciais e payload real foi validada: a rota `/api/v1/campaign-operator/production/credential-review` verifica presenca/coerencia de credenciais, gera hash do payload aprovado e mascara segredos. Nao publica campanha real.
 
@@ -129,9 +129,9 @@ Missao 36D validada: Security Status Dashboard criado em `/api/v1/security/statu
 
 Missao 36E validada: Real Mode Health Gate criado em `/api/v1/security/real-mode-gate`, avaliando aprovacao humana, segredos, flags Meta, kill switch, limites e politica segura, com `163 passed` na suite completa.
 
-Missao 36F validada: Security Brain Bridge criado em `/api/v1/security/brain-review`, consultando Security Status, Real Mode Gate, Brain e registrando aprendizado para Brian/CampaignMemory, com `165 passed` na suite completa.
+Missao 36F validada: Security Brain Bridge criado em `/api/v1/security/brain-review`, consultando Security Status, Real Mode Gate, Brain e registrando aprendizado para Brain/CampaignMemory, com `165 passed` na suite completa.
 
-Missao 36G validada: Sandbox Readiness criado em `/api/v1/security/sandbox-readiness`, consolidando status de seguranca, gate, Brain/Brian, bloqueios de producao e proximos passos para sandbox, com `167 passed` na suite completa.
+Missao 36G validada: Sandbox Readiness criado em `/api/v1/security/sandbox-readiness`, consolidando status de seguranca, gate, Brain, bloqueios de producao e proximos passos para sandbox, com `167 passed` na suite completa.
 
 Missao 36H validada: Sandbox Execution Contract criado em `/api/v1/security/sandbox-execution-contract`, bloqueando producao, campanha ativa, orcamento acima de R$ 5 e active launch, com `170 passed` na suite completa.
 
@@ -141,7 +141,7 @@ Missao 36J validada: Operational Handoff criado em `/api/v1/security/operational
 
 Missao 36K validada: Meta Sandbox Setup criado em `/api/v1/security/meta-sandbox-setup`, diagnosticando ambiente sandbox/test_account, credenciais mascaradas, campanha pausada e orcamento maximo R$ 5, com `177 passed` na suite completa.
 
-Missao 36L validada: Primeiro Payload Sandbox Pausado criado em `/api/v1/security/first-sandbox-payload`, consolidando template, contrato sandbox, setup Meta, Brain/Brian e bloqueios de producao/gasto, com `180 passed` na suite completa.
+Missao 36L validada: Primeiro Payload Sandbox Pausado criado em `/api/v1/security/first-sandbox-payload`, consolidando template, contrato sandbox, setup Meta, Brain e bloqueios de producao/gasto, com `180 passed` na suite completa.
 
 Missao 37A validada: Global Intelligence Data Contract criado em `/api/v1/global-intelligence/normalize-ad`, normalizando sinais de Meta, Google, TikTok, LinkedIn e Pinterest antes do Brain, sem chamada externa e sem gasto ativo, com `183 passed` na suite completa.
 

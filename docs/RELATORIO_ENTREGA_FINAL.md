@@ -16,7 +16,7 @@ SAFE E2E HOMOLOGATED
 
 - API FastAPI rodando localmente.
 - Swagger validado.
-- Cérebro/Brian integrados ao fluxo de memoria, decisao e aprendizado.
+- Brain integrados ao fluxo de memoria, decisao e aprendizado.
 - 27 agentes documentados.
 - Missões 27 a 31 homologadas.
 - Operador Meta com guardrails de producao.

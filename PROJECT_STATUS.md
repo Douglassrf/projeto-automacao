@@ -10,7 +10,7 @@ trás. Para o histórico detalhado de cada missão, ver `docs/historico_missoes/
 
 Backend FastAPI local para automação e inteligência de campanhas de anúncios
 (Meta/Facebook): mineração de anúncios, geração de conteúdo, orquestração de
-campanha, camada de decisão/aprendizado ("Cérebro"/"Brian"), e operação de
+campanha, camada de decisão/aprendizado ("Brain"), e operação de
 campanhas Meta com guardrails de segurança.
 
 ## 2. O que está implementado e validado

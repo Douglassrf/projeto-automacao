@@ -8,8 +8,8 @@ Plataforma local de automação e inteligência para campanhas de anúncios
 - Backend FastAPI (Python) com banco local SQLite.
 - Mineração e análise de anúncios, geração de conteúdo/criativos, orquestração
   de campanhas.
-- "Cérebro" (CampaignBrain) e "Brian" como camadas de decisão/aprendizado que
-  registram decisões e memória de campanha.
+- Brain (CampaignBrain) como camada de decisão/aprendizado que
+  registra decisões e memória de campanha.
 - Guardrails de produção: nenhuma escrita real na Meta (criar/editar/ativar
   campanha) acontece sem múltiplas confirmações explícitas e configuração
   específica (`META_DRY_RUN`, `META_ALLOW_PRODUCTION_REAL`, confirmação manual
@@ -75,9 +75,12 @@ validação registrada pelo próprio projeto: `261 passed` (ver
 
 ```text
 src/app/          backend FastAPI (api, core, db, domain, services, schemas, tests)
+src/knowledge/    bases locais de conhecimento e artefatos auxiliares
+src/migrations/   migrações locais de banco de dados
 scripts/          scripts de manutencao/seguranca (auditoria de segredos, backup, quarentena)
 docs/             documentacao historica de missoes e arquitetura
 data/             dados gerados localmente (campaign kits, etc.)
+tools/            ferramentas auxiliares de empacotamento/verificacao
 _backups/         backups imutaveis locais (ignorado pelo Git)
 archived_legacy/  arquivos legados quarentenados (ignorado pelo Git)
 ```
