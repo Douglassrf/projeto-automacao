@@ -108,7 +108,7 @@ O rollback formal de producao tambem foi validado:
 
 - MetaCampaignOperator ganhou endpoint `/api/v1/campaign-operator/rollback/policy`;
 - a politica formal separa validacao de rollback da execucao tecnica;
-- rollback real exige confirmacao humana, ack da politica, Brain/Brian, credenciais reais e ambiente de producao liberado;
+- rollback real exige confirmacao humana, ack da politica, Brain, credenciais reais e ambiente de producao liberado;
 - o modo padrao fica `dry_run_ready`;
 - tentativa de rollback real sem aprovacoes fica `blocked`;
 - nenhuma acao real foi enviada para Meta;
@@ -119,7 +119,7 @@ A revisao segura de credenciais e payload real tambem foi validada:
 - MetaCampaignOperator ganhou endpoint `/api/v1/campaign-operator/production/credential-review`;
 - credenciais sao revisadas sem expor token, segredo ou valor sensivel;
 - payload real gera preview reduzido e hash `payload_sha256`;
-- estado `ready` so acontece com credenciais presentes, dry-run desligado, autopublish, confirmacao, rollback, Brain/Brian e hash aprovado;
+- estado `ready` so acontece com credenciais presentes, dry-run desligado, autopublish, confirmacao, rollback, Brain e hash aprovado;
 - nenhuma campanha real foi publicada;
 - suite automatizada validada com 91 testes passando.
 
@@ -168,9 +168,9 @@ A homologacao final segura tambem foi validada:
 - pacote final seguro gerado em `docs/inventarios/projeto_automacao_homologacao_final_segura_20260605.zip`;
 - suite automatizada validada com 102 testes passando.
 
-## 4. Como o Cerebro Funciona
+## 4. Como o Brain Funciona
 
-O Cerebro e a camada estrategica do sistema.
+O Brain e a camada estrategica do sistema.
 
 Funcoes:
 
@@ -202,9 +202,9 @@ Decisao
 Registro
 ```
 
-## 5. Como o Brian Funciona
+## 5. Como o Brain Funciona
 
-O Brian atua como mentor operacional do cerebro.
+O Brain atua como mentor operacional do Brain.
 
 Responsabilidades:
 
@@ -219,7 +219,7 @@ Fluxo:
 ```txt
 Evento
 â†“
-Brian
+Brain
 â†“
 Analise
 â†“
@@ -230,7 +230,7 @@ DecisionFeed
 CampaignMemory
 ```
 
-O Brian nao substitui o cerebro. Ele alimenta o cerebro com conhecimento operacional e historico pratico.
+O Brain nao substitui o Brain. Ele alimenta o Brain com conhecimento operacional e historico pratico.
 
 ## 6. Comunicacao Entre Agentes
 
@@ -394,9 +394,9 @@ PROJETO HOMOLOGADO EM MODO SEGURO. PROXIMO NIVEL: SANDBOX/CONTA SEPARADA OU PUBL
 
 Nao ativar producao real sem aprovacao explicita. O projeto esta pronto para empacotamento ou para publicacao assistida somente se o usuario aprovar literalmente dentro do operador.
 
-## 13. Regra Permanente: Cerebro e Brian em Todas as Missoes
+## 13. Regra Permanente: Brain em Todas as Missoes
 
-A partir deste estado, o Cerebro e o Brian devem ajudar em todas as missoes.
+A partir deste estado, o Brain devem ajudar em todas as missoes.
 
 Antes de qualquer missao:
 
@@ -405,7 +405,7 @@ Antes de qualquer missao:
 - ler `logs/campaign_brain_memory.log`;
 - confirmar ultima missao homologada;
 - confirmar proxima missao recomendada;
-- usar Brain/Brian para revisar risco, decisao e aprendizado esperado.
+- usar Brain para revisar risco, decisao e aprendizado esperado.
 
 Durante a missao:
 
@@ -425,6 +425,6 @@ Depois da missao:
 Regra principal:
 
 ```txt
-Nenhuma nova missao deve ser executada sem consultar e alimentar o Cerebro/Brian.
+Nenhuma nova missao deve ser executada sem consultar e alimentar o Brain.
 ```
 

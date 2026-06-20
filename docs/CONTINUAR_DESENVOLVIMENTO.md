@@ -15,7 +15,7 @@ Regras praticas:
 
 ## Ritual obrigatorio de inicio
 
-Toda nova missao deve usar o Cerebro e o Brian como apoio operacional.
+Toda nova missao deve usar o Brain como apoio operacional.
 
 Antes de implementar:
 
@@ -23,7 +23,7 @@ Antes de implementar:
 2. Ler as ultimas entradas de `logs/decision_feed.log`.
 3. Ler as ultimas entradas de `logs/campaign_brain_memory.log`.
 4. Confirmar ultima missao homologada e proxima missao recomendada.
-5. Usar o Brain/Brian para revisar risco, decisao e aprendizado esperado.
+5. Usar o Brain para revisar risco, decisao e aprendizado esperado.
 
 Depois de implementar:
 
@@ -101,7 +101,7 @@ Foco:
 - manter Safe / Dry Run como padrao;
 - limitar escopo de mineracao real;
 - exigir auditoria e rollback;
-- consultar Brain/Brian antes de cada mudanca;
+- consultar Brain antes de cada mudanca;
 - registrar todas as decisoes e aprendizados.
 
 ## Regras

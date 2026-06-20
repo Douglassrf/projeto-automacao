@@ -5,7 +5,7 @@ Data: 2026-06-05
 ## Concluido
 
 - Arquitetura principal implementada.
-- Cerebro/Brian integrados ao fluxo de decisao e memoria.
+- Brain integrados ao fluxo de decisao e memoria.
 - 27 agentes documentados.
 - Missoes 27, 27A, 28, 29, 30 e 31 homologadas.
 - Observabilidade e auditoria implementadas.
