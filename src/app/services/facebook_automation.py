@@ -508,4 +508,58 @@ class FacebookMarketingAutomationEngine:
 
     def _angles(self, item: FacebookAdSignal) -> list[str]:
         return [
-            f"Dor direta: {item.lesson_profile.pain_p
+            f"Dor direta: {item.lesson_profile.pain_point} ligada ao produto {item.product_name}.",
+            f"Prova: usar {item.lesson_profile.proof_element} sem promessas proibidas.",
+            f"Oferta: {item.lesson_profile.offer_angle}; CTA simples para ação imediata.",
+        ]
+
+    def _creative_variations(self, item: FacebookAdSignal, model: str) -> list[str]:
+        if model == "V3_AUTOMACAO_PRINCIPAL":
+            return [
+                "Vídeo UGC 20-30s: hook nos 3s iniciais, dor, prova, solução e CTA.",
+                "Imagem forte com headline de benefício + contraste antes/depois permitido pela política.",
+                "Criativo de prova: demonstração do método, bastidores ou resultado sem promessa absoluta.",
+            ]
+        return [
+            f"Criativo {item.lesson_profile.creative_style} explicando a dor principal.",
+            "Imagem estática com promessa específica, benefício e CTA.",
+            "Vídeo curto 15-25s com hook direto e prova simples.",
+        ]
+
+    def _copy_variations(self, item: FacebookAdSignal, affiliate_link: str, model: str) -> list[str]:
+        if model == "V3_AUTOMACAO_PRINCIPAL":
+            return [
+                f"Você ainda tenta resolver {item.lesson_profile.pain_point} do jeito difícil? Veja esse método simples e direto: {affiliate_link}",
+                f"O material de {item.product_name} foi estruturado para uma ação rápida: entenda a dor, aplique o passo a passo e avance hoje. {affiliate_link}",
+                f"Se esse problema está travando seu resultado, comece pelo guia prático e veja a solução por dentro: {affiliate_link}",
+            ]
+        return [
+            f"Novo teste validado para {item.product_name}: solução simples, explicada passo a passo. {affiliate_link}",
+            f"Esse material mostra um caminho prático para resolver {item.lesson_profile.pain_point}. Acesse: {affiliate_link}",
+        ]
+
+    @staticmethod
+    def _broad_targeting() -> dict:
+        return {"geo_locations": {"countries": ["BR"]}, "age_min": 24, "age_max": 55}
+
+    @staticmethod
+    def _interest_targeting() -> dict:
+        return {"geo_locations": {"countries": ["BR"]}, "age_min": 24, "age_max": 60, "publisher_platforms": ["facebook", "instagram"]}
+
+    @staticmethod
+    def _conversion_targeting() -> dict:
+        return {"geo_locations": {"countries": ["BR"]}, "age_min": 25, "age_max": 60, "publisher_platforms": ["facebook", "instagram"], "facebook_positions": ["feed", "video_feeds", "marketplace"]}
+
+    @staticmethod
+    def _audience_notes(model: str) -> list[str]:
+        if model == "V3_AUTOMACAO_PRINCIPAL":
+            return ["Principal campanha de conversão.", "Usar criativos renovados para evitar saturação.", "Escalar somente após validar custo por checkout/compra."]
+        if model == "V2_ESCALA_CONTROLADA":
+            return ["Testar 2-3 ângulos por conjunto.", "Monitorar Connect Rate e Checkout antes de aumentar verba."]
+        return ["Validação rápida de criativo e oferta.", "Verificar se cliques viram visualização de página."]
+
+    @staticmethod
+    def _automation_notes(model: str) -> list[str]:
+        if model == "V3_AUTOMACAO_PRINCIPAL":
+            return ["Modelo principal do robô.", "Publicação real depende de META_DRY_RUN=false e credenciais oficiais.", "Por padrão cria PAUSED; ACTIVE só com allow_active_launch=true e backend liberado."]
+        return ["Modelo auxiliar para teste/escala controlada."]

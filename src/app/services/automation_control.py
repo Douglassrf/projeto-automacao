@@ -182,4 +182,47 @@ class AutomationControlService:
 
     def _guardrail_block_reason(self, payload: ApplySuggestionRequest, level: int) -> str | None:
         if self.is_kill_switch_enabled():
-            return "Kill Switch ativo: 
+            return "Kill Switch ativo: nenhuma ação real pode ser enviada à Meta."
+        if payload.daily_spend_brl >= self.settings.automation_daily_spend_limit_brl:
+            return f"Gasto diário R${payload.daily_spend_brl:.2f} atingiu o limite de segurança R${self.settings.automation_daily_spend_limit_brl:.2f}."
+        if level == 0 and payload.action != "notify_only":
+            return "Nível 0 permite somente sugestão/log; nenhuma execução operacional."
+        if level == 1 and payload.action != "notify_only" and not payload.confirmed_by_user:
+            return "Nível 1 exige clique/confirmacão do usuário antes de aplicar a sugestão."
+        if level == 2 and not self.settings.automation_level_2_enabled:
+            return "Nível 2 está bloqueado por AUTOMATION_LEVEL_2_ENABLED=false."
+        if payload.action == "pause_adset" and not payload.adset_id:
+            return "pause_adset exige adset_id."
+        if payload.action == "scale_budget" and not payload.new_daily_budget_brl:
+            return "scale_budget exige new_daily_budget_brl."
+        if payload.action in {"pause_campaign", "pause_adset", "scale_budget"} and not self.meta_client.credentials.configured and not payload.force_dry_run:
+            return "Credenciais Meta ausentes; use dry-run ou configure Access Token/Ad Account."
+        return None
+
+    def _real_mode_guardrails(self) -> list[str]:
+        """C04 (achado colateral): mesma família de guardrails de ambiente já
+        exigida em FacebookMarketingAutomationEngine.v3_execute() e em
+        CampaignIntelligenceService.execute_approved_meta_action(). Garante
+        que nenhuma ação real chegue à Meta sem META_ENV configurado, e que
+        produção exija META_ALLOW_PRODUCTION_REAL explicitamente. Nunca
+        bloqueia simulação: se o servidor está em dry_run, retorna vazio."""
+        if self.meta_client.dry_run:
+            return []
+        reasons: list[str] = []
+        env = (self.settings.meta_env or "").strip().lower()
+        if env not in {"sandbox", "test_account", "production"}:
+            reasons.append("meta_env_invalido_ou_ausente")
+        if env == "production" and not self.settings.meta_allow_production_real:
+            reasons.append("production_real_not_allowed")
+        return reasons
+
+    def _reasoning(self, payload: ApplySuggestionRequest, level: int, blocked_reason: str | None, action_executed: bool, meta_response: dict[str, Any]) -> str:
+        if blocked_reason:
+            return f"Bloqueei a ação por segurança: {blocked_reason}"
+        if payload.action == "notify_only":
+            return "Apenas registrei o alerta. Ainda não mexi na campanha."
+        if meta_response.get("dry_run"):
+            return f"Simulei a ação {payload.action}. Nenhuma mudança real foi enviada à Meta."
+        if action_executed:
+            return f"Apliquei {payload.action} porque {payload.metric_name}={payload.metric_value} cruzou o limite definido."
+        return f"A sugestão foi processada no nível {level}, mas não houve alteração real."

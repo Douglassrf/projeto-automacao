@@ -68,10 +68,10 @@ Mesmo formato dos relatórios já entregues (`C01_AUTH_FIX_REPORT.md`, `C02_SITE
 ## 7. Status de execução
 
 - [ ] C03 (Codex)
-- [ ] C04 (Claude) — próxima ação imediata
-- [ ] C05 (Claude)
+- [x] C04 (Claude) — concluída 2026-06-19, evidência real em `C04_META_CREDENTIAL_PROTECTION_REPORT.md` (3 achados corrigidos, 15/15 testes isolados, 265/265 regressão)
+- [ ] C05 (Claude) — bloqueada, depende do Douglas fornecer credenciais de conta sandbox/teste da Meta
 - [ ] C06 (Codex)
-- [ ] R12 (Claude)
+- [ ] R12 (Claude) — próxima ação imediata
 - [ ] R13 (Codex)
 - [ ] R14 (Codex)
 - [ ] R15 (Claude)

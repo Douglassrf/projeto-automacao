@@ -83,3 +83,15 @@ Faça monkeypatch de `httpx.get`/`post`/`delete` (ou da função de transporte e
 ## 5. Padrão de excelência exigido
 
 Isto não é "deixar passar" — é entregar no mesmo nível do que já foi feito: investigação real antes de qualquer fix, teste que prova o critério de aceite (não que só não falha), suíte completa rodando no final, e total transparência sobre qualquer limitação do ambiente encontrada pelo caminho. Qualidade de engenheiro sênior, sem atalho, sem "deveria funcionar" sem prova.
+
+## 6. Protocolo de revisão — nada é "concluído" até passar por aqui
+
+O Douglas é quem opera sua sessão (Codex Cloud) e quem traz os entregáveis de volta para mim (Claude) revisar — não há canal direto Codex↔Claude nesta operação, o Douglas é a ponte. Isso não muda o padrão: eu reviso cada uma das 4 missões com a MESMA régua que aplico no meu próprio trabalho (C01-C04 já entregues com evidência real e suíte verde). Antes de declarar qualquer missão sua "concluída" para o Douglas, ela passa por este checklist; se falhar em qualquer item, ela volta para você, não avança:
+
+1. **A saída de teste colada é literal?** Se o relatório resume ("passou", "ok", "5/5") sem colar a saída real do terminal, é rejeitado e devolvido.
+2. **O teste prova o que diz provar?** Um teste que nunca exercita o caminho bloqueado (ex.: só testa o caminho feliz) não é evidência de guard funcionando — preciso ver o cenário de bloqueio E o cenário de liberação legítima, os dois com saída real (mesmo padrão dos cenários T1-T5/B1-B5/C1-C5 já entregues em C04).
+3. **A suíte de regressão completa rodou de novo depois do fix, não antes?** Número final precisa bater com o baseline (265 antes da C03; informe o novo número depois que C03 também estiver mesclada).
+4. **Zero segredo em qualquer lugar do entregável** — eu releio cada relatório e teste procurando token/chave antes de aceitar.
+5. **Nenhuma funcionalidade nova "de brinde"** — se aparecer algo além do que foi pedido em cada missão, é destacado e devolvido para remoção ou para registro como achado (decisão do Douglas), não mesclado silenciosamente.
+
+Se uma missão vier sem evidência real ou com teste fraco, isso não é "quase lá" — é não entregue. Mande de volta pedindo a evidência que falta, com a mesma exigência que eu aplico a mim mesmo. Excelência aqui não é opcional.

@@ -1405,4 +1405,63 @@ class CampaignIntelligenceService:
             "desired_budget": campaign.desired_budget,
             "real_budget": campaign.real_budget,
             "budget_drift_detected": campaign.budget_drift_detected,
-            "currency": campaign.
+            "currency": campaign.currency_code,
+            "currency_cost": campaign.currency_ad_account,
+            "currency_revenue": campaign.currency_sales,
+            "target_cpa": campaign.target_cpa,
+            "target_roas": campaign.target_roas,
+        }
+        if latest:
+            payload.update({
+                "ctr": latest.ctr,
+                "cpc": latest.cpc,
+                "cpm": latest.cpm,
+                "spend": latest.spend,
+                "purchases": latest.purchases,
+                "cpa": latest.cost_per_purchase,
+                "roas": latest.roas,
+                "revenue_amount": latest.revenue_amount,
+                "revenue_currency": latest.revenue_currency,
+                "exchange_rate_snapshot": latest.exchange_rate_to_brl,
+                "revenue_brl": latest.revenue_brl,
+                "unified_roas_brl": latest.unified_roas_brl,
+                "connect_rate": latest.connect_rate,
+                "checkout_rate": latest.checkout_rate,
+                "capi_status": latest.capi_status,
+                "metrics_source": latest.source,
+                "metrics_created_at": latest.created_at.isoformat() if latest.created_at else None,
+            })
+        if extra:
+            payload.update(extra)
+        return json.dumps(payload, ensure_ascii=False, sort_keys=True)
+
+    def _meta_action_response(self, row: MetaActionRequest) -> MetaActionResponse:
+        return MetaActionResponse(
+            id=row.id,
+            request_key=row.request_key,
+            campaign_id=row.campaign_id,
+            meta_campaign_id=row.meta_campaign_id,
+            meta_adset_id=row.meta_adset_id,
+            action=row.action,
+            target=row.target,
+            proposed_payload=json.loads(row.proposed_payload_json or "{}"),
+            payload_hash=row.payload_hash,
+            status=row.status,
+            requested_by=row.requested_by,
+            approved_by=row.approved_by,
+            meta_response=json.loads(row.executed_response_json or "{}"),
+            created_at=row.created_at,
+        )
+
+    def _decision_response(self, campaign: Campaign, latest: CampaignMetric | None, benchmark_ctr: float | None, color: str, tickets: list[PerformanceTicket], actions: list[str], reasoning: str) -> CampaignDecisionResponse:
+        payload = CampaignMetricCreateRequest() if latest else None
+        latest_response = self._metric_response(latest, payload) if latest else None
+        return CampaignDecisionResponse(
+            campaign=self._campaign_response(campaign),
+            latest_metrics=latest_response,
+            benchmark_ctr=benchmark_ctr,
+            health_color=color,
+            tickets_opened=[self._ticket_response(t) for t in tickets],
+            recommended_actions=list(dict.fromkeys(actions)),
+            reasoning=reasoning,
+        )
