@@ -48,8 +48,9 @@ ROUTE_MODULES = [
     "campaign_intelligence_safe",
     "global_intelligence",
     "dashboard",
-    "mission_orchestrator",
 ]
+
+ROUTE_MODULES.append("mission_orchestrator")
 
 @api_router.get("/health")
 def api_health_check():
