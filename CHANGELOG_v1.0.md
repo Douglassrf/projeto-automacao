@@ -1,81 +1,57 @@
-# CHANGELOG v1.0.0
+# CHANGELOG v1.0
 
-Este changelog foi preparado para o empacotamento final v1.0 (F07) com moratória de funcionalidade nova. Ele registra apenas o que aparece no histórico Git local e nos relatórios já versionados; não inventa PRs, features ou resultados externos.
+Data de empacotamento: 2026-06-20
+Versão: 1.0.0
 
-## Evidência base usada
+## Visão geral
 
-Comandos locais usados como fonte factual:
+Este pacote marca a versão **1.0.0** do Projeto Automação / AdIntelligence Pro como uma entrega local segura para operação, validação e continuidade de desenvolvimento.
 
-```bash
-git log --oneline --reverse --max-count=10
-```
+O projeto é um backend FastAPI local para automação e inteligência de campanhas de anúncios, com foco em Meta/Facebook Ads, mineração/análise controlada, geração de conteúdo, orquestração de campanhas, camada de decisão/aprendizado e guardrails de segurança para evitar ações reais sem confirmação humana explícita.
 
-Saída observada:
+## Adicionado
 
-```text
-700bf36 ajuste de seguranca no gitignore
-c44bea6 R01-R11 + C01 + C02: testes raiz completos + correcoes criticas pos-parecer da arquiteta
-45181dd C01/C02 follow-up: inclui 2 arquivos que ficaram fora do commit c44bea6 por cache desatualizado do git
-cd32e56 C04: corrige 3 caminhos sem guardrail meta_env/META_ALLOW_PRODUCTION_REAL antes de escrita real na Meta
-585537a docs: plano mestre de finalizacao + briefing formal para o Codex (C03/C06/R13/R14), com protocolo de revisao do chefe
-5938df5 R12: teste do fluxo completo raiz-a-raiz com evidencia HTTP real (FULL_ROOT_E2E_REPORT.md)
-7cb499e follow-up pos-R12: restaura arquivos truncados + guardrails C04 + docs atualizados
-1ba2053 C03 aplica guard de IA pesada no video
-808ba57 Merge pull request #1 from Douglassrf/codex/corrigir-guard-de-ia-pesada-na-rota-de-video
-b48361e Add R13/R14 security & failure tests and add C06/R13/R14 test run reports
-```
+- Arquivos de empacotamento da versão 1.0:
+  - `CHANGELOG_v1.0.md`
+  - `RELEASE_NOTES_v1.0.md`
+- Registro formal da versão `1.0.0` no arquivo `VERSION`.
+- Documentação consolidada de escopo, limitações, segurança, validação e próximos passos para o release v1.0.
 
-Também foi conferido o intervalo local após o merge C03:
+## Incluído no pacote v1.0
 
-```bash
-git log --oneline --reverse 808ba57..HEAD
-```
+- Backend FastAPI local com banco SQLite.
+- Autenticação local com JWT e senha com hash `pbkdf2_sha256`.
+- Mineração/análise de anúncios em modo controlado e local.
+- Learning Loop auditável, sem envio real para Meta/CAPI.
+- `MetaCampaignOperator` com múltiplas camadas de guardrail:
+  - dry-run por padrão;
+  - perfis `sandbox`, `test_account` e `production`;
+  - confirmação manual por frase literal;
+  - hash de payload aprovado;
+  - revisão de credenciais sem exposição de valores;
+  - rollback formal;
+  - monitoramento pós-execução.
+- Observabilidade e auditoria com identificadores operacionais e logs JSONL locais.
+- Scripts e documentação operacional para instalação, execução, validação e continuidade.
 
-Saída observada:
+## Segurança
 
-```text
-b48361e Add R13/R14 security & failure tests and add C06/R13/R14 test run reports
-```
+- O `.env` real permanece fora do Git.
+- `DEFAULT_ADMIN_PASSWORD` não possui valor padrão hardcoded no código-fonte e deve ser definido localmente.
+- O pacote mantém a postura de operação segura por padrão: nenhuma escrita real em Meta Ads deve ocorrer sem configuração deliberada e confirmação humana explícita.
+- Artefatos locais sensíveis, bancos, logs, backups e caches continuam excluídos do empacotamento versionado.
 
-## v1.0.0 — Empacotamento final
+## Limitações conhecidas
 
-### Documentação de release
+- O projeto roda localmente; não há deploy de produção ou pipeline CI/CD configurado neste repositório.
+- Não há frontend web implementado; a interface operacional é a API/Swagger.
+- Billing, multi-tenant, API pública comercial, conectores externos reais, Vector DB e compliance SaaS permanecem como especificações/readiness local, não como funcionalidades reais em produção.
+- A validação completa registrada pelo projeto indica `261 passed`, mas deve ser reexecutada em ambiente Python 3.11+ antes de uma homologação operacional final independente.
 
-- Adicionado este `CHANGELOG_v1.0.md` para registrar a v1.0.0 a partir do histórico Git real.
-- Adicionado `RELEASE_NOTES_v1.0.md` com escopo, limitações conhecidas e regras operacionais de segurança da v1.0.0.
-- Atualizado `VERSION` de `0.1.0` para `1.0.0`.
+## Alterado
 
-### Homologação e relatórios C06/R13/R14
+- `VERSION` atualizado de `0.1.0` para `1.0.0`.
 
-- `b48361e` adicionou os relatórios `C06_PYTEST_REPORT.md`, `FAILURE_TEST_REPORT.md` e `SECURITY_FINAL_TEST_REPORT.md`.
-- `b48361e` adicionou `src/app/tests/test_r13_failure_scenarios.py` para cenários de falha controlada.
-- `b48361e` adicionou `src/app/tests/test_r14_security_final.py` para validações finais de segurança.
+## Removido
 
-### C03 — Guard de IA pesada no vídeo
-
-- `1ba2053` aplicou o guard de IA pesada no fluxo de vídeo.
-- `808ba57` mesclou o PR #1 relacionado ao guard de vídeo.
-
-### R12 — Fluxo completo raiz-a-raiz
-
-- `5938df5` adicionou o teste/relatório do fluxo completo raiz-a-raiz com evidência HTTP real (`FULL_ROOT_E2E_REPORT.md`).
-- `7cb499e` restaurou arquivos truncados e atualizou guardrails/documentação no follow-up pós-R12.
-
-### C04 — Guardrails Meta antes de escrita real
-
-- `cd32e56` corrigiu 3 caminhos sem guardrail `meta_env`/`META_ALLOW_PRODUCTION_REAL` antes de escrita real na Meta.
-
-### C01/C02 e R01-R11
-
-- `c44bea6` registrou testes raiz completos e correções críticas pós-parecer da arquiteta para R01-R11 + C01 + C02.
-- `45181dd` adicionou arquivos de follow-up de C01/C02 que haviam ficado fora do commit anterior por cache desatualizado do Git.
-
-### Higiene do repositório
-
-- `700bf36` ajustou segurança no `.gitignore`.
-
-## Observações de corte
-
-- Este changelog não declara funcionalidades novas além do que o Git local registra.
-- A geração de pacote `.zip` não faz parte da F07; ficará para Douglas via GitHub Release após merge.
-- A v1.0.0 mantém as limitações e regras operacionais descritas em `RELEASE_NOTES_v1.0.md`.
+- Nenhum arquivo de código ou documentação existente foi removido neste empacotamento.

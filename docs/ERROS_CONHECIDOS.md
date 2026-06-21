@@ -12,7 +12,7 @@
 ## Riscos operacionais ainda abertos
 
 - Falta teste de carga 10/50/100 execucoes.
-- Rollback real continua bloqueado sem confirmacao humana, Brain/Brian, credenciais reais e execucao assistida.
+- Rollback real continua bloqueado sem confirmacao humana, Brain, credenciais reais e execucao assistida.
 - Python real nao esta disponivel neste laptop; `python.exe`, `py.exe` e `python3.exe` apontam para aliases bloqueados da Microsoft Store.
 
 ## Resolvido na Missao 27
@@ -27,7 +27,7 @@
 
 - Politica formal de rollback de producao criada.
 - Endpoint `/api/v1/campaign-operator/rollback/policy` validado.
-- Rollback real continua protegido por confirmacao humana e Brain/Brian.
+- Rollback real continua protegido por confirmacao humana e Brain.
 
 ## Regras
 

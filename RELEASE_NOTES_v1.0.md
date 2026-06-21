@@ -1,67 +1,3 @@
-# RELEASE NOTES v1.0.0
-
-## Visão geral
-
-A versão 1.0.0 representa o empacotamento final de homologação do Projeto Automação após a sequência C06/R13/R14 e os commits já registrados no histórico local. Esta missão F07 não cria funcionalidade nova: apenas consolida documentação de release e atualiza a versão para `1.0.0`.
-
-## Evidência real usada
-
-Histórico Git local conferido:
-
-```bash
-git log --oneline --reverse --max-count=10
-```
-
-```text
-700bf36 ajuste de seguranca no gitignore
-c44bea6 R01-R11 + C01 + C02: testes raiz completos + correcoes criticas pos-parecer da arquiteta
-45181dd C01/C02 follow-up: inclui 2 arquivos que ficaram fora do commit c44bea6 por cache desatualizado do git
-cd32e56 C04: corrige 3 caminhos sem guardrail meta_env/META_ALLOW_PRODUCTION_REAL antes de escrita real na Meta
-585537a docs: plano mestre de finalizacao + briefing formal para o Codex (C03/C06/R13/R14), com protocolo de revisao do chefe
-5938df5 R12: teste do fluxo completo raiz-a-raiz com evidencia HTTP real (FULL_ROOT_E2E_REPORT.md)
-7cb499e follow-up pos-R12: restaura arquivos truncados + guardrails C04 + docs atualizados
-1ba2053 C03 aplica guard de IA pesada no video
-808ba57 Merge pull request #1 from Douglassrf/codex/corrigir-guard-de-ia-pesada-na-rota-de-video
-b48361e Add R13/R14 security & failure tests and add C06/R13/R14 test run reports
-```
-
-Relatórios de teste/versionamento usados como evidência:
-
-- `C06_PYTEST_REPORT.md`: suíte completa pós-C03 com `269 collected`, `266 passed`, `3 failed`, `3 warnings`.
-- `FAILURE_TEST_REPORT.md`: R13 isolada com `9 passed`, e suíte completa pós-R13 com `278 collected`, `275 passed`, `3 failed`, `3 warnings`.
-- `SECURITY_FINAL_TEST_REPORT.md`: R14 isolada com `5 passed`, auditoria de segredos liberada, e suíte completa pós-R14 com `283 collected`, `280 passed`, `3 failed`, `3 warnings`.
-
-## O que a v1.0.0 cobre
-
-### Núcleo homologado e segurança operacional
-
-- C01/C02 e R01-R11: testes raiz completos e correções críticas registradas no commit `c44bea6`, com follow-up `45181dd`.
-- C03: guard de IA pesada aplicado no fluxo de vídeo e mesclado pelo PR #1 (`808ba57`).
-- C04: guardrails Meta adicionados antes de caminhos de escrita real na Meta (`cd32e56`).
-- R12: fluxo completo raiz-a-raiz documentado com evidência HTTP real (`5938df5`).
-- C06: execução de suíte pytest completa registrada com contagem real.
-- R13: cenários de falhas controladas documentados/testados sem rede real e sem apagar banco real.
-- R14: segurança final documentada/testada para RBAC, CORS, audit log imutável, AUTH_REQUIRED/JWT, secrets e flags Meta.
-
-### Documentação e pacote
-
-- `CHANGELOG_v1.0.md`: changelog factual baseado no Git log local.
-- `RELEASE_NOTES_v1.0.md`: notas de release v1.0.0.
-- `VERSION`: atualizado para `1.0.0`.
-
-## Limitações conhecidas
-
-### 1. Três falhas ambientais por ausência de FFmpeg
-
-A suíte completa pós-R14 registrou:
-
-```text
-collected 283 items
-...
-FAILED src/app/tests/test_ugc_processing.py::test_process_ugc_image - FileNot...
-FAILED src/app/tests/test_ugc_processing.py::test_process_ugc_video - FileNot...
-FAILED src/app/tests/test_video_pipeline.py::test_video_pipeline_renders_mp4_with_ffmpeg_fallback
-================== 3 failed, 280 passed, 3 warnings in 10.27s ==================
 ```
 
 Interpretação: as 3 falhas são ambientais por ausência do binário `ffmpeg`, já reproduzidas e documentadas desde C06/R13. Não foram tratadas como regressão funcional da v1.0.0.
@@ -111,3 +47,83 @@ Achados HIGH (possivel segredo hardcoded): 0
 ## Observação de empacotamento
 
 Nenhum `.zip` foi gerado nesta missão. A criação do GitHub Release e seus artefatos ficará com Douglas após merge.
+# RELEASE NOTES v1.0
+
+Versão: 1.0.0
+Data: 2026-06-20
+Projeto: AdIntelligence Pro / Projeto Automação
+
+## Resumo executivo
+
+A versão **1.0.0** formaliza o primeiro empacotamento estável do Projeto Automação como uma plataforma local de automação e inteligência para campanhas de anúncios, com operação segura por padrão e documentação explícita das funcionalidades reais, limitações e cuidados necessários.
+
+Este release é indicado para continuidade de desenvolvimento, validação local controlada e preparação de próximos ciclos de entrega. Ele não representa um SaaS em produção nem um ambiente com deploy público.
+
+## Principais capacidades entregues
+
+- Backend FastAPI local para automação e inteligência de campanhas.
+- Banco SQLite local com migração leve própria.
+- Autenticação local com JWT e senha armazenada com hash seguro.
+- Motor de mineração/análise de anúncios em modo controlado/local.
+- Geração e organização de conteúdo/criativos para campanhas.
+- Camada de decisão/aprendizado com eventos auditáveis.
+- Operador de campanhas Meta com guardrails rígidos antes de qualquer escrita real.
+- Auditoria e observabilidade com logs locais e identificadores de execução.
+- Documentação operacional, arquitetura, comandos, segurança, testes e continuidade.
+
+## Postura de segurança do release
+
+A versão 1.0.0 mantém a filosofia de segurança do projeto:
+
+- dry-run por padrão;
+- nenhuma credencial real versionada;
+- `.env` local obrigatório para segredos;
+- senha administrativa padrão removida do código-fonte;
+- confirmações humanas explícitas para qualquer ação real de risco;
+- arquivos locais sensíveis fora do Git.
+
+## Itens que não fazem parte da entrega produtiva v1.0
+
+Os seguintes tópicos existem como documentação, planejamento ou readiness local, mas não devem ser tratados como funcionalidades produtivas reais nesta versão:
+
+- frontend enterprise;
+- billing real;
+- multi-tenant real;
+- API pública comercial em produção;
+- conectores externos reais;
+- Vector DB produtivo;
+- compliance SaaS completo;
+- deploy em nuvem ou pipeline CI/CD.
+
+## Requisitos recomendados
+
+- Python 3.11+.
+- Ambiente virtual dedicado.
+- Variáveis de ambiente configuradas a partir de `.env.example`.
+- Execução dos testes antes de uso operacional relevante.
+
+## Como validar localmente
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate   # Windows/Git Bash
+python -m pip install -r requirements.txt
+cp .env.example .env
+# editar .env e definir DEFAULT_ADMIN_PASSWORD
+python -m pytest -p no:cacheprovider --basetemp .pytest_tmp
+```
+
+## Observações para operadores
+
+- Antes de qualquer uso com contas reais Meta Ads, revise `PROJECT_STATUS.md`, `README.md`, a documentação de segurança e as configurações de dry-run.
+- Não ative produção real sem autorização humana explícita por escrito, orçamento definido, objetivo claro e validação prévia dos payloads.
+- Reexecute a suíte de testes em Python 3.11+ para confirmar o estado local do ambiente antes da operação.
+
+## Arquivos de release
+
+- `VERSION`
+- `CHANGELOG_v1.0.md`
+- `RELEASE_NOTES_v1.0.md`
+- `README.md`
+- `PROJECT_STATUS.md`
+- `PACKAGE_MANIFEST.json`

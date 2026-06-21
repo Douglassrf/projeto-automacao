@@ -167,7 +167,7 @@ Antes de qualquer acao sensivel, validar ator, permissao, orcamento maximo, pais
 Regra:
 
 ```txt
-Nada de comando livre para Brain, Brian, Meta, IA paga ou execucao real.
+Nada de comando livre para Brain, Meta, IA paga ou execucao real.
 ```
 
 ### API Gateway

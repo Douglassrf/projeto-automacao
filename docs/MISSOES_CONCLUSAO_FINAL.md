@@ -12,7 +12,7 @@ Executar em modo economico e seguro:
 - nao repetir historico no chat;
 - nao acionar gasto real;
 - nao escrever na Meta enquanto houver bloqueio externo;
-- manter Cerebro/Brian como memoria, decisao e aprendizado.
+- manter Brain como memoria, decisao e aprendizado.
 
 ## Missoes
 

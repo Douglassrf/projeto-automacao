@@ -17,7 +17,8 @@ def sandbox_readiness_report(payload: dict[str, Any] | None = None) -> dict[str,
     security = security_hardening_status()
     gate = real_mode_readiness_gate(gate_payload)
     brain = security_brain_review(gate_payload)
-    sandbox_ready = security["status"] == "active_safe_mode" and security["controls"] and all(security["controls"].values())
+    controls_active = bool(security["controls"]) and all(security["controls"].values())
+    sandbox_ready = security["status"] == "active_safe_mode" and controls_active
 
     blockers = list(gate["blocked_reasons"])
     production_blockers = sorted(set(blockers + ["requires_separate_sandbox_or_test_account", "requires_final_human_confirmation"]))
@@ -26,7 +27,7 @@ def sandbox_readiness_report(payload: dict[str, Any] | None = None) -> dict[str,
         "status": "ready_for_sandbox_review" if sandbox_ready else "blocked",
         "sandbox_ready": sandbox_ready,
         "production_ready": False,
-        "security_controls_active": all(security["controls"].values()),
+        "security_controls_active": controls_active,
         "real_mode_gate_status": gate["status"],
         "sandbox_recommendation": (
             "Usar somente sandbox Meta ou conta de anuncio separada, campanha pausada e orcamento minimo aprovado."
