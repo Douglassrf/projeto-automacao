@@ -2,6 +2,10 @@ import time
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.db.session import engine
 
 from app.api.router import api_router
 from app.core.api_gateway import api_gateway_guard
@@ -87,7 +91,20 @@ def root():
 
 @app.get("/health")
 def health():
-    return {"ok": True, "motor": "ligado"}
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except SQLAlchemyError as exc:
+        return JSONResponse(
+            status_code=503,
+            content={
+                "ok": False,
+                "status": "unhealthy",
+                "database": "unavailable",
+                "detail": type(exc).__name__,
+            },
+        )
+    return {"ok": True, "status": "healthy", "database": "ok", "motor": "ligado"}
 
 
 @app.get("/diagnostics")
