@@ -40,8 +40,8 @@ def test_r14_auth_required_default_and_jwt_roundtrip_are_validated():
     assert "exp" in payload
 
 
-def test_r14_cors_middleware_remains_absent_and_no_cors_headers_are_emitted():
-    assert not any(middleware.cls is CORSMiddleware for middleware in app.user_middleware)
+def test_r14_cors_middleware_is_restrictive_and_blocks_unlisted_origins():
+    assert any(middleware.cls is CORSMiddleware for middleware in app.user_middleware)
 
     with TestClient(app) as client:
         response = client.options(
@@ -52,6 +52,7 @@ def test_r14_cors_middleware_remains_absent_and_no_cors_headers_are_emitted():
             },
         )
 
+    assert response.status_code == 400
     assert "access-control-allow-origin" not in {key.lower() for key in response.headers}
 
 

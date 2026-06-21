@@ -60,6 +60,42 @@ class InMemoryRateLimiter:
         self.rules = rules or DEFAULT_RATE_LIMIT_RULES
         self._events: dict[str, list[datetime]] = {}
 
+    @classmethod
+    def from_settings(cls, settings) -> "InMemoryRateLimiter":
+        rules = {
+            "login": RateLimitRule(
+                "login",
+                limit=settings.rate_limit_login_limit,
+                window_seconds=settings.rate_limit_login_window_seconds,
+                scope=RateLimitScope.IP,
+            ),
+            "sensitive_command": RateLimitRule(
+                "sensitive_command",
+                limit=settings.rate_limit_sensitive_limit,
+                window_seconds=settings.rate_limit_sensitive_window_seconds,
+                scope=RateLimitScope.USER,
+            ),
+            "ai_heavy": RateLimitRule(
+                "ai_heavy",
+                limit=settings.rate_limit_ai_heavy_limit,
+                window_seconds=settings.rate_limit_ai_heavy_window_seconds,
+                scope=RateLimitScope.USER,
+            ),
+            "meta_api": RateLimitRule(
+                "meta_api",
+                limit=settings.rate_limit_meta_api_limit,
+                window_seconds=settings.rate_limit_meta_api_window_seconds,
+                scope=RateLimitScope.ACTION,
+            ),
+            "agent_internal": RateLimitRule(
+                "agent_internal",
+                limit=settings.rate_limit_default_limit,
+                window_seconds=settings.rate_limit_default_window_seconds,
+                scope=RateLimitScope.AGENT,
+            ),
+        }
+        return cls(rules)
+
     def check(self, rule_name: str, identifier: str, *, now: datetime | None = None) -> RateLimitResult:
         if rule_name not in self.rules:
             raise KeyError(f"Rate limit rule nao registrada: {rule_name}")

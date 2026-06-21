@@ -8,6 +8,18 @@ class Settings(BaseSettings):
     app_name: str = "AdIntelligence Pro"
     database_url: str = "sqlite:///./adintelligence.db"
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_allow_credentials: bool = True
+    rate_limit_enabled: bool = True
+    rate_limit_login_limit: int = 5
+    rate_limit_login_window_seconds: int = 15 * 60
+    rate_limit_sensitive_limit: int = 10
+    rate_limit_sensitive_window_seconds: int = 60 * 60
+    rate_limit_ai_heavy_limit: int = 20
+    rate_limit_ai_heavy_window_seconds: int = 24 * 60 * 60
+    rate_limit_meta_api_limit: int = 60
+    rate_limit_meta_api_window_seconds: int = 60 * 60
+    rate_limit_default_limit: int = 120
+    rate_limit_default_window_seconds: int = 60 * 60
     affiliate_network: str = "generic"
     affiliate_api_key: str | None = None
     affiliate_api_secret: str | None = None
@@ -113,6 +125,7 @@ class Settings(BaseSettings):
     render_worker_queue: str = "render-premium"
     sentry_dsn: str | None = None
     observability_enabled: bool = True
+    observability_log_level: str = "INFO"
     premium_render_output_dir: str = "/data/premium_renders"
     premium_render_dry_run: bool = True
     premium_render_provider_image: str = "local_ffmpeg"
