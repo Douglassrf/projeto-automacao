@@ -50,6 +50,8 @@ ROUTE_MODULES = [
     "dashboard",
 ]
 
+ROUTE_MODULES.append("mission_orchestrator")
+
 @api_router.get("/health")
 def api_health_check():
     return {"status": "ok", "scope": "api", "loaded_routes": len(LOADED_ROUTES), "failed_routes": len(FAILED_ROUTES)}
