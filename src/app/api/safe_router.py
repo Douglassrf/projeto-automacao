@@ -47,6 +47,7 @@ ROUTE_MODULES = [
     "campaign_intelligence",
     "campaign_intelligence_safe",
     "global_intelligence",
+    "mission_orchestrator",
 ]
 
 @api_router.get("/health")
