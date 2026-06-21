@@ -113,6 +113,7 @@ class Settings(BaseSettings):
     render_worker_queue: str = "render-premium"
     sentry_dsn: str | None = None
     observability_enabled: bool = True
+    observability_log_level: str = "INFO"
     premium_render_output_dir: str = "/data/premium_renders"
     premium_render_dry_run: bool = True
     premium_render_provider_image: str = "local_ffmpeg"
