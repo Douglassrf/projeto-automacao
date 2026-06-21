@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import time
+from collections import defaultdict
 from contextlib import contextmanager
 from datetime import datetime, timezone
 UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
@@ -17,6 +18,9 @@ from app.core.immutable_audit import ImmutableAuditLog
 
 _LOGGER = logging.getLogger("adintelligence.observability")
 _INITIALIZED = False
+_METRICS: dict[str, dict[str, float]] = defaultdict(
+    lambda: {"count": 0, "errors": 0, "total_latency_ms": 0.0, "max_latency_ms": 0.0}
+)
 
 
 def init_observability() -> None:
@@ -299,3 +303,79 @@ def health_dashboard(limit: int = 10) -> dict[str, Any]:
             "uses_mission_id": True,
         },
     }
+
+
+def record_http_metric(*, method: str, path: str, status_code: int, latency_ms: float) -> None:
+    route_key = f"{method.upper()} {path}"
+    bucket = _METRICS[route_key]
+    bucket["count"] += 1
+    if status_code >= 500:
+        bucket["errors"] += 1
+    bucket["total_latency_ms"] += latency_ms
+    bucket["max_latency_ms"] = max(bucket["max_latency_ms"], latency_ms)
+
+
+def metrics_snapshot() -> dict[str, Any]:
+    routes: dict[str, dict[str, float]] = {}
+    total_requests = 0
+    total_errors = 0
+    for route, values in sorted(_METRICS.items()):
+        count = int(values["count"])
+        total_requests += count
+        total_errors += int(values["errors"])
+        avg_latency = values["total_latency_ms"] / count if count else 0.0
+        routes[route] = {
+            "requests_total": count,
+            "errors_total": int(values["errors"]),
+            "latency_avg_ms": round(avg_latency, 2),
+            "latency_max_ms": round(values["max_latency_ms"], 2),
+        }
+    return {
+        "format": "json",
+        "requests_total": total_requests,
+        "errors_total": total_errors,
+        "routes": routes,
+    }
+
+
+def reset_metrics() -> None:
+    _METRICS.clear()
+
+
+def component_health_snapshot(engine_override: Any | None = None) -> dict[str, Any]:
+    from sqlalchemy import text
+    from sqlalchemy.exc import SQLAlchemyError
+
+    from app.db.session import SessionLocal, engine
+    from app.services.queue_service import QueueService
+
+    components: dict[str, Any] = {}
+    try:
+        database_engine = engine_override or engine
+        with database_engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+        components["database"] = {"status": "ok"}
+    except SQLAlchemyError as exc:
+        components["database"] = {"status": "unavailable", "detail": type(exc).__name__}
+
+    db = SessionLocal()
+    try:
+        components["queue"] = {"status": "ok", **QueueService(db).stats()}
+    except Exception as exc:
+        components["queue"] = {"status": "unavailable", "detail": type(exc).__name__}
+    finally:
+        db.close()
+
+    audit = immutable_audit_health()
+    components["audit"] = {
+        "status": "ok" if audit.get("hash_chain_ok") else "unavailable",
+        "hash_chain_ok": audit.get("hash_chain_ok"),
+        "total_events": audit.get("total_events"),
+        "reason": audit.get("reason"),
+    }
+    status = "ready" if all(item.get("status") == "ok" for item in components.values()) else "degraded"
+    return {"status": status, "components": components, "dashboard": health_dashboard(limit=5)}
+
+
+def operational_dashboard_snapshot() -> dict[str, Any]:
+    return component_health_snapshot()

@@ -4,6 +4,7 @@
 - CORS centralizado no app FastAPI com `CORSMiddleware`, allowlist explícita via `CORS_ORIGINS` e sem wildcard por padrão.
 - Rate limiting HTTP configurável por variáveis de ambiente, reaproveitando o guard central existente da API.
 - Respostas bloqueadas por rate limit mantêm status `429` e agora incluem o header `Retry-After`.
+- Conflito de `src/app/main.py` resolvido preservando métricas HTTP (`record_http_metric`) e health snapshot operacional (`component_health_snapshot`) já presentes na branch `master`.
 - Variáveis novas documentadas em `.env.example`, sem segredos reais.
 - Testes automatizados adicionados para:
   - Origin permitida pela allowlist de CORS.
@@ -66,7 +67,7 @@ src/app/tests/test_production_hardening_review.py::test_production_hardening_can
     decoded = self.decode_complete(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-289 passed, 3 warnings in 14.20s
+289 passed, 3 warnings in 12.58s
 ```
 
 ## Limitações conhecidas

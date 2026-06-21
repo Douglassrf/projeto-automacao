@@ -4,15 +4,12 @@ from datetime import datetime, timezone
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
-
 from app.db.session import engine
 
 from app.api.router import api_router
 from app.core.api_gateway import api_gateway_guard
 from app.core.config import get_settings
-from app.services.observability import log_event, trace_context
+from app.services.observability import component_health_snapshot, log_event, record_http_metric, trace_context
 
 
 app = FastAPI(title="Projeto Automacao - Runtime Seguro", version="1.0.0-final")
@@ -54,6 +51,7 @@ async def observability_trace_middleware(request: Request, call_next):
     gateway_decision = None if api_gateway_guard.should_bypass(request) else api_gateway_guard.evaluate(request)
     if gateway_decision is not None and not gateway_decision.allowed:
         latency_ms = (time.perf_counter() - start) * 1000
+        record_http_metric(method=request.method, path=request.url.path, status_code=429, latency_ms=latency_ms)
         log_event(
             "http_request",
             status="blocked",
@@ -87,6 +85,7 @@ async def observability_trace_middleware(request: Request, call_next):
         response = await call_next(request)
     except Exception as exc:
         latency_ms = (time.perf_counter() - start) * 1000
+        record_http_metric(method=request.method, path=request.url.path, status_code=500, latency_ms=latency_ms)
         log_event(
             "http_request",
             status="error",
@@ -96,6 +95,9 @@ async def observability_trace_middleware(request: Request, call_next):
         )
         raise
     latency_ms = (time.perf_counter() - start) * 1000
+    record_http_metric(
+        method=request.method, path=request.url.path, status_code=response.status_code, latency_ms=latency_ms
+    )
     log_event(
         "http_request",
         status="ok" if response.status_code < 500 else "error",
@@ -120,17 +122,16 @@ def root():
 
 @app.get("/health")
 def health():
-    try:
-        with engine.connect() as connection:
-            connection.execute(text("SELECT 1"))
-    except SQLAlchemyError as exc:
+    snapshot = component_health_snapshot(engine_override=engine)
+    database = snapshot["components"].get("database", {})
+    if database.get("status") != "ok":
         return JSONResponse(
             status_code=503,
             content={
                 "ok": False,
                 "status": "unhealthy",
                 "database": "unavailable",
-                "detail": type(exc).__name__,
+                "detail": database.get("detail"),
             },
         )
     return {"ok": True, "status": "healthy", "database": "ok", "motor": "ligado"}
