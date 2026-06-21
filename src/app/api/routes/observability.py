@@ -3,7 +3,14 @@ from fastapi import APIRouter, Depends
 from app.api.deps import get_current_user
 from app.domain.models import User
 from app.services.load_test_mission27a import run_mission27a_load_test
-from app.services.observability import audit_event, health_dashboard, observability_health, trace_context
+from app.services.observability import (
+    audit_event,
+    component_health_snapshot,
+    health_dashboard,
+    metrics_snapshot,
+    observability_health,
+    trace_context,
+)
 
 router = APIRouter(prefix="/observability", tags=["Observability"])
 
@@ -16,6 +23,16 @@ def get_observability_health(current_user: User = Depends(get_current_user)):
 @router.get("/dashboard")
 def get_observability_dashboard(current_user: User = Depends(get_current_user)):
     return health_dashboard()
+
+
+@router.get("/metrics")
+def get_observability_metrics(current_user: User = Depends(get_current_user)):
+    return metrics_snapshot()
+
+
+@router.get("/readiness")
+def get_observability_readiness(current_user: User = Depends(get_current_user)):
+    return component_health_snapshot()
 
 
 @router.post("/audit")
