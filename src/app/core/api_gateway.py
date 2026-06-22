@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from fastapi import Request
 
+from app.core.config import get_settings
 from app.core.rate_limit import InMemoryRateLimiter, RateLimitResult
 
 
@@ -17,9 +18,13 @@ class GatewayDecision:
 
 class ApiGatewayGuard:
     def __init__(self, limiter: InMemoryRateLimiter | None = None) -> None:
-        self.limiter = limiter or InMemoryRateLimiter()
+        settings = get_settings()
+        self.enabled = settings.rate_limit_enabled
+        self.limiter = limiter or InMemoryRateLimiter.from_settings(settings)
 
     def should_bypass(self, request: Request) -> bool:
+        if not self.enabled:
+            return True
         user_agent = request.headers.get("user-agent", "").lower()
         return "testclient" in user_agent
 

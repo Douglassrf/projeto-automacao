@@ -1,15 +1,43 @@
 import time
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.db.session import engine
 
 from app.api.router import api_router
 from app.core.api_gateway import api_gateway_guard
+from app.core.config import get_settings
 from app.services.observability import component_health_snapshot, log_event, record_http_metric, trace_context
 
 
 app = FastAPI(title="Projeto Automacao - Runtime Seguro", version="1.0.0-final")
+settings = get_settings()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins,
+    allow_credentials=settings.cors_allow_credentials,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "X-Correlation-ID",
+        "X-Execution-ID",
+        "X-Mission-ID",
+        "X-Actor",
+        "X-User-ID",
+    ],
+)
+
+
+def _retry_after_seconds(reset_at: str) -> str:
+    try:
+        reset_time = datetime.fromisoformat(reset_at)
+    except ValueError:
+        return "60"
+    now = datetime.now(timezone.utc)
+    return str(max(1, int((reset_time - now).total_seconds())))
 
 
 @app.middleware("http")
@@ -50,6 +78,7 @@ async def observability_trace_middleware(request: Request, call_next):
                 "x-mission-id": context["mission_id"],
                 "x-rate-limit-rule": gateway_decision.rule,
                 "x-rate-limit-remaining": str(gateway_decision.rate_limit.remaining),
+                "Retry-After": _retry_after_seconds(gateway_decision.rate_limit.reset_at),
             },
         )
     try:
