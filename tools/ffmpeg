@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+"""Tiny ffmpeg-compatible test shim for environments without ffmpeg.
+
+It supports only the command shapes used by this repository's tests: lavfi color
+fixtures, image/video optimization, and the local video pipeline's two-step
+render/mux flow. It is intentionally placed in tools/ and exposed to tests by
+conftest.py; production code should continue using a real ffmpeg binary.
+"""
+from __future__ import annotations
+
+import base64
+import sys
+from pathlib import Path
+
+PNG_1X1 = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lK3Q3wAAAABJRU5ErkJggg=="
+)
+DUMMY_MP4 = b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom" + (b"\x00" * 4096)
+
+
+def _last_output(argv: list[str]) -> Path:
+    for value in reversed(argv[1:]):
+        if not value.startswith("-"):
+            return Path(value)
+    raise SystemExit("ffmpeg test shim: no output path supplied")
+
+
+def main(argv: list[str]) -> int:
+    if "-version" in argv:
+        print("ffmpeg test-shim 0.1")
+        return 0
+
+    output = _last_output(argv)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    suffix = output.suffix.lower()
+
+    if suffix in {".png", ".jpg", ".jpeg", ".webp"}:
+        output.write_bytes(PNG_1X1)
+    else:
+        # The project tests only assert that a non-empty mp4-like artifact exists.
+        output.write_bytes(DUMMY_MP4)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))
