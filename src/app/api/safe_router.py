@@ -41,6 +41,7 @@ ROUTE_MODULES = [
     "cache",
     "diagnostics",
     "resources",
+    "system_alerts",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

@@ -319,3 +319,25 @@ class MetaActionRequest(Base):
     executed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     campaign: Mapped[Campaign] = relationship()
+
+
+class AlertEvent(Base):
+    """Missao 46 - Sistema de Alertas.
+
+    Diferenca em relacao ao diagnostico (Missao 44, sem estado): aqui um
+    problema detectado vira um EVENTO que permanece "open" enquanto o
+    check correspondente nao voltar a status ok, e e marcado "resolved"
+    quando volta. No maximo um evento "open" por check_name por vez
+    (de-duplicacao - ver AlertService.evaluate()), para nao gerar uma
+    linha nova a cada reavaliacao do mesmo problema continuo."""
+
+    __tablename__ = "alert_events"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    check_name: Mapped[str] = mapped_column(String(80), index=True)
+    severity: Mapped[str] = mapped_column(String(20), index=True)
+    message: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(20), default="open", index=True)
+    first_seen_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), index=True)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

@@ -135,6 +135,9 @@ class Settings(BaseSettings):
     # Missao 45 - Gerenciamento de Recursos.
     resource_job_retention_days: int = 30
 
+    # Missao 46 - Sistema de Alertas.
+    alert_history_default_limit: int = 50
+
 
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024

@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "1.4.0"
+CONFIG_SCHEMA_VERSION = "1.5.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.
@@ -228,6 +228,12 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
     if settings.resource_job_retention_days < 1:
         issues.append(
             f"resource_job_retention_days={settings.resource_job_retention_days}: precisa ser >= 1."
+        )
+
+    # Missao 46 - Sistema de Alertas.
+    if settings.alert_history_default_limit < 1:
+        issues.append(
+            f"alert_history_default_limit={settings.alert_history_default_limit}: precisa ser >= 1."
         )
 
     return issues

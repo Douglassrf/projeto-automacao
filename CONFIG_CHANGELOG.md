@@ -7,6 +7,42 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.5.0 — 2026-06-27 (Missão 46)
+
+Adiciona o Sistema de Alertas: a contraparte com **estado** do Diagnóstico
+Automático (Missão 44, sem estado — recalcula tudo do zero a cada chamada).
+Novo modelo `AlertEvent` (tabela `alert_events`, criada automaticamente por
+`Base.metadata.create_all()` no schema do banco — sem necessidade de
+Alembic) e `AlertService`, que chama
+`DiagnosticsService.run_full_diagnostics()` (Missão 44) e converte cada
+check não-`ok` em um evento: abre um evento novo (`status="open"`) na
+primeira falha de um `check_name`; em falhas repetidas do mesmo check,
+atualiza severidade/mensagem do evento já aberto em vez de duplicar
+(de-duplicação por `check_name`); quando o check volta a `ok`, marca o
+evento aberto como `status="resolved"` com `resolved_at`. Se o mesmo check
+falhar de novo depois de resolvido, abre um evento novo — o histórico
+preserva ambos.
+
+Campo novo em `Settings`:
+
+- `alert_history_default_limit` (default `50`): quantidade de eventos
+  retornados por `AlertService.history()` quando chamado sem `limit`
+  explícito.
+
+Nova regra em `validate_settings()` (todos os perfis):
+`alert_history_default_limit` >= 1.
+
+Três rotas novas em `/system-alerts` (`safe_router.py`):
+`POST /system-alerts/evaluate` (roda a avaliação e persiste),
+`GET /system-alerts/active` (eventos com `status="open"`),
+`GET /system-alerts/history` (`?limit=`, eventos abertos e resolvidos,
+mais recentes primeiro).
+
+Arquivos modificados: `src/app/domain/models.py`, `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/alert_service.py`,
+`src/app/schemas/system_alerts.py`, `src/app/api/routes/system_alerts.py`.
+
 ## 1.4.0 — 2026-06-27 (Missão 45)
 
 Adiciona configuração do Gerenciamento de Recursos (limpeza ativa do que o
