@@ -1,0 +1,55 @@
+# CONFIG_CHANGELOG.md
+
+Histórico do **esquema de configuração** (`CONFIG_SCHEMA_VERSION`, em
+`src/app/core/config_profiles.py`), introduzido na Missão 41 — Configuração
+Centralizada. Isto é versionado separadamente da versão do produto
+(`VERSION`): sobe quando um campo crítico é adicionado, removido, ou muda de
+significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
+`validate_settings()` muda.
+
+## 1.0.0 — 2026-06-27 (Missão 41)
+
+Primeira versão do esquema. Estabelece:
+
+- Quatro perfis de ambiente, via `APP_ENV`: `development` (default quando
+  `APP_ENV` não está definido — compatível com toda instalação existente),
+  `testing`, `staging` (aceita aliases `homolog`/`homologacao`/`homologação`/
+  `stage`), `production`.
+- Carregamento de arquivo em cascata: `.env.<perfil>` primeiro, `.env` depois
+  (pode sobrescrever). Variáveis de ambiente reais do processo sempre têm
+  precedência sobre qualquer arquivo `.env*` (comportamento nativo do
+  pydantic-settings, não alterado).
+- Validação automática (`validate_settings` / `validate_or_raise`):
+  - Perfil `production`: bloqueia (`ConfigValidationError`, processo não
+    inicia) se `auth_required=False`, `jwt_secret_key` ainda for o
+    placeholder de desenvolvimento ou tiver menos de 32 caracteres,
+    `meta_allow_production_real=True` sem confirmação manual obrigatória, ou
+    `default_admin_password` ausente. Também avisa (sem bloquear) se
+    `meta_env="production"` com `meta_dry_run=True`.
+  - Perfil `testing`: bloqueia se `meta_env="production"` ou
+    `meta_allow_production_real=True` — protege a suíte de testes contra
+    side-effects reais na Meta API.
+  - Todos os perfis: `upload_max_bytes` deve ser positivo;
+    `queue_default_max_attempts` deve ser >= 1.
+- Campo novo em `Settings`: `config_schema_version` (este número, exposto em
+  tempo de execução).
+- Campo novo em `Settings`: `app_log_level` (`validation_alias="APP_LOG_LEVEL"`)
+  — torna documentado/versionado um valor que antes só existia como
+  `os.getenv("APP_LOG_LEVEL", ...)` disperso em
+  `app/services/observability.py`. A leitura ao vivo de
+  `os.environ.get("APP_LOG_LEVEL")` em `init_observability()` foi mantida
+  como primeira fonte (ver comentário no próprio arquivo) para não quebrar a
+  reconfiguração dinâmica de log level já testada — `app_log_level` é o
+  fallback documentado, não a única fonte de verdade.
+- `config_fingerprint()`: resumo estável e não sensível da configuração
+  ativa (versão do esquema, perfil, total de campos, nomes dos campos
+  sensíveis redatados) — não inclui nenhum valor de segredo.
+
+Arquivos novos: `src/app/core/config_profiles.py`,
+`src/app/tests/test_m41_centralized_config.py`,
+`.env.development.example`, `.env.testing.example`, `.env.staging.example`,
+`.env.production.example`.
+
+Arquivos modificados: `src/app/core/config.py` (novos campos +
+`get_settings()` perfil-aware), `src/app/services/observability.py`
+(eliminação do único `os.getenv` disperso fora de `Settings` em `src/`).

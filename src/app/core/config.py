@@ -1,10 +1,24 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.core.config_profiles import (
+    CONFIG_SCHEMA_VERSION,
+    detect_environment,
+    env_file_candidates,
+    validate_or_raise,
+)
 
 
 class Settings(BaseSettings):
+    # Missao 41 - Configuracao Centralizada: versao do esquema de config,
+    # nao da aplicacao. Ver CONFIG_CHANGELOG.md.
+    config_schema_version: str = CONFIG_SCHEMA_VERSION
+    # Migrado de um os.getenv("APP_LOG_LEVEL", ...) disperso em
+    # app/services/observability.py. None = usa observability_log_level.
+    app_log_level: str | None = Field(default=None, validation_alias="APP_LOG_LEVEL")
     app_name: str = "AdIntelligence Pro"
     database_url: str = "sqlite:///./adintelligence.db"
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
@@ -142,7 +156,20 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    """Carrega Settings com perfil de ambiente (Missao 41).
+
+    Compatibilidade garantida: se a variavel de ambiente APP_ENV nao estiver
+    definida (caso de toda instalacao existente hoje), o perfil resolvido e
+    "development" e os unicos arquivos candidatos sao (".env.development",
+    ".env") - como ".env.development" tipicamente nao existe, o
+    pydantic-settings o ignora silenciosamente e o comportamento final e
+    identico ao de antes (carregar so ".env"). Variaveis de ambiente reais
+    do processo continuam tendo precedencia sobre qualquer arquivo .env*.
+    """
+    environment = detect_environment()
+    settings = Settings(_env_file=env_file_candidates(environment))
+    validate_or_raise(settings, environment)
+    return settings
 
 
 def project_root() -> Path:
