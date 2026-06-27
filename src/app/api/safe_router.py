@@ -48,7 +48,6 @@ ROUTE_MODULES = [
     "campaign_intelligence_safe",
     "global_intelligence",
     "dashboard",
-    "enterprise_certification",
 ]
 
 ROUTE_MODULES.append("mission_orchestrator")
