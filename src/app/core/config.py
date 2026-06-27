@@ -122,6 +122,11 @@ class Settings(BaseSettings):
     queue_starvation_threshold_seconds: int = 600
     queue_failure_rate_threshold: float = 0.5
 
+    # Missao 43 - Cache Inteligente.
+    cache_default_ttl_seconds: int = 300
+    cache_max_entries_per_namespace: int = 1000
+    cache_backend: str = "sqlite"
+
 
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024

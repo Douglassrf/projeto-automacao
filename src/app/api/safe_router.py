@@ -38,6 +38,7 @@ ROUTE_MODULES = [
     "orchestration_safe",
     "serverless_render",
     "queue",
+    "cache",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

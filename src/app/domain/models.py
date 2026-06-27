@@ -87,6 +87,47 @@ class QueueJob(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), index=True)
 
 
+class CacheEntry(Base):
+    """Missao 43 - Cache Inteligente.
+
+    Cache zero-custo (SQLite) com contrato simples de chave/valor, TTL
+    opcional e namespace para invalidacao em lote - sem depender de
+    Redis/KeyDB. `hits` e usado tanto para estatisticas quanto para a
+    politica de evicao por LRU (least-recently-used), olhando
+    last_accessed_at, nao para decidir o que evitar por frequencia."""
+
+    __tablename__ = "cache_entries"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    namespace: Mapped[str] = mapped_column(String(80), default="default", index=True)
+    cache_key: Mapped[str] = mapped_column(String(255), index=True)
+    value_json: Mapped[str] = mapped_column(Text, default="null")
+    hits: Mapped[int] = mapped_column(Integer, default=0)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), index=True)
+    last_accessed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), index=True)
+
+
+class CacheStat(Base):
+    """Missao 43 - Cache Inteligente: contadores cumulativos por namespace.
+
+    Mantidos numa tabela separada (em vez de apenas agregar cache_entries)
+    porque hits/misses/evicoes/expiracoes precisam sobreviver a delecao das
+    entradas que os geraram - uma entrada evitada ou expirada nao deve fazer
+    a estatistica "desaparecer"."""
+
+    __tablename__ = "cache_stats"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    namespace: Mapped[str] = mapped_column(String(80), unique=True, index=True)
+    total_hits: Mapped[int] = mapped_column(Integer, default=0)
+    total_misses: Mapped[int] = mapped_column(Integer, default=0)
+    total_sets: Mapped[int] = mapped_column(Integer, default=0)
+    total_evictions: Mapped[int] = mapped_column(Integer, default=0)
+    total_expired_purged: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+
+
 class ContentWorkflow(Base):
     __tablename__ = "content_workflows"
 

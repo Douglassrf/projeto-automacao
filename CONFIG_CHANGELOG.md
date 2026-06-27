@@ -7,6 +7,36 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.2.0 — 2026-06-27 (Missão 43)
+
+Adiciona configuração do Cache Inteligente (cache zero-custo via SQLite).
+Campos novos em `Settings`:
+
+- `cache_default_ttl_seconds` (default `300`): TTL usado por `CacheService.set()`
+  quando `ttl_seconds` não é passado explicitamente.
+- `cache_max_entries_per_namespace` (default `1000`): limite por namespace
+  que aciona evicção LRU (least-recently-accessed) ao ser excedido.
+- `cache_backend` (default `"sqlite"`): identifica o backend ativo —
+  exposto em `CacheService.stats()["backend"]`, preparado para um futuro
+  backend real (KeyDB/Redis) sem mudar o contrato público.
+
+Novas regras em `validate_settings()` (todos os perfis):
+`cache_default_ttl_seconds` >= 1; `cache_max_entries_per_namespace` >= 1.
+Note que isso valida apenas o *default* da configuração — um chamador do
+`CacheService.set()` ainda pode pedir `ttl_seconds<=0` explicitamente para
+"sem expiração", o que é um comportamento por chamada, não um valor de
+configuração.
+
+Nenhum valor antigo muda de significado — apenas campos novos. Nenhuma
+funcionalidade de cache existia antes da Missão 43 (confirmado por
+varredura: zero ocorrências de "cache" relevantes no código antes desta
+missão).
+
+Arquivos modificados: `src/app/core/config.py`, `src/app/core/config_profiles.py`.
+Arquivos novos: `src/app/services/cache_service.py`, `src/app/schemas/cache.py`,
+`src/app/api/routes/cache.py`.
+
+
 ## 1.1.0 — 2026-06-27 (Missão 42)
 
 Adiciona configuração do backoff/diagnóstico da fila (Gerenciador

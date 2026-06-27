@@ -392,7 +392,11 @@ def test_job_response_exposes_next_attempt_at_field():
 
 
 def test_config_schema_version_bumped_for_mission_42():
-    assert CONFIG_SCHEMA_VERSION == "1.1.0"
+    # >= em vez de == : missoes posteriores (43+) bumpam CONFIG_SCHEMA_VERSION
+    # de novo, e esta suite roda sempre na HEAD mais recente - fixar "==1.1.0"
+    # quebraria a cada bump futuro por um motivo que nao e uma regressao real.
+    parts = tuple(int(p) for p in CONFIG_SCHEMA_VERSION.split("."))
+    assert parts >= (1, 1, 0)
 
 
 def test_validate_settings_rejects_backoff_base_below_one():
