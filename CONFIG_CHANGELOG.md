@@ -7,6 +7,44 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.7.0 — 2026-06-27 (Missão 48)
+
+Adiciona a Documentação Viva: em vez de um `.md` estático que alguém
+precisa lembrar de editar a cada mudança (o próprio `README.md` deste
+repositório afirma hoje "Requer Python 3.11+" e "261 passed" — nenhum dos
+dois reflete o estado atual, Python 3.10 real e 489+ testes após a Missão
+47), `DocumentationService` gera um snapshot a partir do estado vivo do
+sistema a cada chamada: rotas carregadas/falhas (reusa
+`LOADED_ROUTES`/`FAILED_ROUTES`/`ROUTE_MODULES` de `safe_router.py`, mesmo
+padrão de import tardio com fallback já usado por
+`observability.health_dashboard()`), schema de `Settings` via
+`model_fields` (introspecção real, não uma lista mantida à mão), o
+conteúdo atual do arquivo `VERSION`, e os problemas correntes de
+`validate_settings()` (Missão 41). Qualquer campo cujo nome contenha um
+marcador de segredo (`secret`/`password`/`token`/`key`) tem o valor
+redigido por padrão — correspondência por substring é deliberadamente
+conservadora (ex.: `access_token_expire_minutes` é redigido mesmo sem ser
+um segredo de fato) para nunca arriscar expor um segredo real por uma
+lista de nomes exatos incompleta.
+
+Campo novo em `Settings`:
+
+- `documentation_redact_secrets` (default `True`): controla se os
+  endpoints `/documentation/*` redigem valores de campos identificados
+  como segredo. Nunca deve ser `False` em produção.
+
+Nova regra em `validate_settings()` (perfil produção):
+`documentation_redact_secrets` não pode ser `False` em produção.
+
+Duas rotas novas em `/documentation` (`safe_router.py`):
+`GET /documentation/live` (snapshot JSON), `GET /documentation/markdown`
+(o mesmo snapshot renderizado como Markdown, `text/markdown`).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/documentation_service.py`,
+`src/app/schemas/documentation.py`, `src/app/api/routes/documentation.py`.
+
 ## 1.6.0 — 2026-06-27 (Missão 47)
 
 Adiciona o Sistema de Recuperação: a contraparte de **ação** do

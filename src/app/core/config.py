@@ -141,6 +141,11 @@ class Settings(BaseSettings):
     # Missao 47 - Testes de Recuperacao.
     recovery_max_jobs_per_sweep: int = 100
 
+    # Missao 48 - Documentacao Viva: por padrao, qualquer endpoint de
+    # documentacao viva redige (oculta) o valor real de campos que
+    # parecem segredo (token/senha/chave/secret no nome) em vez de
+    # devolver o valor real. Nunca deve ser False em producao.
+    documentation_redact_secrets: bool = True
 
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
