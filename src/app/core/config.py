@@ -138,6 +138,9 @@ class Settings(BaseSettings):
     # Missao 46 - Sistema de Alertas.
     alert_history_default_limit: int = 50
 
+    # Missao 47 - Testes de Recuperacao.
+    recovery_max_jobs_per_sweep: int = 100
+
 
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024

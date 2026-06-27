@@ -42,6 +42,7 @@ ROUTE_MODULES = [
     "diagnostics",
     "resources",
     "system_alerts",
+    "recovery",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

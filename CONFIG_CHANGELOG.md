@@ -7,6 +7,38 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.6.0 — 2026-06-27 (Missão 47)
+
+Adiciona o Sistema de Recuperação: a contraparte de **ação** do
+`health_report()` da fila (Missão 42). `health_report()` apenas detecta
+jobs travados em `status="running"` além do lock timeout — o próprio
+docstring documenta a limitação: esses jobs "serão reclamados no próximo
+`claim()`". Se nenhum worker estiver chamando `claim()` naquele momento
+(fila parada, worker caído, deploy em andamento), o job fica invisível e
+parado indefinidamente, mesmo sendo perfeitamente recuperável.
+`RecoveryService` age agora, sem esperar pelo próximo `claim()`: job com
+tentativas restantes volta para `"retry"` (elegível a reclaim imediato);
+job sem tentativas restantes vai para `"dead"`, mesma semântica de
+`fail()` (Missão 42) quando esgota as tentativas.
+
+Campo novo em `Settings`:
+
+- `recovery_max_jobs_per_sweep` (default `100`): limite de jobs
+  recuperados em uma única chamada de `recover_stale_running_jobs()`,
+  para não varrer uma fila inteira de uma vez em produção.
+
+Nova regra em `validate_settings()` (todos os perfis):
+`recovery_max_jobs_per_sweep` >= 1.
+
+Duas rotas novas em `/recovery` (`safe_router.py`):
+`GET /recovery/report` (somente leitura — reusa `health_report()`),
+`POST /recovery/sweep` (`?limit=`, executa a recuperação).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/recovery_service.py`,
+`src/app/schemas/recovery.py`, `src/app/api/routes/recovery.py`.
+
 ## 1.5.0 — 2026-06-27 (Missão 46)
 
 Adiciona o Sistema de Alertas: a contraparte com **estado** do Diagnóstico
