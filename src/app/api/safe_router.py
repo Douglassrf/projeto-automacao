@@ -40,6 +40,7 @@ ROUTE_MODULES = [
     "queue",
     "cache",
     "diagnostics",
+    "resources",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

@@ -7,6 +7,31 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.4.0 — 2026-06-27 (Missão 45)
+
+Adiciona configuração do Gerenciamento de Recursos (limpeza ativa do que o
+Diagnóstico Automático da Missão 44 apenas reportava): `ResourceManagerService`
+purga jobs de fila terminais (`done`/`dead`, mesmo `TERMINAL_STATUSES` de
+`QueueService`) mais antigos que um limite configurável, delega a purga de
+cache expirado ao `CacheService` (Missão 43) e relata uso de disco dos
+diretórios de saída gerenciados (`campaign_kits`, `orchestration_runs`, `ugc`,
+`premium_renders`), resolvidos via `safe_project_path()` — mesma função já
+usada pelos serviços que escrevem nesses diretórios.
+
+Campo novo em `Settings`:
+
+- `resource_job_retention_days` (default `30`): idade mínima (dias) de um
+  job de fila terminal para ser elegível à purga por
+  `purge_old_queue_jobs()`, quando chamado sem override explícito.
+
+Nova regra em `validate_settings()` (todos os perfis):
+`resource_job_retention_days` >= 1.
+
+Arquivos modificados: `src/app/core/config.py`, `src/app/core/config_profiles.py`,
+`src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/resource_manager_service.py`,
+`src/app/schemas/resources.py`, `src/app/api/routes/resources.py`.
+
 ## 1.3.0 — 2026-06-27 (Missão 44)
 
 Adiciona configuração do Diagnóstico Automático (sem novo estado persistente

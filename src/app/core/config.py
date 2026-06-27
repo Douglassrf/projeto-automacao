@@ -132,6 +132,9 @@ class Settings(BaseSettings):
     diagnostics_disk_warning_free_mb: int = 500
     diagnostics_disk_critical_free_mb: int = 100
 
+    # Missao 45 - Gerenciamento de Recursos.
+    resource_job_retention_days: int = 30
+
 
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
