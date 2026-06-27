@@ -24,6 +24,7 @@ class QueueJobResponse(BaseModel):
     error_message: str
     locked_by: str
     locked_at: datetime | None
+    next_attempt_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
@@ -54,3 +55,18 @@ class QueueStatsResponse(BaseModel):
     dead: int
     total: int
     recommendation: str
+    healthy: bool
+    warnings: list[str]
+
+
+class QueueRequeueRequest(BaseModel):
+    reset_attempts: bool = True
+
+
+class QueueHealthResponse(BaseModel):
+    healthy: bool
+    stuck_jobs: list[QueueJobResponse]
+    starving_jobs: list[QueueJobResponse]
+    unhealthy_queues: list[str]
+    per_queue: dict[str, dict[str, int]]
+    warnings: list[str]

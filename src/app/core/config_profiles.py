@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "1.0.0"
+CONFIG_SCHEMA_VERSION = "1.1.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.
@@ -175,6 +175,26 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
     if settings.queue_default_max_attempts < 1:
         issues.append(
             f"queue_default_max_attempts={settings.queue_default_max_attempts}: precisa ser >= 1."
+        )
+
+    # Missao 42 - Gerenciador Inteligente de Filas.
+    if settings.queue_retry_backoff_base_seconds < 1:
+        issues.append(
+            f"queue_retry_backoff_base_seconds={settings.queue_retry_backoff_base_seconds}: precisa ser >= 1."
+        )
+    if settings.queue_retry_backoff_max_seconds < settings.queue_retry_backoff_base_seconds:
+        issues.append(
+            "queue_retry_backoff_max_seconds "
+            f"({settings.queue_retry_backoff_max_seconds}) menor que queue_retry_backoff_base_seconds "
+            f"({settings.queue_retry_backoff_base_seconds}): o backoff nunca cresceria."
+        )
+    if settings.queue_starvation_threshold_seconds < 1:
+        issues.append(
+            f"queue_starvation_threshold_seconds={settings.queue_starvation_threshold_seconds}: precisa ser >= 1."
+        )
+    if not (0.0 < settings.queue_failure_rate_threshold <= 1.0):
+        issues.append(
+            f"queue_failure_rate_threshold={settings.queue_failure_rate_threshold}: precisa estar entre 0 (exclusivo) e 1 (inclusivo)."
         )
 
     return issues

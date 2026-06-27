@@ -7,6 +7,32 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.1.0 — 2026-06-27 (Missão 42)
+
+Adiciona configuração do backoff/diagnóstico da fila (Gerenciador
+Inteligente de Filas). Campos novos em `Settings`:
+
+- `queue_retry_backoff_base_seconds` (default `5`): base do backoff
+  exponencial aplicado a jobs em `retry`.
+- `queue_retry_backoff_max_seconds` (default `300`): teto do backoff.
+- `queue_starvation_threshold_seconds` (default `600`): tempo de espera
+  acima do qual um job é considerado em inanição por `health_report()`.
+- `queue_failure_rate_threshold` (default `0.5`): taxa de falha
+  (`dead / (done+dead)`) acima da qual uma fila é marcada como
+  insalubre (amostra mínima de 5 jobs finalizados).
+
+Novas regras em `validate_settings()` (todos os perfis):
+`queue_retry_backoff_base_seconds` >= 1; `queue_retry_backoff_max_seconds`
+>= `queue_retry_backoff_base_seconds`; `queue_starvation_threshold_seconds`
+>= 1; `0 < queue_failure_rate_threshold <= 1`.
+
+Nenhum valor antigo muda de significado — apenas campos novos com
+defaults equivalentes ao comportamento anterior (retry imediato vira
+retry com backoff de poucos segundos; nenhum diagnóstico existia antes).
+
+Arquivos modificados: `src/app/core/config.py`, `src/app/core/config_profiles.py`.
+
+
 ## 1.0.0 — 2026-06-27 (Missão 41)
 
 Primeira versão do esquema. Estabelece:

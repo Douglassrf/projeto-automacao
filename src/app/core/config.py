@@ -116,6 +116,11 @@ class Settings(BaseSettings):
     queue_default_max_attempts: int = 3
     queue_lock_timeout_seconds: int = 900
     keydb_url: str | None = None
+    # Missao 42 - Gerenciador Inteligente de Filas.
+    queue_retry_backoff_base_seconds: int = 5
+    queue_retry_backoff_max_seconds: int = 300
+    queue_starvation_threshold_seconds: int = 600
+    queue_failure_rate_threshold: float = 0.5
 
 
     ugc_output_dir: str = "/data/ugc"

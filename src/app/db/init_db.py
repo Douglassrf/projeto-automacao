@@ -91,6 +91,17 @@ def _ensure_sqlite_columns() -> None:
                 if column_name not in existing:
                     connection.execute(text(f"ALTER TABLE decision_logs ADD COLUMN {column_name} {ddl}"))
 
+    if "queue_jobs" in tables:
+        # Missao 42 - Gerenciador Inteligente de Filas: backoff exponencial.
+        existing = {column["name"] for column in inspector.get_columns("queue_jobs")}
+        required = {
+            "next_attempt_at": "DATETIME DEFAULT NULL",
+        }
+        with engine.begin() as connection:
+            for column_name, ddl in required.items():
+                if column_name not in existing:
+                    connection.execute(text(f"ALTER TABLE queue_jobs ADD COLUMN {column_name} {ddl}"))
+
 
 def _ensure_default_admin() -> None:
     settings = get_settings()

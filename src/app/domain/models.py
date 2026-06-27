@@ -78,6 +78,11 @@ class QueueJob(Base):
     error_message: Mapped[str] = mapped_column(Text, default="")
     locked_by: Mapped[str] = mapped_column(String(120), default="")
     locked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # Missao 42 - Gerenciador Inteligente de Filas: backoff exponencial.
+    # Quando status="retry", claim() so reclama o job se next_attempt_at for
+    # nulo ou <= agora. None para jobs que nunca falharam ou que morreram
+    # (sem mais tentativas) - nesses casos o campo nao tem efeito.
+    next_attempt_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), index=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), index=True)
 
