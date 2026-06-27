@@ -30,6 +30,7 @@ COPY requirements.txt .
 RUN python -m pip install --no-cache-dir --no-index --find-links=/wheels -r requirements.txt \
     && rm -rf /wheels
 COPY --chown=app:app . .
+RUN sed -i 's/\r$//' tools/ffmpeg && chmod +x tools/ffmpeg
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \

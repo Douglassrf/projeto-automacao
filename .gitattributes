@@ -1,0 +1,4 @@
+# Normaliza terminadores de linha para evitar shebang corrompido (CRLF)
+# ao clonar/buildar em ambiente Windows -> container Linux (achado O07).
+tools/ffmpeg text eol=lf
+tools/ffmpeg.cmd text eol=crlf
