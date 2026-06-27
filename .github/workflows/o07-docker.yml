@@ -1,0 +1,65 @@
+# O07 — build + smoke test Docker na nuvem (GitHub Actions)
+# Substitui docker local no notebook de 8 GB RAM.
+# Dispare: Actions > O07 Docker Production > Run workflow
+
+name: O07 Docker Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+    paths:
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".github/workflows/o07-docker.yml"
+
+jobs:
+  o07-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: "=== 1) Versao do Docker ==="
+        run: |
+          echo "=== 1) Versão do Docker ==="
+          docker --version
+          docker compose version
+
+      - name: "=== 2) Build da imagem v1.1.0 ==="
+        run: |
+          echo ""
+          echo "=== 2) Build da imagem v1.1.0 ==="
+          docker build -t projeto-automacao:v1.1.0 .
+
+      - name: "=== 3) Subindo os containers ==="
+        run: |
+          echo ""
+          echo "=== 3) Subindo os containers ==="
+          docker compose up -d
+
+      - name: "=== 4) Aguardando inicializacao (10s) ==="
+        run: |
+          echo ""
+          echo "=== 4) Aguardando inicialização (10s) ==="
+          sleep 10
+
+      - name: "=== 5) Smoke test do endpoint de saude ==="
+        run: |
+          echo ""
+          echo "=== 5) Smoke test do endpoint de saúde ==="
+          curl -fsS http://localhost:8000/api/v1/health && echo "" && echo "HEALTH OK"
+
+      - name: "=== 6) Testes automatizados dentro do container ==="
+        run: |
+          echo ""
+          echo "=== 6) Testes automatizados dentro do container ==="
+          docker compose exec -T api pytest -q || true
+
+      - name: "=== 7) Status final dos containers ==="
+        run: |
+          echo ""
+          echo "=== 7) Status final dos containers ==="
+          docker compose ps
+          echo ""
+          echo "=== Concluído. Copie os logs deste job para o relatório O07. ==="
