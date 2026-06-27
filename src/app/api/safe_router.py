@@ -39,6 +39,7 @@ ROUTE_MODULES = [
     "serverless_render",
     "queue",
     "cache",
+    "diagnostics",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

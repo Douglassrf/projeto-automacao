@@ -7,6 +7,36 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.3.0 — 2026-06-27 (Missão 44)
+
+Adiciona configuração do Diagnóstico Automático (sem novo estado persistente
+— `DiagnosticsService` recalcula um snapshot fresco a cada chamada, agregando
+sinais que já existem em `QueueService.health_report()` (Missão 42),
+`CacheService` (Missão 43) e `validate_settings()` (Missão 41), mais dois
+checks novos: banco de dados (round-trip `SELECT 1`) e disco.
+
+Campos novos em `Settings`:
+
+- `diagnostics_disk_path` (default `"."`): caminho cujo espaço livre é
+  monitorado por `DiagnosticsService.check_disk()`.
+- `diagnostics_disk_warning_free_mb` (default `500`): abaixo deste limite
+  (MB livres), o check de disco reporta `"warning"`.
+- `diagnostics_disk_critical_free_mb` (default `100`): abaixo deste limite,
+  o check de disco reporta `"critical"`.
+
+Novas regras em `validate_settings()` (todos os perfis):
+`diagnostics_disk_warning_free_mb` >= 1; `diagnostics_disk_critical_free_mb`
+>= 1; `diagnostics_disk_critical_free_mb` deve ser estritamente menor que
+`diagnostics_disk_warning_free_mb` (senão as duas faixas colapsam em uma só
+e a distinção "ficando baixo" vs "quase sem espaço" se perde — mesmo
+raciocínio do par `queue_retry_backoff_base_seconds`/`_max_seconds` da
+Missão 42).
+
+Arquivos modificados: `src/app/core/config.py`, `src/app/core/config_profiles.py`,
+`src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/diagnostics_service.py`,
+`src/app/schemas/diagnostics.py`, `src/app/api/routes/diagnostics.py`.
+
 ## 1.2.0 — 2026-06-27 (Missão 43)
 
 Adiciona configuração do Cache Inteligente (cache zero-custo via SQLite).

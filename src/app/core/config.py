@@ -127,6 +127,11 @@ class Settings(BaseSettings):
     cache_max_entries_per_namespace: int = 1000
     cache_backend: str = "sqlite"
 
+    # Missao 44 - Diagnostico Automatico.
+    diagnostics_disk_path: str = "."
+    diagnostics_disk_warning_free_mb: int = 500
+    diagnostics_disk_critical_free_mb: int = 100
+
 
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
