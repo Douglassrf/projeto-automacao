@@ -1,4 +1,4 @@
-# O07 — build + smoke test Docker na nuvem (GitHub Actions)
+# O07 - build + smoke test Docker na nuvem (GitHub Actions)
 # Substitui docker local no notebook de 8 GB RAM.
 # Dispare: Actions > O07 Docker Production > Run workflow
 
@@ -12,6 +12,7 @@ on:
       - "Dockerfile"
       - "docker-compose.yml"
       - ".github/workflows/o07-docker.yml"
+      - "tools/o07_restart_probe.py"
 
 jobs:
   o07-docker:
@@ -56,10 +57,47 @@ jobs:
           echo "=== 6) Testes automatizados dentro do container ==="
           docker compose exec -T api pytest -q || true
 
-      - name: "=== 7) Status final dos containers ==="
+      - name: "=== 7) Gravando registro antes do shutdown ==="
         run: |
           echo ""
-          echo "=== 7) Status final dos containers ==="
+          echo "=== 7) Gravando registro antes do shutdown (prova de consistencia O07) ==="
+          MARKER="o07-probe-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "MARKER=$MARKER" >> "$GITHUB_ENV"
+          docker compose exec -T api python tools/o07_restart_probe.py write "$MARKER"
+
+      - name: "=== 8) Shutdown gracioso (docker compose stop) ==="
+        run: |
+          echo ""
+          echo "=== 8) Shutdown gracioso (docker compose stop) ==="
+          docker compose stop -t 10 api
+          echo "--- logs apos stop ---"
+          docker compose logs api | tail -n 40 | tee /tmp/o07_logs_after_stop.txt
+          echo "--- status apos stop ---"
+          docker compose ps -a
+          if grep -qi "traceback" /tmp/o07_logs_after_stop.txt; then
+            echo "FALHA: traceback encontrado nos logs apos shutdown"
+            exit 1
+          fi
+          echo "SHUTDOWN GRACIOSO OK (sem traceback nos logs)"
+
+      - name: "=== 9) Restart dos containers ==="
+        run: |
+          echo ""
+          echo "=== 9) Restart dos containers ==="
+          docker compose up -d
+          sleep 10
+          curl -fsS http://localhost:8000/api/v1/health && echo "" && echo "HEALTH OK APOS RESTART"
+
+      - name: "=== 10) Verificando consistencia do dado apos restart ==="
+        run: |
+          echo ""
+          echo "=== 10) Verificando consistencia do dado apos restart ==="
+          docker compose exec -T api python tools/o07_restart_probe.py read "$MARKER"
+
+      - name: "=== 11) Status final dos containers ==="
+        run: |
+          echo ""
+          echo "=== 11) Status final dos containers ==="
           docker compose ps
           echo ""
           echo "=== Concluído. Copie os logs deste job para o relatório O07. ==="
