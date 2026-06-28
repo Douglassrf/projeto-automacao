@@ -7,6 +7,14 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.3.0 — 2026-06-28 (Missão 84 — Test Reliability Program)
+
+Campos: `test_reliability_max_retries`, `test_reliability_track_flaky`. Rotas `/test-reliability/live`, `/markdown`.
+
+## 3.3.0 — 2026-06-28 (Missão 84 — Test Reliability Program)
+
+Campos: `test_reliability_max_retries`, `test_reliability_track_flaky`. Rotas `/test-reliability/live`, `/markdown`.
+
 ## 3.2.0 — 2026-06-28 (Missão 83 — FFmpeg Production Layer)
 
 Deteccao ffmpeg, fallback quando ausente, marker pytest `ffmpeg`.
