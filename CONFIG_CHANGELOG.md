@@ -7,6 +7,14 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.4.0 — 2026-06-28 (Missão 85 — Release Candidate 1)
+
+Campos: `rc1_freeze_enabled`, `rc1_require_checklist`. Rotas `/release-candidate/live`, `/markdown`.
+
+## 3.4.0 — 2026-06-28 (Missão 85 — Release Candidate 1)
+
+Campos: `rc1_freeze_enabled`, `rc1_require_checklist`. Rotas `/release-candidate/live`, `/markdown`.
+
 ## 3.3.0 — 2026-06-28 (Missão 84 — Test Reliability Program)
 
 Campos: `test_reliability_max_retries`, `test_reliability_track_flaky`. Rotas `/test-reliability/live`, `/markdown`.

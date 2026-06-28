@@ -197,9 +197,9 @@ from app.services.autonomous_operations_service import AutonomousOperationsServi
 
     if mod in NEEDS_DB:
         init_body = init  # already 8-space indented lines
-        init_method = f"    def __init__(self, db: Session) -> None:\n{init_body}"
+        init_method = f"def __init__(self, db: Session) -> None:\n{init_body}"
     else:
-        init_method = "    def __init__(self) -> None:\n        self.settings = get_settings()"
+        init_method = "def __init__(self) -> None:\n        self.settings = get_settings()"
 
     return f'''"""Missao {num} - {title}."""
 from __future__ import annotations
