@@ -15,6 +15,7 @@ ROUTE_COLLISIONS = []  # Missao 54 - colisao logica de metodo+path entre modulos
 # e passa a ser descoberta automaticamente a partir dos arquivos que existem em
 # app/api/routes/. Uma rota nova so precisa existir como arquivo nesse
 # diretorio - nenhuma linha a mais para editar em nenhum lugar central.
+# M81: inclui automaticamente rotas das missoes 51-59 e 71-80.
 ROUTE_MODULES = discover_route_modules()
 
 
