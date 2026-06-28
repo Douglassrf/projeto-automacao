@@ -1,0 +1,17 @@
+{
+  "provider_requested": "local",
+  "dry_run_forced": true,
+  "deploy_real_executed": false,
+  "repository_name": null,
+  "branch": "main",
+  "files": [
+    "index.html",
+    "styles.css"
+  ],
+  "warnings": [
+    "Deploy real bloqueado.",
+    "Dry-run ativo: nenhum provedor externo foi chamado.",
+    "GitHub/Vercel/Netlify não foram chamados.",
+    "Payload preparado apenas para revisão futura."
+  ]
+}

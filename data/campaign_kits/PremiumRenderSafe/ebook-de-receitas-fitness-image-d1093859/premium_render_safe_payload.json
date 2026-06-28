@@ -1,0 +1,11 @@
+{
+  "product_name": "Ebook de Receitas Fitness",
+  "asset_type": "image",
+  "prompt": "Criativo premium para anúncio de ebook fitness, visual limpo, CTA forte, alto contraste social.",
+  "source_asset_path": null,
+  "provider": "dry_run",
+  "upscale": true,
+  "color_grade": "warm_contrast",
+  "dispatch_mode": "local",
+  "dry_run": true
+}

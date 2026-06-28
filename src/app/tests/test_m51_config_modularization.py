@@ -23,12 +23,12 @@ from app.core.config_loader import (
     domain_summary,
 )
 
-# Conjunto de campos esperado, exatamente como estava no Settings
-# monolitico anterior a Missao 51 (congelado aqui como evidencia de que
-# a modularizacao nao perdeu nem inventou nenhum campo).
-EXPECTED_FIELD_COUNT = 141
+# Conjunto de campos esperado apos integracao M81 (missoes 51-59 + 71-80).
+# Original M51: 141 campos / 29 dominios. M81 adiciona 10 dominios (71-80)
+# com 14 campos novos -> 155 campos / 39 dominios.
+EXPECTED_FIELD_COUNT = 155
 
-EXPECTED_DOMAIN_COUNT = 29
+EXPECTED_DOMAIN_COUNT = 39
 
 
 def test_settings_is_a_real_basesettings_subclass():
