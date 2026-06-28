@@ -57,6 +57,7 @@ from app.services.code_review_service import CodeReviewService
 from app.services.unified_certification_service import UnifiedCertificationEngine
 from app.services.evolution_dashboard_service import EvolutionDashboardService
 from app.services.tech_debt_manager_service import TechDebtManagerService
+from app.services.architecture_stress_test_service import ArchitectureStressTestService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -146,3 +147,13 @@ def get_tech_debt_manager_service() -> TechDebtManagerService:
     (arquivo via AST) e do `git` (historico). `provide()` forcaria um
     `db: Session` decorativo."""
     return TechDebtManagerService()
+
+
+def get_architecture_stress_test_service() -> ArchitectureStressTestService:
+    """Missao 59. Mesmo motivo de `get_architecture_audit_service()`
+    (Missao 55), `get_code_review_service()` (Missao 56) e
+    `get_tech_debt_manager_service()` (Missao 58): ArchitectureStressTestService
+    nao depende de `db` - dispara requisicoes in-process via `TestClient`
+    contra os proprios endpoints da aplicacao e chama o container
+    diretamente. `provide()` forcaria um `db: Session` decorativo."""
+    return ArchitectureStressTestService()
