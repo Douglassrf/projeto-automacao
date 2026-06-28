@@ -110,12 +110,31 @@ class ArchitectureStressTestService:
     def _default_client_factory() -> ClientFactory:
         from app.main import app as real_app
 
-        return lambda: TestClient(real_app)
+        def _make_started_client() -> TestClient:
+            # Correcao pos-commit desta missao: um `TestClient` "cru"
+            # (sem `__enter__`) so monta seu transporte/portal ASGI de
+            # forma lazy na primeira requisicao. Quando duas threads
+            # disparam a primeira requisicao concorrentemente contra um
+            # cliente assim, essa montagem lazy corre uma contra a outra
+            # e uma das duas pode receber 404 - reproduzido isolando a
+            # causa (cliente "cru" compartilhado -> falha intermitente
+            # rotativa entre os 5 endpoints; `with TestClient(app) as
+            # client:` mesmo cliente -> zero falha em repeticao).
+            # `__enter__()` forca a montagem do portal/lifespan uma unica
+            # vez, de forma sequencial, antes de qualquer uso concorrente.
+            client = TestClient(real_app)
+            client.__enter__()
+            return client
+
+        return _make_started_client
 
     def _burst(self, path: str, requests: int, concurrency: int) -> list[dict[str, Any]]:
         """Dispara `requests` chamadas GET contra `path`, no maximo
         `concurrency` simultaneas, via `ThreadPoolExecutor` - mesmo
-        idioma de concorrencia da Missao 27A."""
+        idioma de concorrencia da Missao 27A. Um unico cliente por burst,
+        compartilhado entre as threads concorrentes - seguro porque o
+        cliente real ja vem com o portal ASGI montado (ver
+        `_default_client_factory`)."""
         client = self.client_factory()
 
         def _one(_: int) -> dict[str, Any]:
