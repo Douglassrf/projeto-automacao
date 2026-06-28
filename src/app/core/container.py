@@ -56,6 +56,7 @@ from app.services.architecture_audit_service import ArchitectureAuditService
 from app.services.code_review_service import CodeReviewService
 from app.services.unified_certification_service import UnifiedCertificationEngine
 from app.services.evolution_dashboard_service import EvolutionDashboardService
+from app.services.tech_debt_manager_service import TechDebtManagerService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -136,3 +137,12 @@ def get_code_review_service() -> CodeReviewService:
     revisao leem arquivos `.py` do proprio repositorio via AST, nunca o
     banco. `provide()` forcaria um `db: Session` decorativo."""
     return CodeReviewService()
+
+
+def get_tech_debt_manager_service() -> TechDebtManagerService:
+    """Missao 58. Mesmo motivo de `get_architecture_audit_service()`
+    (Missao 55) e `get_code_review_service()` (Missao 56):
+    TechDebtManagerService nao depende de `db` - so de CodeReviewService
+    (arquivo via AST) e do `git` (historico). `provide()` forcaria um
+    `db: Session` decorativo."""
+    return TechDebtManagerService()
