@@ -52,6 +52,7 @@ from app.services.diagnostics_service import DiagnosticsService
 from app.services.queue_service import QueueService
 from app.services.recovery_service import RecoveryService
 from app.services.resource_manager_service import ResourceManagerService
+from app.services.architecture_audit_service import ArchitectureAuditService
 from app.services.unified_certification_service import UnifiedCertificationEngine
 
 ServiceT = TypeVar("ServiceT")
@@ -115,3 +116,12 @@ get_recovery_service = provide(RecoveryService)
 get_resource_manager_service = provide(ResourceManagerService)
 get_certification_service = provide(CertificationService)
 get_unified_certification_engine = provide(UnifiedCertificationEngine)  # Missao 53
+
+
+def get_architecture_audit_service() -> ArchitectureAuditService:
+    """Missao 55. Nao usa `provide()` pelo mesmo motivo de
+    `settings_dependency()`: ArchitectureAuditService nao depende de `db`
+    (todos os quatro eixos que audita leem codigo-fonte em disco ou estado
+    vivo de modulo ja importado, nunca o banco) - forcar um `db: Session`
+    aqui so para caber na fabrica generica seria decorativo."""
+    return ArchitectureAuditService()
