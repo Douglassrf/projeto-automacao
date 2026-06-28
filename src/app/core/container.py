@@ -55,6 +55,7 @@ from app.services.resource_manager_service import ResourceManagerService
 from app.services.architecture_audit_service import ArchitectureAuditService
 from app.services.code_review_service import CodeReviewService
 from app.services.unified_certification_service import UnifiedCertificationEngine
+from app.services.evolution_dashboard_service import EvolutionDashboardService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -117,6 +118,7 @@ get_recovery_service = provide(RecoveryService)
 get_resource_manager_service = provide(ResourceManagerService)
 get_certification_service = provide(CertificationService)
 get_unified_certification_engine = provide(UnifiedCertificationEngine)  # Missao 53
+get_evolution_dashboard_service = provide(EvolutionDashboardService)  # Missao 57
 
 
 def get_architecture_audit_service() -> ArchitectureAuditService:
