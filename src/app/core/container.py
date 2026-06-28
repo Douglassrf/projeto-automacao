@@ -62,6 +62,7 @@ from app.services.enterprise_readiness_service import EnterpriseReadinessService
 from app.services.engineering_memory_core_service import EngineeringMemoryCoreService
 from app.services.architecture_evolution_timeline_service import ArchitectureEvolutionTimelineService
 from app.services.enterprise_quality_observatory_service import EnterpriseQualityObservatoryService
+from app.services.predictive_maintenance_service import PredictiveMaintenanceService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -167,3 +168,4 @@ get_enterprise_readiness_service = provide(EnterpriseReadinessService)  # Missao
 get_engineering_memory_core_service = provide(EngineeringMemoryCoreService)  # Missao 122
 get_architecture_evolution_timeline_service = provide(ArchitectureEvolutionTimelineService)  # Missao 123
 get_enterprise_quality_observatory_service = provide(EnterpriseQualityObservatoryService)  # Missao 124
+get_predictive_maintenance_service = provide(PredictiveMaintenanceService)  # Missao 125
