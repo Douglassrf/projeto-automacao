@@ -53,6 +53,7 @@ from app.services.queue_service import QueueService
 from app.services.recovery_service import RecoveryService
 from app.services.resource_manager_service import ResourceManagerService
 from app.services.architecture_audit_service import ArchitectureAuditService
+from app.services.code_review_service import CodeReviewService
 from app.services.unified_certification_service import UnifiedCertificationEngine
 
 ServiceT = TypeVar("ServiceT")
@@ -125,3 +126,11 @@ def get_architecture_audit_service() -> ArchitectureAuditService:
     vivo de modulo ja importado, nunca o banco) - forcar um `db: Session`
     aqui so para caber na fabrica generica seria decorativo."""
     return ArchitectureAuditService()
+
+
+def get_code_review_service() -> CodeReviewService:
+    """Missao 56. Mesmo motivo de `get_architecture_audit_service()`
+    (Missao 55): CodeReviewService nao depende de `db` - os eixos de
+    revisao leem arquivos `.py` do proprio repositorio via AST, nunca o
+    banco. `provide()` forcaria um `db: Session` decorativo."""
+    return CodeReviewService()
