@@ -184,6 +184,10 @@ class Settings(BaseSettings):
     technical_knowledge_include_draft_adrs: bool = True
     technical_knowledge_include_draft_modules: bool = True
 
+    # Missao 74 - Continuous Quality Gate: quando True (padrao), padroes de
+    # codigo sao verificados e falhas bloqueiam o gate. Nunca False em prod.
+    quality_gate_enforce_standards: bool = True
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080

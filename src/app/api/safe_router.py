@@ -49,6 +49,7 @@ ROUTE_MODULES = [
     "operational_intelligence",
     "predictive_health",
     "technical_knowledge",
+    "continuous_quality",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

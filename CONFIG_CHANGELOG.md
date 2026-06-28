@@ -7,6 +7,12 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.3.0 — 2026-06-28 (Missão 74)
+
+Continuous Quality Gate — cobertura de testes, dívida técnica, padrões de
+código e relatório por release. Campo `quality_gate_enforce_standards`.
+Rotas `/quality-gate/report/live` e `/markdown`.
+
 ## 2.2.0 — 2026-06-28 (Missão 73)
 
 Adiciona Technical Knowledge Base — catálogo de módulos, histórico de
