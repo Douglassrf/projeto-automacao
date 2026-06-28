@@ -53,6 +53,7 @@ ROUTE_MODULES = [
     "data_integrity",
     "api_compatibility",
     "workflow_orchestrator",
+    "resource_optimization",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

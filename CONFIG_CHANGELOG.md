@@ -7,6 +7,11 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.7.0 — 2026-06-28 (Missão 78)
+
+Resource Optimization Engine — balanceamento, otimização filas, redução
+desperdício. Reutiliza M42 + M45. Campo `resource_optimization_enable_rebalance`.
+
 ## 2.6.0 — 2026-06-28 (Missão 77)
 
 Workflow Orchestrator — encadeamento, dependências, reexecução, progresso.
