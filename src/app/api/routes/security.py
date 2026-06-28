@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from app.api.deps import get_current_user
 from app.core.real_mode_gate import real_mode_readiness_gate
 from app.core.operational_handoff import operational_handoff_checklist
+from app.core.operation_intelligence_scale import operation_intelligence_scale_plan
 from app.core.meta_sandbox_setup import meta_sandbox_setup_check
 from app.core.first_sandbox_payload import first_sandbox_paused_payload
 from app.core.sandbox_readiness import sandbox_readiness_report
@@ -52,3 +53,8 @@ def post_meta_sandbox_setup(payload: dict | None = None, current_user: User = De
 @router.post("/first-sandbox-payload")
 def post_first_sandbox_payload(payload: dict | None = None, current_user: User = Depends(get_current_user)):
     return first_sandbox_paused_payload(payload)
+
+
+@router.post("/operation-intelligence-scale")
+def post_operation_intelligence_scale(payload: dict | None = None, current_user: User = Depends(get_current_user)):
+    return operation_intelligence_scale_plan(payload)
