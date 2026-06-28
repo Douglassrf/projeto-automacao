@@ -7,6 +7,10 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.5.0 — 2026-06-28 (Missão 86 — Production Security Audit)
+
+Campos: `security_audit_fail_closed`, `security_audit_scan_routes`. Rotas `/production-security-audit/live`, `/markdown`.
+
 ## 3.4.0 — 2026-06-28 (Missão 85 — Release Candidate 1)
 
 Campos: `rc1_freeze_enabled`, `rc1_require_checklist`. Rotas `/release-candidate/live`, `/markdown`.
