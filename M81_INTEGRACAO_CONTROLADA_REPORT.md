@@ -156,7 +156,7 @@ Push realizado: `origin/missao-81-integracao-controlada-equipes` @ `fa2030e` (po
 
 **PR #27:** https://github.com/Douglassrf/projeto-automacao/pull/27 — OPEN, aguarda CI pos-merge M60.
 
-**PR M60 standalone:** branch publicada; PR dedicado pendente (gh auth nao configurado neste ambiente).
+**PR M60 standalone:** [#28](https://github.com/Douglassrf/projeto-automacao/pull/28) — OPEN.
 
 ---
 

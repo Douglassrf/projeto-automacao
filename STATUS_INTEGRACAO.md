@@ -5,7 +5,8 @@
 | Verdict | **READY_FOR_REVIEW** (M60 integrado; aguarda CI #27 + OK Douglas) |
 | master | `160df50` (PR #25 + #26 merged) |
 | Branch integracao | `missao-81-integracao-controlada-equipes` @ `fa2030e` |
-| PR #27 | **OPEN** — [link](https://github.com/Douglassrf/projeto-automacao/pull/27) |
+| PR #27 | **OPEN** — [link](https://github.com/Douglassrf/projeto-automacao/pull/27) (head `20a150c`) |
+| PR #28 (M60) | **OPEN** — [link](https://github.com/Douglassrf/projeto-automacao/pull/28) |
 | PR #27 delta vs master | docs + evidencia pytest + fixes M51/M81 + **M60 merge** |
 | PR #27 CI | Re-run pendente pos-merge M60 |
 | PR #27 merge | **NAO mergeado** — aguarda CI + OK Douglas |
