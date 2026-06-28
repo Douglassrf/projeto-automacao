@@ -7,6 +7,10 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.9.0 — 2026-06-28 (Missão 90 — Pre Production Approval)
+
+Campos: `pre_production_require_all_missions`, `pre_production_block_on_issues`. Rotas `/pre-production-approval/live`, `/markdown`.
+
 ## 3.8.0 — 2026-06-28 (Missão 89 — Final Documentation Review)
 
 Campos: `documentation_review_require_complete`, `documentation_review_include_ops`. Rotas `/documentation-review/live`, `/markdown`.
