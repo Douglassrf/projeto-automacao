@@ -150,9 +150,12 @@ $ python -m pytest app/tests/test_m59_architecture_stress_test.py \
 
 ## 8. PR
 
-Será criado via `gh pr create` após push. URL será preenchida abaixo.
+Push realizado: `origin/missao-81-integracao-controlada-equipes` @ `00643ac`.
 
-**PR URL:** _(preencher após push)_
+**PR URL:** https://github.com/Douglassrf/projeto-automacao/compare/master...missao-81-integracao-controlada-equipes  
+*(criar PR manualmente — `gh auth login` não configurado neste ambiente)*
+
+PRs anteriores #25 e #26 existiam na branch; esta entrega consolida integração fresca com evidência pytest literal.
 
 ---
 
