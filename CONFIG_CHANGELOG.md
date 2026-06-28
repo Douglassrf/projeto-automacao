@@ -7,6 +7,12 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.2.0 — 2026-06-28 (Missão 83 — FFmpeg Production Layer)
+
+Deteccao ffmpeg, fallback quando ausente, marker pytest `ffmpeg`.
+Campos: `ffmpeg_require_binary`, `ffmpeg_fallback_when_absent`.
+Rotas: `/ffmpeg-production/live`, `/markdown`.
+
 ## 3.1.0 — 2026-06-28 (Missão 82 — CI/CD Stabilization)
 
 Estabilização de pipeline CI/CD: workflows Linux + Windows, skip ffmpeg no
