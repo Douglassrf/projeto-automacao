@@ -7,6 +7,10 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.8.0 — 2026-06-28 (Missão 89 — Final Documentation Review)
+
+Campos: `documentation_review_require_complete`, `documentation_review_include_ops`. Rotas `/documentation-review/live`, `/markdown`.
+
 ## 3.7.0 — 2026-06-28 (Missão 88 — Disaster Recovery Validation)
 
 Campos: `disaster_recovery_simulate_db_down`, `disaster_recovery_validate_backup`. Rotas `/disaster-recovery/live`, `/markdown`.
