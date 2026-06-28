@@ -1,3 +1,6 @@
+import os
+import platform
+
 import pytest
 
 from app.core.config import get_settings
@@ -34,3 +37,15 @@ def disable_auth_for_legacy_smoke_tests():
         yield
     finally:
         settings.auth_required = previous
+
+
+def pytest_collection_modifyitems(config, items):
+    """Skip ffmpeg-marked tests on Windows CI when CI_SKIP_FFMPEG is set."""
+    if os.environ.get("CI_SKIP_FFMPEG", "").lower() not in ("1", "true", "yes"):
+        return
+    if platform.system() != "Windows":
+        return
+    skip = pytest.mark.skip(reason="ffmpeg tests skipped on Windows CI (M82)")
+    for item in items:
+        if "ffmpeg" in item.keywords:
+            item.add_marker(skip)

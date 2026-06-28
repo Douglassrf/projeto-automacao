@@ -7,6 +7,13 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.1.0 — 2026-06-28 (Missão 82 — CI/CD Stabilization)
+
+Estabilização de pipeline CI/CD: workflows Linux + Windows, skip ffmpeg no
+Windows CI, correção LRU tie-break (M43), timeline M57 menos flaky.
+Campos: `ci_cd_require_green_pipeline`, `ci_cd_skip_ffmpeg_on_windows`.
+Rotas: `/ci-stabilization/live`, `/markdown`.
+
 ## 3.0.0 — 2026-06-28 (Missão 80 — CAPSTONE)
 
 Autonomous Operations Readiness — agrega M71-M79 + M41-M50, valida 10

@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "3.0.0"
+CONFIG_SCHEMA_VERSION = "3.1.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.
@@ -250,6 +250,12 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
                 "autonomous_ops_require_all_domains=False em produção: "
                 "o capstone /autonomous-operations/* nunca reportaria prontidao "
                 "autonoma (gate fail-closed permanentemente fechado)."
+            )
+        if not settings.ci_cd_require_green_pipeline:
+            issues.append(
+                "ci_cd_require_green_pipeline=False em produção: "
+                "o endpoint /ci-stabilization/* nunca reportaria pipeline_ready=True "
+                "(gate fail-closed permanentemente fechado)."
             )
 
     if environment is Environment.TESTING:

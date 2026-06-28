@@ -1,0 +1,8 @@
+Missao 81 PR agent log - 2026-06-28
+sucesso: sim
+PR: #27
+URL: https://github.com/Douglassrf/projeto-automacao/pull/27
+head: missao-81-integracao-controlada-equipes @ e0b0b75
+base: master
+merge: NAO (Fase Omega)
+nota: integracao principal ja em master via PR #25/#26; PR #27 = relatorio atualizado
