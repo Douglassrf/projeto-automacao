@@ -61,6 +61,7 @@ from app.services.architecture_stress_test_service import ArchitectureStressTest
 from app.services.enterprise_readiness_service import EnterpriseReadinessService
 from app.services.engineering_memory_core_service import EngineeringMemoryCoreService
 from app.services.architecture_evolution_timeline_service import ArchitectureEvolutionTimelineService
+from app.services.enterprise_quality_observatory_service import EnterpriseQualityObservatoryService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -165,3 +166,4 @@ def get_architecture_stress_test_service() -> ArchitectureStressTestService:
 get_enterprise_readiness_service = provide(EnterpriseReadinessService)  # Missao 60
 get_engineering_memory_core_service = provide(EngineeringMemoryCoreService)  # Missao 122
 get_architecture_evolution_timeline_service = provide(ArchitectureEvolutionTimelineService)  # Missao 123
+get_enterprise_quality_observatory_service = provide(EnterpriseQualityObservatoryService)  # Missao 124
