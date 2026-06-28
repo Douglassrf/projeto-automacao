@@ -23,6 +23,7 @@ from app.core.config_profiles import (
 # NUNCA mais edita este arquivo - ela cria um novo módulo em
 # config_domains/ com sua própria classe BaseModel e o campo passa a
 # existir em Settings na próxima inicialização, automaticamente.
+# M81: dominios 71-80 adicionados em config_domains/ (nao aqui).
 _GeneratedSettings = create_model(
     "_GeneratedSettings",
     __base__=BaseSettings,

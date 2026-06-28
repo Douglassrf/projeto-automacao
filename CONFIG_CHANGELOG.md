@@ -7,6 +7,126 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.0.0 — 2026-06-28 (Missão 80 — CAPSTONE)
+
+Autonomous Operations Readiness — agrega M71-M79 + M41-M50, valida 10
+domínios (governança, observabilidade, segurança, recuperação, qualidade,
+documentação, compatibilidade, integridade, orquestração, escalabilidade),
+`blocking_issues`, `verdict`, evidências. Campo
+`autonomous_ops_require_all_domains` (fail-closed). Bump major 2.x → 3.0.0.
+
+Rotas: `/autonomous-operations/readiness/live`, `/markdown`.
+
+## 2.8.0 — 2026-06-28 (Missão 79)
+
+Architecture Evolution Report — comparação versões, complexidade, refatoração,
+recomendações técnicas. Campo `architecture_evolution_include_recommendations`.
+
+## 2.7.0 — 2026-06-28 (Missão 78)
+
+Resource Optimization Engine — balanceamento, otimização filas, redução
+desperdício. Reutiliza M42 + M45. Campo `resource_optimization_enable_rebalance`.
+
+## 2.6.0 — 2026-06-28 (Missão 77)
+
+Workflow Orchestrator — encadeamento, dependências, reexecução, progresso.
+Reutiliza QueueService (M42). Campo `workflow_orchestrator_track_progress`.
+
+## 2.5.0 — 2026-06-28 (Missão 76)
+
+API Compatibility Center — versões, testes compatibilidade, breaking changes,
+política depreciação. Campo `api_compatibility_enforce_deprecation_policy`.
+
+## 2.4.0 — 2026-06-28 (Missão 75)
+
+Data Integrity Framework — consistência, registros inválidos, integridade
+pós backup. Campo `data_integrity_strict_validation`. Rotas
+`/data-integrity/check/live` e `/markdown`.
+
+## 2.3.0 — 2026-06-28 (Missão 74)
+
+Continuous Quality Gate — cobertura de testes, dívida técnica, padrões de
+código e relatório por release. Campo `quality_gate_enforce_standards`.
+Rotas `/quality-gate/report/live` e `/markdown`.
+
+## 2.2.0 — 2026-06-28 (Missão 73)
+
+Adiciona Technical Knowledge Base — catálogo de módulos, histórico de
+decisões arquiteturais, lições aprendidas e referências cruzadas doc↔código.
+Reutiliza `DocumentationService` (M48).
+
+Campos novos: `technical_knowledge_include_cross_references` (default `True`),
+`technical_knowledge_include_draft_adrs`, `technical_knowledge_include_draft_modules`.
+
+Rotas: `GET /technical-knowledge/base/live`, `GET /technical-knowledge/base/markdown`.
+
+## 2.1.0 — 2026-06-28 (Missão 72)
+
+Adiciona o Predictive Health Monitor — monitoramento preditivo de saúde
+com tendências de CPU, memória e armazenamento, alertas preditivos baseados
+em histórico curto (persistido via `CacheService`) e relatório de degradação
+gradual. Reutiliza `DiagnosticsService.check_disk()` (M44) e
+`ResourceManagerService.disk_usage_report()` (M45).
+
+Campos novos em `Settings`:
+
+- `predictive_health_enable_predictive_alerts` (default `True`): controla
+  se alertas preditivos aparecem no relatório. Nunca deve ser `False` em
+  produção.
+- `predictive_health_history_max_snapshots` (default `24`): tamanho máximo
+  do histórico de amostras para cálculo de tendências.
+
+Nova regra em `validate_settings()` (perfil produção):
+`predictive_health_enable_predictive_alerts` não pode ser `False` em produção.
+
+Duas rotas novas em `/predictive-health`:
+`GET /predictive-health/monitor/live` (JSON),
+`GET /predictive-health/monitor/markdown` (Markdown).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/predictive_health_service.py`,
+`src/app/schemas/predictive_health.py`,
+`src/app/api/routes/predictive_health.py`.
+
+## 2.0.0 — 2026-06-28 (Missão 71)
+
+Adiciona o Operational Intelligence Hub — painel unificado de inteligência
+operacional que consolida, em uma única chamada, métricas já calculadas por
+`DiagnosticsService` (M44), `AlertService.active_alerts()` (M46),
+`CacheService.stats()` (M43), `QueueService.health_report()` (M42),
+`ResourceManagerService.disk_usage_report()` (M45),
+`RecoveryService.recovery_report()` (M47), `DependencyAuditService.audit()`
+(M49) e `CertificationService.certify()` (M50) — sem reimplementar nenhuma
+lógica deles.
+
+O painel retorna quatro eixos: `global_project_state` (status global,
+módulos rastreados, platinum_certified), `stability` (diagnósticos, fila,
+alertas), `performance` (cache hit-rate, fila, disco) e `risk_indicators`
+(dependências, config, bloqueios da certificação).
+
+Campo novo em `Settings`:
+
+- `operational_intelligence_include_unpinned_in_risk` (default `True`):
+  controla se dependências sem versão fixa aparecem nos indicadores de
+  risco e podem degradar o `overall_status`. Nunca deve ser `False` em
+  produção.
+
+Nova regra em `validate_settings()` (perfil produção):
+`operational_intelligence_include_unpinned_in_risk` não pode ser `False`
+em produção.
+
+Duas rotas novas em `/operational-intelligence` (`safe_router.py`):
+`GET /operational-intelligence/health-panel/live` (painel JSON agregado),
+`GET /operational-intelligence/health-panel/markdown` (o mesmo painel
+renderizado como Markdown, `text/markdown`).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/operational_intelligence_service.py`,
+`src/app/schemas/operational_intelligence.py`,
+`src/app/api/routes/operational_intelligence.py`.
+
 ## 1.9.0 — 2026-06-27 (Missão 50)
 
 Adiciona a Certificação Platinum v1.3 — o capstone das Missões 41-49:
