@@ -44,7 +44,22 @@ def init_observability() -> None:
     if _INITIALIZED:
         return
     settings = get_settings()
-    level_name = os.getenv("APP_LOG_LEVEL", getattr(settings, "observability_log_level", "INFO")).upper()
+    # Missao 41 - Configuracao Centralizada: APP_LOG_LEVEL agora tambem
+    # existe como campo documentado/versionado em Settings
+    # (app_log_level, validation_alias="APP_LOG_LEVEL"), visivel em
+    # config_fingerprint() e validado por validate_settings(). A leitura
+    # direta de os.environ continua aqui de propósito: Settings e
+    # cacheado por @lru_cache (get_settings), entao um valor setado em
+    # Settings nao reagiria a uma mudanca de ambiente em tempo de execucao
+    # sem um restart/clear do cache. Esta linha preserva o comportamento
+    # ja testado (reconfiguracao dinamica de log level sem restart) e usa
+    # o campo de Settings apenas como fallback documentado, nunca como
+    # unica fonte de verdade.
+    level_name = (
+        os.environ.get("APP_LOG_LEVEL")
+        or settings.app_log_level
+        or getattr(settings, "observability_log_level", "INFO")
+    ).upper()
     level = getattr(logging, level_name, logging.INFO)
     handler = logging.StreamHandler()
     handler.setFormatter(JsonLogFormatter())
