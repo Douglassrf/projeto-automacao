@@ -204,6 +204,11 @@ class Settings(BaseSettings):
     # Missao 79 - Architecture Evolution Report
     architecture_evolution_include_recommendations: bool = True
 
+    # Missao 80 - Autonomous Operations Readiness (CAPSTONE): gate fail-closed.
+    # Quando True (padrao), verdict so e READY se todos os dominios passarem.
+    # Quando False, verdict e sempre NOT_READY. Nunca False em producao.
+    autonomous_ops_require_all_domains: bool = True
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080

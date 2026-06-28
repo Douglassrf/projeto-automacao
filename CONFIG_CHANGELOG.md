@@ -7,6 +7,16 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.0.0 — 2026-06-28 (Missão 80 — CAPSTONE)
+
+Autonomous Operations Readiness — agrega M71-M79 + M41-M50, valida 10
+domínios (governança, observabilidade, segurança, recuperação, qualidade,
+documentação, compatibilidade, integridade, orquestração, escalabilidade),
+`blocking_issues`, `verdict`, evidências. Campo
+`autonomous_ops_require_all_domains` (fail-closed). Bump major 2.x → 3.0.0.
+
+Rotas: `/autonomous-operations/readiness/live`, `/markdown`.
+
 ## 2.8.0 — 2026-06-28 (Missão 79)
 
 Architecture Evolution Report — comparação versões, complexidade, refatoração,

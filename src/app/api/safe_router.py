@@ -55,6 +55,7 @@ ROUTE_MODULES = [
     "workflow_orchestrator",
     "resource_optimization",
     "architecture_evolution",
+    "autonomous_operations",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",
