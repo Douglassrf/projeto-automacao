@@ -6,8 +6,10 @@ from app.schemas.queue import (
     QueueClaimRequest,
     QueueCompleteRequest,
     QueueFailRequest,
+    QueueHealthResponse,
     QueueJobCreate,
     QueueJobResponse,
+    QueueRequeueRequest,
     QueueStatsResponse,
 )
 from app.services.queue_service import QueueService, serialize_job
@@ -65,3 +67,19 @@ def list_jobs(
 @router.get("/stats", response_model=QueueStatsResponse)
 def queue_stats(db: Session = Depends(get_db)):
     return QueueService(db).stats()
+
+
+@router.get("/health", response_model=QueueHealthResponse)
+def queue_health(db: Session = Depends(get_db)):
+    """Missao 42 - Gerenciador Inteligente de Filas: diagnostico de saude."""
+    return QueueService(db).health_report()
+
+
+@router.post("/jobs/{job_id}/requeue", response_model=QueueJobResponse)
+def requeue_dead_letter_job(job_id: int, payload: QueueRequeueRequest, db: Session = Depends(get_db)):
+    """Missao 42: reenvia manualmente um job dead-letter para a fila."""
+    try:
+        job = QueueService(db).requeue_dead_letter(job_id, reset_attempts=payload.reset_attempts)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return serialize_job(job)

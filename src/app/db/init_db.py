@@ -3,7 +3,7 @@ from sqlalchemy import inspect, text
 from app.core.config import get_settings
 from app.core.security import hash_password
 from app.db.session import Base, SessionLocal, engine
-from app.domain.models import User, AdAnalysis, DecisionLog, QueueJob, ContentWorkflow, Campaign, CampaignMetric, AdLibraryBenchmark, PerformanceTicket, MetaActionRequest, FinancialMetric, ScalingRule, ManualRevenueEntry  # noqa: F401
+from app.domain.models import User, AdAnalysis, DecisionLog, QueueJob, ContentWorkflow, Campaign, CampaignMetric, AdLibraryBenchmark, PerformanceTicket, MetaActionRequest, FinancialMetric, ScalingRule, ManualRevenueEntry, CacheEntry, CacheStat  # noqa: F401
 
 
 def _ensure_sqlite_wal() -> None:
@@ -90,6 +90,21 @@ def _ensure_sqlite_columns() -> None:
             for column_name, ddl in required.items():
                 if column_name not in existing:
                     connection.execute(text(f"ALTER TABLE decision_logs ADD COLUMN {column_name} {ddl}"))
+
+    if "queue_jobs" in tables:
+        # Missao 42 - Gerenciador Inteligente de Filas: backoff exponencial.
+        existing = {column["name"] for column in inspector.get_columns("queue_jobs")}
+        required = {
+            "next_attempt_at": "DATETIME DEFAULT NULL",
+        }
+        with engine.begin() as connection:
+            for column_name, ddl in required.items():
+                if column_name not in existing:
+                    connection.execute(text(f"ALTER TABLE queue_jobs ADD COLUMN {column_name} {ddl}"))
+
+    # Missao 43 - Cache Inteligente: cache_entries/cache_stats sao tabelas
+    # novas (criadas por Base.metadata.create_all() acima) - nao ha coluna
+    # legada para migrar ainda. Mantido como marcador para futuras colunas.
 
 
 def _ensure_default_admin() -> None:
