@@ -151,16 +151,36 @@ Criado:
 Saída completa: `pytest_m81_output_final.txt`
 ---
 
-## 10. Publicacao (PR) e limpeza — atualizacao 2026-06-28 (Codex / Cursor)
+## 10. Publicacao (PR) — atualizacao pos-prosseguir 2026-06-28 (Codex / Cursor)
 
 | Item | Status |
 |------|--------|
-| PR integracao M81 | **MERGED** — [#25](https://github.com/Douglassrf/projeto-automacao/pull/25) *Missao 81 integracao controlada equipes* |
-| PR limpeza campaign_kits | **MERGED** — [#26](https://github.com/Douglassrf/projeto-automacao/pull/26) *M81: remove artefatos pytest de data/campaign_kits* |
-| master pos-M81 | 160df50 (merge #26) |
-| Branch no origin | missao-81-integracao-controlada-equipes @ 57c1157 (head pre-merge; master contem o trabalho) |
-| gh auth | OK via Git Credential Manager (GH_TOKEN para gh) |
-| Limpeza data/campaign_kits/ | **OK** — 68 artefatos removidos (commit 57c1157) |
-| PR titulo formal (gh pr create) | Bloqueado: **sem commits** entre master e head — integracao ja em master |
+| PR integracao M81 | **MERGED** — [#25](https://github.com/Douglassrf/projeto-automacao/pull/25) |
+| PR limpeza campaign_kits | **MERGED** — [#26](https://github.com/Douglassrf/projeto-automacao/pull/26) |
+| PR relatorio / titulo formal | **OPEN** — [#27](https://github.com/Douglassrf/projeto-automacao/pull/27) (1 commit doc: e0b0b75 acima de master 160df50) |
+| master pos-M81 | 160df50 |
+| Branch origin | missao-81-integracao-controlada-equipes @ e0b0b75 (0 behind / 1 ahead de master) |
+| git fetch origin — branch missao-60* | **AUSENTE** (confirmado 2026-06-28) |
+| CI PR #27 (lint-and-test) | **failure** — step *Run pytest suite* (run Actions 28332228907) |
+| Merge #27 em master | **NAO EXECUTADO** — aguarda revisao Douglas (prosseguir != auto-merge) |
 
-**Nota Fase Omega:** Nenhum merge adicional nesta sessao. Revisao nos PRs #25/#26. Fail-closed M60 inalterado.
+**Verdict M81:** permanece **NOT_READY** (M60 fail-closed + falhas pytest conhecidas).
+
+---
+
+## 11. Proximos passos (checklist)
+
+| # | Acao | Responsavel | Criterio de done |
+|---|------|-------------|------------------|
+| 1 | Publicar branch **Missao 60** (missao-60*) no origin com 	est_m60* | Douglas / equipe M60 | git ls-remote origin refs/heads/missao-60* retorna SHA |
+| 2 | Merge M60 na branch de integracao (ou nova M81.1), rodar pytest -q test_m60* | Codex | testes M60 verdes |
+| 3 | Reavaliar verdict M81 (READY so se M60 OK + blockers aceitos ou corrigidos) | Codex | secao 8 atualizada |
+| 4 | CI verde ou waiver documentado para #27 (ffmpeg Linux CI, M57 git depth, M43 LRU) | Codex / CI | lint-and-test success ou nota em PR |
+| 5 | Merge PR [#27](https://github.com/Douglassrf/projeto-automacao/pull/27) **somente** apos OK explicito Douglas | Douglas | merge commit em master |
+| 6 | Nao iniciar v1.2 / escopo fora Fase Omega | Todos | alinhado CLAUDE.md |
+
+**Diff master..missao-81 (2026-06-28):** apenas M81_INTEGRACAO_CONTROLADA_REPORT.md (+17/-2) — codigo de integracao ja esta em master via #25/#26.
+
+**gh CLI neste ambiente:** GH_TOKEN ausente; status de PRs via API publica GitHub. Autenticar gh auth login ou exportar GH_TOKEN para checks interativos.
+
+**Nota Fase Omega:** Nenhum merge adicional nesta sessao pos-prosseguir.
