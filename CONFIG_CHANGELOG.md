@@ -7,6 +7,10 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 4.0.0 — 2026-06-28 (Missão 91 — Production Launch Authorization)
+
+Campos: `production_launch_fail_closed`, `production_launch_require_evidence_archive`. Rotas `/production-launch/live`, `/markdown`.
+
 ## 3.9.0 — 2026-06-28 (Missão 90 — Pre Production Approval)
 
 Campos: `pre_production_require_all_missions`, `pre_production_block_on_issues`. Rotas `/pre-production-approval/live`, `/markdown`.
