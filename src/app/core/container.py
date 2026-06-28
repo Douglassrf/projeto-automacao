@@ -67,6 +67,7 @@ from app.services.intelligent_release_governance_service import (
     IntelligentReleaseGovernanceService,
 )
 from app.services.architecture_scoring_service import ContinuousArchitectureScoringService
+from app.services.optimization_planner_service import AutonomousOptimizationPlannerService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -187,3 +188,13 @@ def get_architecture_scoring_service() -> ContinuousArchitectureScoringService:
     construtor, que aqui e `architecture_audit` (nao `db`) - usar
     `provide()` quebraria a injecao de dependencia silenciosamente."""
     return ContinuousArchitectureScoringService()
+
+
+def get_optimization_planner_service() -> AutonomousOptimizationPlannerService:
+    """Missao 128. Mesmo motivo das funcoes dedicadas acima (Missoes 55,
+    56, 58, 59, 127): AutonomousOptimizationPlannerService nao depende de
+    `db` - so de TechDebtManagerService e ContinuousArchitectureScoringService,
+    ambos tambem sem banco. `provide()` passaria `db` como primeiro
+    argumento posicional do construtor (aqui `tech_debt_manager`),
+    quebrando a injecao de dependencia silenciosamente."""
+    return AutonomousOptimizationPlannerService()
