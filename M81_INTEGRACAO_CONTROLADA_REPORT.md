@@ -26,8 +26,8 @@ Integração sequencial das missões **51–59** e **71–80** concluída em bra
 | 6 | Resolução manual de conflitos | Ver seção 3 |
 | 7 | `cd src && python -m pytest -q` | 830 passed, 6 failed |
 | 8 | Este relatório | OK |
-| 9 | Commit + push | Pendente neste passo |
-| 10 | PR to master (sem merge) | Pendente neste passo |
+| 9 | Commit + push | OK (`41fbf45`, depois limpeza `57c1157`) |
+| 10 | PR to master (sem merge) | OK — PR #25 e #26 **MERGED** em master @ 160df50; ver secao 10 |
 
 ---
 
@@ -149,3 +149,18 @@ Criado:
 ```
 
 Saída completa: `pytest_m81_output_final.txt`
+---
+
+## 10. Publicacao (PR) e limpeza — atualizacao 2026-06-28 (Codex / Cursor)
+
+| Item | Status |
+|------|--------|
+| PR integracao M81 | **MERGED** — [#25](https://github.com/Douglassrf/projeto-automacao/pull/25) *Missao 81 integracao controlada equipes* |
+| PR limpeza campaign_kits | **MERGED** — [#26](https://github.com/Douglassrf/projeto-automacao/pull/26) *M81: remove artefatos pytest de data/campaign_kits* |
+| master pos-M81 | 160df50 (merge #26) |
+| Branch no origin | missao-81-integracao-controlada-equipes @ 57c1157 (head pre-merge; master contem o trabalho) |
+| gh auth | OK via Git Credential Manager (GH_TOKEN para gh) |
+| Limpeza data/campaign_kits/ | **OK** — 68 artefatos removidos (commit 57c1157) |
+| PR titulo formal (gh pr create) | Bloqueado: **sem commits** entre master e head — integracao ja em master |
+
+**Nota Fase Omega:** Nenhum merge adicional nesta sessao. Revisao nos PRs #25/#26. Fail-closed M60 inalterado.
