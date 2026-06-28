@@ -147,6 +147,12 @@ class Settings(BaseSettings):
     # devolver o valor real. Nunca deve ser False em producao.
     documentation_redact_secrets: bool = True
 
+    # Missao 49 - Auditoria de Dependencias: quando True (padrao), uma
+    # dependencia declarada em requirements.txt sem versao fixa (==)
+    # aparece na lista de "issues" do endpoint /dependency-audit/* (nao so
+    # na lista bruta de dependencias). Nunca deve ser False em producao.
+    dependency_audit_warn_on_unpinned: bool = True
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080

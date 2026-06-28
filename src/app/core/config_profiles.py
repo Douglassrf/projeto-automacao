@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "1.7.0"
+CONFIG_SCHEMA_VERSION = "1.8.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.
@@ -166,6 +166,17 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
             issues.append(
                 "documentation_redact_secrets=False em produção: os endpoints "
                 "/documentation/* exporiam valores reais de campos de segredo."
+            )
+        if not settings.dependency_audit_warn_on_unpinned:
+            # Missao 49 - Auditoria de Dependencias: em requirements.txt
+            # deste repositorio, 19/19 dependencias declaradas (100%) nao
+            # tem versao fixa (==) hoje - um "pip install -r requirements.txt"
+            # futuro pode trazer uma versao diferente silenciosamente, sem
+            # nenhum aviso, se esta flag estiver desligada em produção.
+            issues.append(
+                "dependency_audit_warn_on_unpinned=False em produção: dependências "
+                "sem versão fixa em requirements.txt não seriam destacadas como "
+                "problema pelos endpoints /dependency-audit/*."
             )
 
     if environment is Environment.TESTING:

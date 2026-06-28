@@ -7,6 +7,47 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.8.0 — 2026-06-27 (Missão 49)
+
+Adiciona a Auditoria de Dependências: `requirements.txt` deste repositório
+declara 19 dependências (fastapi, uvicorn, sqlalchemy, pydantic,
+pydantic-settings, PyJWT, passlib, bcrypt, python-dotenv,
+python-multipart, email-validator, httpx, sentry-sdk, pillow,
+python-magic, werkzeug, celery, requests, pytest) e **nenhuma delas tem
+versão fixa** (`==`) — 19/19, 100% sem pin. Isso significa que um `pip
+install -r requirements.txt` executado hoje e outro executado meses
+depois podem instalar versões diferentes de qualquer uma dessas
+bibliotecas, silenciosamente, sem nenhum aviso no próprio arquivo.
+`DependencyAuditService` lê `requirements.txt` em tempo real, usa
+`packaging.requirements.Requirement` (biblioteca já presente no ambiente
+como dependência transitiva de `pytest`, portanto nenhuma dependência
+nova foi declarada) para interpretar cada linha, e cruza cada dependência
+declarada com a versão de fato instalada via `importlib.metadata` — sem
+nenhuma chamada de rede, API externa, paga ou serviço de terceiros
+(nada de PyPI Advisory DB / OSV / safety-db).
+
+Campo novo em `Settings`:
+
+- `dependency_audit_warn_on_unpinned` (default `True`): controla se uma
+  dependência sem versão fixa aparece na lista de "issues" do endpoint
+  `/dependency-audit/*`, além de aparecer na lista bruta de dependências.
+  Nunca deve ser `False` em produção.
+
+Nova regra em `validate_settings()` (perfil produção):
+`dependency_audit_warn_on_unpinned` não pode ser `False` em produção.
+
+Duas rotas novas em `/dependency-audit` (`safe_router.py`):
+`GET /dependency-audit/live` (snapshot JSON com total declarado, contagem
+de fixados/não-fixados/ausentes/divergentes e a lista completa de
+dependências), `GET /dependency-audit/markdown` (o mesmo snapshot
+renderizado como Markdown, `text/markdown`).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/dependency_audit_service.py`,
+`src/app/schemas/dependency_audit.py`,
+`src/app/api/routes/dependency_audit.py`.
+
 ## 1.7.0 — 2026-06-27 (Missão 48)
 
 Adiciona a Documentação Viva: em vez de um `.md` estático que alguém

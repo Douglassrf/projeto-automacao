@@ -164,7 +164,12 @@ def test_markdown_endpoint_returns_text_markdown():
 
 
 def test_config_schema_version_bumped_for_mission_48():
-    assert CONFIG_SCHEMA_VERSION == "1.7.0"
+    # Comparação por tupla (não igualdade estrita): a Missão 48 bumpou de
+    # 1.6.0 para 1.7.0. Missões futuras (ex.: 49, 50) bumpam de novo - esta
+    # asserção verifica que o bump da Missão 48 permanece em vigor (>= 1.7.0),
+    # sem quebrar quando uma missão posterior aumentar a versão de novo.
+    current = tuple(int(part) for part in CONFIG_SCHEMA_VERSION.split("."))
+    assert current >= (1, 7, 0)
 
 
 def test_validate_settings_rejects_disabled_redaction_in_production():
