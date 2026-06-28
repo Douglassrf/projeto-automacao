@@ -52,6 +52,7 @@ from app.services.diagnostics_service import DiagnosticsService
 from app.services.queue_service import QueueService
 from app.services.recovery_service import RecoveryService
 from app.services.resource_manager_service import ResourceManagerService
+from app.services.unified_certification_service import UnifiedCertificationEngine
 
 ServiceT = TypeVar("ServiceT")
 
@@ -113,3 +114,4 @@ get_alert_service = provide(AlertService)
 get_recovery_service = provide(RecoveryService)
 get_resource_manager_service = provide(ResourceManagerService)
 get_certification_service = provide(CertificationService)
+get_unified_certification_engine = provide(UnifiedCertificationEngine)  # Missao 53
