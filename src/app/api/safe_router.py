@@ -50,6 +50,7 @@ ROUTE_MODULES = [
     "predictive_health",
     "technical_knowledge",
     "continuous_quality",
+    "data_integrity",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

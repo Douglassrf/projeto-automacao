@@ -7,6 +7,12 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.4.0 — 2026-06-28 (Missão 75)
+
+Data Integrity Framework — consistência, registros inválidos, integridade
+pós backup. Campo `data_integrity_strict_validation`. Rotas
+`/data-integrity/check/live` e `/markdown`.
+
 ## 2.3.0 — 2026-06-28 (Missão 74)
 
 Continuous Quality Gate — cobertura de testes, dívida técnica, padrões de
