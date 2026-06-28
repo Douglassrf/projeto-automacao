@@ -201,6 +201,9 @@ class Settings(BaseSettings):
     # Missao 78 - Resource Optimization Engine
     resource_optimization_enable_rebalance: bool = True
 
+    # Missao 79 - Architecture Evolution Report
+    architecture_evolution_include_recommendations: bool = True
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080

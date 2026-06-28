@@ -54,6 +54,7 @@ ROUTE_MODULES = [
     "api_compatibility",
     "workflow_orchestrator",
     "resource_optimization",
+    "architecture_evolution",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

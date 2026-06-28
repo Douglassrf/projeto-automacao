@@ -7,6 +7,11 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.8.0 — 2026-06-28 (Missão 79)
+
+Architecture Evolution Report — comparação versões, complexidade, refatoração,
+recomendações técnicas. Campo `architecture_evolution_include_recommendations`.
+
 ## 2.7.0 — 2026-06-28 (Missão 78)
 
 Resource Optimization Engine — balanceamento, otimização filas, redução
