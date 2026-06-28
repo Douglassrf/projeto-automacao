@@ -163,6 +163,20 @@ class Settings(BaseSettings):
     # False em producao.
     certification_platinum_require_clean_diagnostics: bool = True
 
+    # Missao 71 - Operational Intelligence Hub: quando True (padrao),
+    # dependencias sem versao fixa (==) em requirements.txt aparecem nos
+    # indicadores de risco do painel /operational-intelligence/* (alem de
+    # afetar o overall_status como "degraded"). Nunca deve ser False em
+    # producao - ocultar risco conhecido nao o elimina.
+    operational_intelligence_include_unpinned_in_risk: bool = True
+
+    # Missao 72 - Predictive Health Monitor: quando True (padrao), alertas
+    # preditivos baseados em tendencias de CPU/memoria/armazenamento sao
+    # incluidos no relatorio. Nunca deve ser False em producao — ocultar
+    # alertas preditivos nao elimina degradacao gradual.
+    predictive_health_enable_predictive_alerts: bool = True
+    predictive_health_history_max_snapshots: int = 24
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080

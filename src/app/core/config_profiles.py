@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "1.9.0"
+CONFIG_SCHEMA_VERSION = "2.1.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.
@@ -191,6 +191,25 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
                 "platinum_certified=True (gate fail-closed permanentemente "
                 "fechado), mesmo com diagnosticos/alertas/dependencias limpos."
             )
+        if not settings.operational_intelligence_include_unpinned_in_risk:
+            # Missao 71 - Operational Intelligence Hub: 19/19 dependencias
+            # deste repositorio nao tem versao fixa hoje. Ocultar isso do
+            # painel de risco em producao esconderia um risco conhecido sem
+            # elimina-lo.
+            issues.append(
+                "operational_intelligence_include_unpinned_in_risk=False em "
+                "produção: o painel /operational-intelligence/* ocultaria "
+                "dependências sem versão fixa dos indicadores de risco."
+            )
+        if not settings.predictive_health_enable_predictive_alerts:
+            # Missao 72 - Predictive Health Monitor: desligar alertas
+            # preditivos em producao oculta degradacao gradual detectavel
+            # por tendencias de CPU/memoria/armazenamento.
+            issues.append(
+                "predictive_health_enable_predictive_alerts=False em produção: "
+                "o monitor /predictive-health/* nao reportaria alertas "
+                "preditivos de degradacao gradual."
+            )
 
     if environment is Environment.TESTING:
         if settings.meta_env == "production":
@@ -273,6 +292,14 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
     if settings.recovery_max_jobs_per_sweep < 1:
         issues.append(
             f"recovery_max_jobs_per_sweep={settings.recovery_max_jobs_per_sweep}: precisa ser >= 1."
+        )
+
+    # Missao 72 - Predictive Health Monitor.
+    if settings.predictive_health_history_max_snapshots < 2:
+        issues.append(
+            f"predictive_health_history_max_snapshots="
+            f"{settings.predictive_health_history_max_snapshots}: precisa ser >= 2 "
+            "para calcular tendencias."
         )
 
     return issues

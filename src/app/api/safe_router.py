@@ -46,6 +46,8 @@ ROUTE_MODULES = [
     "documentation",
     "dependency_audit",
     "certification",
+    "operational_intelligence",
+    "predictive_health",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

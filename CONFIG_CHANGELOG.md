@@ -7,6 +7,73 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.1.0 — 2026-06-28 (Missão 72)
+
+Adiciona o Predictive Health Monitor — monitoramento preditivo de saúde
+com tendências de CPU, memória e armazenamento, alertas preditivos baseados
+em histórico curto (persistido via `CacheService`) e relatório de degradação
+gradual. Reutiliza `DiagnosticsService.check_disk()` (M44) e
+`ResourceManagerService.disk_usage_report()` (M45).
+
+Campos novos em `Settings`:
+
+- `predictive_health_enable_predictive_alerts` (default `True`): controla
+  se alertas preditivos aparecem no relatório. Nunca deve ser `False` em
+  produção.
+- `predictive_health_history_max_snapshots` (default `24`): tamanho máximo
+  do histórico de amostras para cálculo de tendências.
+
+Nova regra em `validate_settings()` (perfil produção):
+`predictive_health_enable_predictive_alerts` não pode ser `False` em produção.
+
+Duas rotas novas em `/predictive-health`:
+`GET /predictive-health/monitor/live` (JSON),
+`GET /predictive-health/monitor/markdown` (Markdown).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/predictive_health_service.py`,
+`src/app/schemas/predictive_health.py`,
+`src/app/api/routes/predictive_health.py`.
+
+## 2.0.0 — 2026-06-28 (Missão 71)
+
+Adiciona o Operational Intelligence Hub — painel unificado de inteligência
+operacional que consolida, em uma única chamada, métricas já calculadas por
+`DiagnosticsService` (M44), `AlertService.active_alerts()` (M46),
+`CacheService.stats()` (M43), `QueueService.health_report()` (M42),
+`ResourceManagerService.disk_usage_report()` (M45),
+`RecoveryService.recovery_report()` (M47), `DependencyAuditService.audit()`
+(M49) e `CertificationService.certify()` (M50) — sem reimplementar nenhuma
+lógica deles.
+
+O painel retorna quatro eixos: `global_project_state` (status global,
+módulos rastreados, platinum_certified), `stability` (diagnósticos, fila,
+alertas), `performance` (cache hit-rate, fila, disco) e `risk_indicators`
+(dependências, config, bloqueios da certificação).
+
+Campo novo em `Settings`:
+
+- `operational_intelligence_include_unpinned_in_risk` (default `True`):
+  controla se dependências sem versão fixa aparecem nos indicadores de
+  risco e podem degradar o `overall_status`. Nunca deve ser `False` em
+  produção.
+
+Nova regra em `validate_settings()` (perfil produção):
+`operational_intelligence_include_unpinned_in_risk` não pode ser `False`
+em produção.
+
+Duas rotas novas em `/operational-intelligence` (`safe_router.py`):
+`GET /operational-intelligence/health-panel/live` (painel JSON agregado),
+`GET /operational-intelligence/health-panel/markdown` (o mesmo painel
+renderizado como Markdown, `text/markdown`).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/operational_intelligence_service.py`,
+`src/app/schemas/operational_intelligence.py`,
+`src/app/api/routes/operational_intelligence.py`.
+
 ## 1.9.0 — 2026-06-27 (Missão 50)
 
 Adiciona a Certificação Platinum v1.3 — o capstone das Missões 41-49:
