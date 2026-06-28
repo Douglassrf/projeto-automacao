@@ -66,6 +66,7 @@ from app.services.predictive_maintenance_service import PredictiveMaintenanceSer
 from app.services.intelligent_release_governance_service import (
     IntelligentReleaseGovernanceService,
 )
+from app.services.architecture_scoring_service import ContinuousArchitectureScoringService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -173,3 +174,16 @@ get_architecture_evolution_timeline_service = provide(ArchitectureEvolutionTimel
 get_enterprise_quality_observatory_service = provide(EnterpriseQualityObservatoryService)  # Missao 124
 get_predictive_maintenance_service = provide(PredictiveMaintenanceService)  # Missao 125
 get_intelligent_release_governance_service = provide(IntelligentReleaseGovernanceService)  # Missao 126
+
+
+def get_architecture_scoring_service() -> ContinuousArchitectureScoringService:
+    """Missao 127. Mesmo motivo de `get_architecture_audit_service()`
+    (Missao 55), `get_code_review_service()` (Missao 56) e
+    `get_tech_debt_manager_service()` (Missao 58): ContinuousArchitectureScoringService
+    nao depende de `db` - os cinco eixos leem ArchitectureAuditService,
+    CodeReviewService e TechDebtManagerService (todos tambem sem banco).
+    `provide()` forcaria um `db: Session` decorativo, e pior: a fabrica
+    generica passaria `db` como primeiro argumento posicional do
+    construtor, que aqui e `architecture_audit` (nao `db`) - usar
+    `provide()` quebraria a injecao de dependencia silenciosamente."""
+    return ContinuousArchitectureScoringService()
