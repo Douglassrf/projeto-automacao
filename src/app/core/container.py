@@ -58,6 +58,7 @@ from app.services.unified_certification_service import UnifiedCertificationEngin
 from app.services.evolution_dashboard_service import EvolutionDashboardService
 from app.services.tech_debt_manager_service import TechDebtManagerService
 from app.services.architecture_stress_test_service import ArchitectureStressTestService
+from app.services.enterprise_readiness_service import EnterpriseReadinessService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -157,3 +158,6 @@ def get_architecture_stress_test_service() -> ArchitectureStressTestService:
     contra os proprios endpoints da aplicacao e chama o container
     diretamente. `provide()` forcaria um `db: Session` decorativo."""
     return ArchitectureStressTestService()
+
+
+get_enterprise_readiness_service = provide(EnterpriseReadinessService)  # Missao 60
