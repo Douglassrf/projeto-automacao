@@ -5,6 +5,11 @@
 *.env
 .env.*
 !.env.example
+# Missao 41 - exemplos de perfil (sem segredos reais), mesmo padrao do .env.example
+!.env.development.example
+!.env.testing.example
+!.env.staging.example
+!.env.production.example
 *.key
 *.pem
 config.json

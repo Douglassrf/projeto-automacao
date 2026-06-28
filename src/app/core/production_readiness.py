@@ -7,7 +7,10 @@ import os
 import shutil
 import signal
 import sqlite3
-import resource
+try:
+    import resource
+except ModuleNotFoundError:  # Windows — resource e modulo POSIX-only
+    resource = None  # type: ignore[assignment]
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -140,9 +143,13 @@ def restore_sqlite(backup_file: Path, destination: Path) -> dict[str, Any]:
 
 
 def enterprise_observability_snapshot() -> dict[str, Any]:
-    usage = resource.getrusage(resource.RUSAGE_SELF)
-    memory_mb = round(float(usage.ru_maxrss) / 1024, 2)
-    cpu_seconds = round(float(usage.ru_utime + usage.ru_stime), 4)
+    if resource is not None:
+        usage = resource.getrusage(resource.RUSAGE_SELF)
+        memory_mb = round(float(usage.ru_maxrss) / 1024, 2)
+        cpu_seconds = round(float(usage.ru_utime + usage.ru_stime), 4)
+    else:
+        memory_mb = 0.0
+        cpu_seconds = 0.0
     return {
         "status": "ok",
         "metrics": metrics_snapshot(),

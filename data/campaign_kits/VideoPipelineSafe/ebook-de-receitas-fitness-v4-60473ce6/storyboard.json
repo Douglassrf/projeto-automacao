@@ -1,0 +1,24 @@
+{
+  "product_name": "Ebook de Receitas Fitness",
+  "model": "V4",
+  "aspect_ratio": "9:16",
+  "scenes": [
+    {
+      "start": "0s",
+      "role": "hook",
+      "text": "Receitas práticas para organizar sua alimentação"
+    },
+    {
+      "start": "3s",
+      "role": "body",
+      "text": "Mostre a dor de não conseguir organizar a alimentação, apresente receitas simples e finalize com uma chamada direta para acessar o ebook agora."
+    },
+    {
+      "start": "final",
+      "role": "cta",
+      "text": "Acesse agora"
+    }
+  ],
+  "safe_mode": true,
+  "render_real": false
+}

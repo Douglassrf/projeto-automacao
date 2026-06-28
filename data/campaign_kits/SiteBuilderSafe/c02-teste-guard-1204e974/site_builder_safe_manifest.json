@@ -1,0 +1,29 @@
+{
+  "status": "ok",
+  "agent": "SiteBuilderBridge",
+  "mode": "site_builder_safe",
+  "product_name": "C02 Teste Guard",
+  "template": "direct_response",
+  "generated_at": "2026-06-28T17:54:38.498636+00:00",
+  "output_dir": "C:\\Users\\USUÁRIO\\Documents\\projeto-automacao-m81\\data\\campaign_kits\\SiteBuilderSafe\\c02-teste-guard-1204e974",
+  "preview_path": "C:\\Users\\USUÁRIO\\Documents\\projeto-automacao-m81\\data\\campaign_kits\\SiteBuilderSafe\\c02-teste-guard-1204e974\\index.html",
+  "files": [
+    "C:\\Users\\USUÁRIO\\Documents\\projeto-automacao-m81\\data\\campaign_kits\\SiteBuilderSafe\\c02-teste-guard-1204e974\\index.html",
+    "C:\\Users\\USUÁRIO\\Documents\\projeto-automacao-m81\\data\\campaign_kits\\SiteBuilderSafe\\c02-teste-guard-1204e974\\styles.css"
+  ],
+  "deploy_provider": "local",
+  "deploy_status": "local_ready",
+  "deploy_real_executed": false,
+  "github_executed": false,
+  "vercel_executed": false,
+  "netlify_executed": false,
+  "deploy_payload_path": "C:\\Users\\USUÁRIO\\Documents\\projeto-automacao-m81\\data\\campaign_kits\\SiteBuilderSafe\\c02-teste-guard-1204e974\\deploy_payload.json",
+  "manifest_file": "C:\\Users\\USUÁRIO\\Documents\\projeto-automacao-m81\\data\\campaign_kits\\SiteBuilderSafe\\c02-teste-guard-1204e974\\site_builder_safe_manifest.json",
+  "warnings": [
+    "Deploy real bloqueado.",
+    "Dry-run ativo: nenhum provedor externo foi chamado.",
+    "GitHub/Vercel/Netlify não foram chamados.",
+    "Payload preparado apenas para revisão futura."
+  ],
+  "next_action": "brain_review_before_orchestration_pipeline"
+}
