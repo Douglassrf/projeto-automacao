@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "1.8.0"
+CONFIG_SCHEMA_VERSION = "1.9.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.
@@ -177,6 +177,19 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
                 "dependency_audit_warn_on_unpinned=False em produção: dependências "
                 "sem versão fixa em requirements.txt não seriam destacadas como "
                 "problema pelos endpoints /dependency-audit/*."
+            )
+        if not settings.certification_platinum_require_clean_diagnostics:
+            # Missao 50 - Certificacao Platinum v1.3: o gate e "fail-closed"
+            # por design (ver certification_service.py) - desligar esta flag
+            # nao faz platinum_certified passar a True "de gracinha"; faz o
+            # endpoint /certification/platinum nunca certificar nada,
+            # mesmo com tudo saudavel. Em produção isso so esconderia o
+            # proprio proposito da certificacao.
+            issues.append(
+                "certification_platinum_require_clean_diagnostics=False em "
+                "produção: o endpoint /certification/platinum nunca reportaria "
+                "platinum_certified=True (gate fail-closed permanentemente "
+                "fechado), mesmo com diagnosticos/alertas/dependencias limpos."
             )
 
     if environment is Environment.TESTING:

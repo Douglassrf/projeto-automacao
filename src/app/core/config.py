@@ -153,6 +153,16 @@ class Settings(BaseSettings):
     # na lista bruta de dependencias). Nunca deve ser False em producao.
     dependency_audit_warn_on_unpinned: bool = True
 
+    # Missao 50 - Certificacao Platinum v1.3: quando True (padrao), o
+    # endpoint /certification/platinum so pode reportar
+    # platinum_certified=True quando diagnosticos/alertas/auditoria de
+    # dependencias estiverem todos limpos (gate "fail-closed"). Quando
+    # False, o gate fica sempre fechado (platinum_certified=False),
+    # mesmo que tudo esteja saudavel - desligar a exigencia nao deveria
+    # nunca resultar em uma certificacao "de gracinha". Nunca deve ser
+    # False em producao.
+    certification_platinum_require_clean_diagnostics: bool = True
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080

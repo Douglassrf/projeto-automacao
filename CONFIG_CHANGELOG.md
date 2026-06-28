@@ -7,6 +7,53 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 1.9.0 — 2026-06-27 (Missão 50)
+
+Adiciona a Certificação Platinum v1.3 — o capstone das Missões 41-49:
+`CertificationService` não reimplementa nenhuma lógica de
+diagnóstico/alerta/fila/recurso/dependência, apenas agrega em uma única
+chamada o que cada serviço anterior já calcula
+(`DiagnosticsService.run_full_diagnostics()` da Missão 44,
+`AlertService.active_alerts()` da Missão 46 — somente leitura, nunca
+`evaluate()`, para a certificação nunca ter efeito colateral —,
+`RecoveryService.recovery_report()` da Missão 47,
+`ResourceManagerService.disk_usage_report()` da Missão 45 e
+`DependencyAuditService.audit()` da Missão 49) e aplica uma única regra
+de veredito (`platinum_certified: bool` + `blocking_issues: list[str]`).
+
+Regra de veredito ("fail-closed" por design, ver docstring de
+`CertificationService`): bloqueiam a certificação (1) status de
+diagnósticos diferente de `"ok"`, (2) qualquer alerta ativo não resolvido,
+(3) dependência declarada ausente do ambiente ou com versão divergente da
+fixada (Missão 49) — deliberadamente **não** bloqueia em dependência sem
+pin (`unpinned_count`), tratado como informativo/risco aceito desde a
+Missão 49 (19/19 dependências deste repositório sem pin hoje) —, e (4)
+fila de jobs não saudável (Missão 47).
+
+Campo novo em `Settings`:
+
+- `certification_platinum_require_clean_diagnostics` (default `True`):
+  o "gate" da certificação. Quando `True`, `platinum_certified` só pode
+  ser `True` se nenhum `blocking_issue` for encontrado. Quando `False`,
+  `platinum_certified` é **sempre** `False` — desligar o gate nunca
+  libera uma certificação "de gracinha"; só impede que qualquer estado
+  seja certificado, mesmo saudável. Nunca deve ser `False` em produção.
+
+Nova regra em `validate_settings()` (perfil produção):
+`certification_platinum_require_clean_diagnostics` não pode ser `False`
+em produção (senão o endpoint `/certification/platinum` nunca reportaria
+`platinum_certified=True`, mesmo com tudo saudável).
+
+Duas rotas novas em `/certification` (`safe_router.py`):
+`GET /certification/platinum/live` (snapshot JSON agregado),
+`GET /certification/platinum/markdown` (o mesmo snapshot renderizado como
+Markdown, `text/markdown`).
+
+Arquivos modificados: `src/app/core/config.py`,
+`src/app/core/config_profiles.py`, `src/app/api/safe_router.py`.
+Arquivos novos: `src/app/services/certification_service.py`,
+`src/app/schemas/certification.py`, `src/app/api/routes/certification.py`.
+
 ## 1.8.0 — 2026-06-27 (Missão 49)
 
 Adiciona a Auditoria de Dependências: `requirements.txt` deste repositório

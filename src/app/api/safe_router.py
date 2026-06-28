@@ -45,6 +45,7 @@ ROUTE_MODULES = [
     "recovery",
     "documentation",
     "dependency_audit",
+    "certification",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",
