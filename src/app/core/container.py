@@ -68,6 +68,7 @@ from app.services.intelligent_release_governance_service import (
 )
 from app.services.architecture_scoring_service import ContinuousArchitectureScoringService
 from app.services.optimization_planner_service import AutonomousOptimizationPlannerService
+from app.services.digital_twin_service import EngineeringDigitalTwinService
 
 ServiceT = TypeVar("ServiceT")
 
@@ -198,3 +199,13 @@ def get_optimization_planner_service() -> AutonomousOptimizationPlannerService:
     argumento posicional do construtor (aqui `tech_debt_manager`),
     quebrando a injecao de dependencia silenciosamente."""
     return AutonomousOptimizationPlannerService()
+
+
+def get_digital_twin_service() -> EngineeringDigitalTwinService:
+    """Missao 129. Mesmo motivo das funcoes dedicadas acima (Missoes 55,
+    56, 58, 59, 127, 128): EngineeringDigitalTwinService nao depende de
+    `db` - so de ContinuousArchitectureScoringService (Missao 127),
+    tambem sem banco. `provide()` passaria `db` como primeiro argumento
+    posicional do construtor (aqui `architecture_scoring`), quebrando a
+    injecao de dependencia silenciosamente."""
+    return EngineeringDigitalTwinService()
