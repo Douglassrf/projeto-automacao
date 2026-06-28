@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "3.5.0"
+CONFIG_SCHEMA_VERSION = "3.6.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.

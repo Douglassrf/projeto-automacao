@@ -7,6 +7,10 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.6.0 — 2026-06-28 (Missão 87 — Performance Certification)
+
+Campos: `performance_cert_max_latency_ms`, `performance_cert_enable_stress`. Rotas `/performance-certification/live`, `/markdown`.
+
 ## 3.5.0 — 2026-06-28 (Missão 86 — Production Security Audit)
 
 Campos: `security_audit_fail_closed`, `security_audit_scan_routes`. Rotas `/production-security-audit/live`, `/markdown`.
