@@ -63,6 +63,9 @@ from app.services.engineering_memory_core_service import EngineeringMemoryCoreSe
 from app.services.architecture_evolution_timeline_service import ArchitectureEvolutionTimelineService
 from app.services.enterprise_quality_observatory_service import EnterpriseQualityObservatoryService
 from app.services.predictive_maintenance_service import PredictiveMaintenanceService
+from app.services.intelligent_release_governance_service import (
+    IntelligentReleaseGovernanceService,
+)
 
 ServiceT = TypeVar("ServiceT")
 
@@ -169,3 +172,4 @@ get_engineering_memory_core_service = provide(EngineeringMemoryCoreService)  # M
 get_architecture_evolution_timeline_service = provide(ArchitectureEvolutionTimelineService)  # Missao 123
 get_enterprise_quality_observatory_service = provide(EnterpriseQualityObservatoryService)  # Missao 124
 get_predictive_maintenance_service = provide(PredictiveMaintenanceService)  # Missao 125
+get_intelligent_release_governance_service = provide(IntelligentReleaseGovernanceService)  # Missao 126
