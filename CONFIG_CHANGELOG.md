@@ -7,6 +7,17 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.2.0 — 2026-06-28 (Missão 73)
+
+Adiciona Technical Knowledge Base — catálogo de módulos, histórico de
+decisões arquiteturais, lições aprendidas e referências cruzadas doc↔código.
+Reutiliza `DocumentationService` (M48).
+
+Campos novos: `technical_knowledge_include_cross_references` (default `True`),
+`technical_knowledge_include_draft_adrs`, `technical_knowledge_include_draft_modules`.
+
+Rotas: `GET /technical-knowledge/base/live`, `GET /technical-knowledge/base/markdown`.
+
 ## 2.1.0 — 2026-06-28 (Missão 72)
 
 Adiciona o Predictive Health Monitor — monitoramento preditivo de saúde
