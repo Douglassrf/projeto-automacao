@@ -7,6 +7,10 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 3.7.0 — 2026-06-28 (Missão 88 — Disaster Recovery Validation)
+
+Campos: `disaster_recovery_simulate_db_down`, `disaster_recovery_validate_backup`. Rotas `/disaster-recovery/live`, `/markdown`.
+
 ## 3.6.0 — 2026-06-28 (Missão 87 — Performance Certification)
 
 Campos: `performance_cert_max_latency_ms`, `performance_cert_enable_stress`. Rotas `/performance-certification/live`, `/markdown`.
