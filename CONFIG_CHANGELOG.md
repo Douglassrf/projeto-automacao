@@ -7,6 +7,11 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.5.0 — 2026-06-28 (Missão 76)
+
+API Compatibility Center — versões, testes compatibilidade, breaking changes,
+política depreciação. Campo `api_compatibility_enforce_deprecation_policy`.
+
 ## 2.4.0 — 2026-06-28 (Missão 75)
 
 Data Integrity Framework — consistência, registros inválidos, integridade

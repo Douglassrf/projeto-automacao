@@ -51,6 +51,7 @@ ROUTE_MODULES = [
     "technical_knowledge",
     "continuous_quality",
     "data_integrity",
+    "api_compatibility",
     "ugc_processing",
     "capi_enterprise",
     "premium_render",

@@ -191,6 +191,9 @@ class Settings(BaseSettings):
     # Missao 75 - Data Integrity Framework: validacao estrita de registros.
     data_integrity_strict_validation: bool = True
 
+    # Missao 76 - API Compatibility Center
+    api_compatibility_enforce_deprecation_policy: bool = True
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080
