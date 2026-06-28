@@ -194,6 +194,10 @@ class Settings(BaseSettings):
     # Missao 76 - API Compatibility Center
     api_compatibility_enforce_deprecation_policy: bool = True
 
+    # Missao 77 - Workflow Orchestrator
+    workflow_orchestrator_track_progress: bool = True
+    workflow_orchestrator_allow_parallel: bool = True
+
     ugc_output_dir: str = "/data/ugc"
     ugc_max_bytes: int = 50 * 1024 * 1024
     ugc_image_target_width: int = 1080

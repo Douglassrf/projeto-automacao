@@ -7,6 +7,11 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 2.6.0 — 2026-06-28 (Missão 77)
+
+Workflow Orchestrator — encadeamento, dependências, reexecução, progresso.
+Reutiliza QueueService (M42). Campo `workflow_orchestrator_track_progress`.
+
 ## 2.5.0 — 2026-06-28 (Missão 76)
 
 API Compatibility Center — versões, testes compatibilidade, breaking changes,
