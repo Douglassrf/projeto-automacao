@@ -2,32 +2,42 @@
 
 | Campo | Valor |
 |-------|--------|
-| Verdict | **NOT_READY** (fail-closed: M60 ausente) |
+| Verdict | **READY_FOR_REVIEW** (M60 integrado; aguarda CI #27 + OK Douglas) |
 | master | `160df50` (PR #25 + #26 merged) |
+| Branch integracao | `missao-81-integracao-controlada-equipes` @ `fa2030e` |
 | PR #27 | **OPEN** — [link](https://github.com/Douglassrf/projeto-automacao/pull/27) |
-| PR #27 delta vs master | 8 arquivos: docs + evidencia pytest + fixes M51/M81 (nao e doc-only) |
-| PR #27 CI | `lint-and-test` **FAIL** — ImportError `integration_status` (teste desatualizado apos refactor do service); **corrigido localmente** |
-| PR #27 merge | **NAO mergeado** — aguarda push do fix + OK Douglas (nao e doc-only puro) |
-| M60 | **`not_ready`** — branch `missao-60*` **ausente** no origin |
-| M60 teste | `test_m60*.py` **inexistente** — `pytest app/tests/test_m60*.py` → 0 coletados |
+| PR #27 delta vs master | docs + evidencia pytest + fixes M51/M81 + **M60 merge** |
+| PR #27 CI | Re-run pendente pos-merge M60 |
+| PR #27 merge | **NAO mergeado** — aguarda CI + OK Douglas |
+| M60 | **`ready`** — merge limpo em M81 @ `6bb474d` |
+| M60 teste | `24 passed` — `pytest src/app/tests/test_m60_enterprise_readiness_certification.py -q` |
+| M81 teste | `2 passed` — `pytest src/app/tests/test_m81_integration_control.py -q` |
 | Integrado em master | M51–M59, M71–M80 |
-| Blockers | M60; CI master herdado (M57 git, auth 401, etc.) |
+| Blockers | CI master herdado (M57 git, auth 401, ffmpeg); **M60 resolvido** |
 
-## M60 — Evidencia (2026-06-28)
+## M60 — Evidencia merge (2026-06-28)
 
 ```text
-$ git fetch --all
-$ git ls-remote origin 'refs/heads/missao-60*'
-(vazio — nenhuma branch missao-60 no GitHub)
+$ git fetch origin
+$ git merge origin/missao-60-enterprise-readiness-certification
+Merge made by the 'ort' strategy.
+ 4 files changed, 735 insertions(+)
+  enterprise_readiness.py, enterprise_readiness_service.py, test_m60_*.py, container.py
+
+$ python -m pytest src/app/tests/test_m60_enterprise_readiness_certification.py -q
+........................                                                 [100%]
+24 passed, 1 warning in 117.40s
+
+$ python -m pytest src/app/tests/test_m81_integration_control.py -q
+..                                                                       [100%]
+2 passed, 1 warning in 1.59s
 ```
 
-Spec parcial (Claude, nao publicada): `enterprise_readiness_service.py`, rota `/enterprise-readiness/live`, teste `test_m60_enterprise_readiness_certification.py` (~489 linhas). Pacote separado pendente (`INSTRUCOES_PUSH_MISSOES_51_59.md`).
-
-**Codex deve entregar:** branch `missao-60-enterprise-readiness-certification` com service+schema+route+test+config bump, 3x pytest limpo, push ao origin.
+**Conflitos:** nenhum (config.py, safe_router, container.py — merge automatico).
 
 ## Proxima acao
 
-1. Publicar M60 no GitHub → merge controlado → `pytest test_m60*.py`
-2. Push fix test_m81 → re-run CI #27 → revisar merge com Douglas
+1. Push branch M81 → re-run CI #27 → revisar merge com Douglas
+2. Criar PR M60 standalone (opcional) — branch publicada, sem PR dedicado ainda
 
 Relatorio completo: `M81_INTEGRACAO_CONTROLADA_REPORT.md`

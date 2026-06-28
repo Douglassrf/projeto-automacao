@@ -10,12 +10,12 @@
 
 ## Resumo executivo
 
-Integração sequencial das frentes **51–59** e **71–80** sobre `master`, com resolução manual dos conflitos previstos em `config.py` e `safe_router.py`. **Missão 60** permanece **`not_ready`** — branch inexistente no remoto.
+Integração sequencial das frentes **51–60** e **71–80** sobre `master`, com resolução manual dos conflitos previstos em `config.py` e `safe_router.py`. **Missão 60** integrada em 2026-06-28 — merge limpo, 24 testes pass.
 
 | Frente | Status | Evidência |
 |--------|--------|-----------|
 | 51–59 | ✅ Integrada | 9 merges limpos (51→59) |
-| 60 | ❌ `not_ready` | Sem branch `missao-60*` no GitHub |
+| 60 | ✅ Integrada | Merge `6bb474d` → M81 @ `fa2030e`; 24 passed |
 | 71–80 | ✅ Integrada | Merge M71 + capstone M80; M72–79 já contidos no histórico M71 |
 | Conflitos config/router | ✅ Resolvidos | M51 modular + M54 route discovery preservados |
 | Testes | ⚠️ 828–829/834 pass | 5–6 falhas de ambiente/histórico git (não regressão M81) |
@@ -41,7 +41,7 @@ git checkout -b missao-81-integracao-controlada-equipes
 | `src/app/core/config_profiles.py` | Auto-merge limpo | Baixa | `CONFIG_SCHEMA_VERSION = "3.0.0"` (M80 capstone). Regras M41–M80 preservadas. |
 
 **Branches analisados:** `master`, `missao-59-architecture-stress-test`, `missao-80-autonomous-operations-readiness`.  
-**Missão 60:** nenhuma branch `missao-60*` encontrada (`git ls-remote origin '*60*'` vazio).
+**Missão 60:** branch `missao-60-enterprise-readiness-certification` @ `6bb474d` — merge limpo em M81 (sem conflitos em config/router/container).
 
 ---
 
@@ -63,13 +63,15 @@ Todas mergeadas **sem conflito** sobre a branch de integração:
 
 ---
 
-## 4. Missão 60 — Blocker
+## 4. Missão 60 — Enterprise Readiness Certification
 
 | Item | Evidência |
 |------|-----------|
-| Branch remota | **Inexistente** — `git branch -a \| grep 60` e `git ls-remote origin '*60*'` sem resultados |
-| Teste dedicado | **Não executado** — sem código M60 no repositório |
-| Status | **`not_ready`** (fail-closed conforme instrução) |
+| Branch remota | `origin/missao-60-enterprise-readiness-certification` @ `6bb474d` |
+| Merge em M81 | **Limpo** — commit `fa2030e`; 4 arquivos (+735 linhas) |
+| Conflitos | **Nenhum** (config.py, safe_router, container.py auto-merge) |
+| Teste dedicado | **24 passed** — `pytest src/app/tests/test_m60_enterprise_readiness_certification.py -q` |
+| Status | **`ready`** — blocker M60 **resolvido** |
 
 ---
 
@@ -150,12 +152,11 @@ $ python -m pytest app/tests/test_m59_architecture_stress_test.py \
 
 ## 8. PR
 
-Push realizado: `origin/missao-81-integracao-controlada-equipes` @ `00643ac`.
+Push realizado: `origin/missao-81-integracao-controlada-equipes` @ `fa2030e` (pos-merge M60).
 
-**PR URL:** https://github.com/Douglassrf/projeto-automacao/compare/master...missao-81-integracao-controlada-equipes  
-*(criar PR manualmente — `gh auth login` não configurado neste ambiente)*
+**PR #27:** https://github.com/Douglassrf/projeto-automacao/pull/27 — OPEN, aguarda CI pos-merge M60.
 
-PRs anteriores #25 e #26 existiam na branch; esta entrega consolida integração fresca com evidência pytest literal.
+**PR M60 standalone:** branch publicada; PR dedicado pendente (gh auth nao configurado neste ambiente).
 
 ---
 
@@ -163,8 +164,8 @@ PRs anteriores #25 e #26 existiam na branch; esta entrega consolida integração
 
 | Componente | Verdict |
 |------------|---------|
-| Integração 51–59 + 71–80 | **ready** para revisão Douglas |
-| Missão 60 | **`not_ready`** — aguardar branch + teste dedicado |
+| Integração 51–60 + 71–80 | **ready** para revisão Douglas |
+| Missão 60 | **`ready`** — merge limpo, 24 testes pass |
 | Merge para master | **NÃO AUTORIZADO** sem revisão Douglas |
 
 ---
