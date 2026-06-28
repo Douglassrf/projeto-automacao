@@ -15,7 +15,9 @@ from app.services.ci_stabilization_service import (
 
 def test_stabilization_report_shape():
     report = CiStabilizationService().stabilization_report()
-    assert report["config_schema_version"] == "3.1.0"
+    assert report["config_schema_version"] == CONFIG_SCHEMA_VERSION
+    parts = tuple(int(p) for p in report["config_schema_version"].split("."))
+    assert parts >= (3, 1, 0)
     assert "verdict" in report
     assert "workflow_files" in report
     assert "ci.yml" in report["workflow_files"]

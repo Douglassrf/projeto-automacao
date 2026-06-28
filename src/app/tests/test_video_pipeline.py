@@ -3,6 +3,13 @@ import pytest
 from fastapi.testclient import TestClient
 from app.core.config import get_settings
 from app.main import app
+import shutil
+
+FFMPEG = shutil.which("ffmpeg")
+pytestmark = pytest.mark.skipif(
+    not FFMPEG,
+    reason="ffmpeg nao instalado (M83 skip em Windows sem ffmpeg)",
+)
 
 
 @pytest.mark.ffmpeg

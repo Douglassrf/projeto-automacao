@@ -23,10 +23,10 @@ from app.core.config_loader import (
     domain_summary,
 )
 
-# Conjunto de campos esperado apos integracao M81 (M51 base 141 + M71-M80 +14).
-EXPECTED_FIELD_COUNT = 155
+# Conjunto de campos esperado apos integracao M91 (M81: 155 + M82-M91: +20).
+EXPECTED_FIELD_COUNT = 175
 
-EXPECTED_DOMAIN_COUNT = 39
+EXPECTED_DOMAIN_COUNT = 49
 
 
 def test_settings_is_a_real_basesettings_subclass():

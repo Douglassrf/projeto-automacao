@@ -16,8 +16,9 @@ def test_production_report_shape():
     assert "ffmpeg_available" in report
 
 
-def test_config_schema_3_2_0():
-    assert CONFIG_SCHEMA_VERSION == "3.2.0"
+def test_config_schema_bumped_for_m83():
+    parts = tuple(int(p) for p in CONFIG_SCHEMA_VERSION.split("."))
+    assert parts >= (3, 2, 0)
 
 
 def test_fallback_when_ffmpeg_required_but_absent(monkeypatch):

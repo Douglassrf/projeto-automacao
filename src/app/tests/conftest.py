@@ -1,7 +1,12 @@
 import os
 import platform
+from pathlib import Path
 
 import pytest
+
+# M82: garante shim ffmpeg em tools/ no PATH (Windows CI e dev sem ffmpeg real).
+_TOOLS = Path(__file__).resolve().parents[3] / "tools"
+os.environ["PATH"] = f"{_TOOLS}{os.pathsep}{os.environ.get('PATH', '')}"
 
 from app.core.config import get_settings
 from app.db.init_db import _ensure_sqlite_columns

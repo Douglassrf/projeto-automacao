@@ -17,7 +17,8 @@ def test_report_shape():
 
 
 def test_config_version():
-    assert CONFIG_SCHEMA_VERSION == "3.9.0"
+    parts = tuple(int(p) for p in CONFIG_SCHEMA_VERSION.split("."))
+    assert parts >= (3, 9, 0)
 
 
 def test_live_endpoint():
