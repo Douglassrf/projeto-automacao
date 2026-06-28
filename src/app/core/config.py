@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     # app/services/observability.py. None = usa observability_log_level.
     app_log_level: str | None = Field(default=None, validation_alias="APP_LOG_LEVEL")
     app_name: str = "AdIntelligence Pro"
+    app_env: str = "dev"
     database_url: str = "sqlite:///./adintelligence.db"
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
     cors_allow_credentials: bool = True
@@ -116,6 +117,8 @@ class Settings(BaseSettings):
     queue_default_max_attempts: int = 3
     queue_lock_timeout_seconds: int = 900
     keydb_url: str | None = None
+    backup_dir: str = "./backups"
+    backup_retention: int = 14
     # Missao 42 - Gerenciador Inteligente de Filas.
     queue_retry_backoff_base_seconds: int = 5
     queue_retry_backoff_max_seconds: int = 300
