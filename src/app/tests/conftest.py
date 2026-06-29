@@ -9,7 +9,7 @@ _TOOLS = Path(__file__).resolve().parents[3] / "tools"
 os.environ["PATH"] = f"{_TOOLS}{os.pathsep}{os.environ.get('PATH', '')}"
 
 from app.core.config import get_settings
-from app.db.init_db import _ensure_sqlite_columns
+from app.db.init_db import _ensure_default_admin, _ensure_sqlite_columns
 from app.db.session import Base, engine
 
 
@@ -31,6 +31,7 @@ def ensure_database_schema():
     # nao chamam init_db() diretamente. Mantem o mesmo helper de migracao leve
     # ja usado em produção (app/db/init_db.py), sem introduzir Alembic.
     _ensure_sqlite_columns()
+    _ensure_default_admin()
 
 
 @pytest.fixture(autouse=True)
