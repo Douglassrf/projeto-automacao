@@ -69,6 +69,9 @@ from app.services.intelligent_release_governance_service import (
 from app.services.architecture_scoring_service import ContinuousArchitectureScoringService
 from app.services.optimization_planner_service import AutonomousOptimizationPlannerService
 from app.services.digital_twin_service import EngineeringDigitalTwinService
+from app.services.strategic_evolution_council_service import (
+    StrategicEvolutionCouncilService,
+)
 
 ServiceT = TypeVar("ServiceT")
 
@@ -209,3 +212,6 @@ def get_digital_twin_service() -> EngineeringDigitalTwinService:
     posicional do construtor (aqui `architecture_scoring`), quebrando a
     injecao de dependencia silenciosamente."""
     return EngineeringDigitalTwinService()
+
+
+get_strategic_evolution_council_service = provide(StrategicEvolutionCouncilService)  # Missao 130
