@@ -72,6 +72,9 @@ from app.services.digital_twin_service import EngineeringDigitalTwinService
 from app.services.strategic_evolution_council_service import (
     StrategicEvolutionCouncilService,
 )
+from app.services.enterprise_excellence_certification_service import (
+    EnterpriseExcellenceCertificationService,
+)
 
 ServiceT = TypeVar("ServiceT")
 
@@ -215,3 +218,5 @@ def get_digital_twin_service() -> EngineeringDigitalTwinService:
 
 
 get_strategic_evolution_council_service = provide(StrategicEvolutionCouncilService)  # Missao 130
+
+get_enterprise_excellence_certification_service = provide(EnterpriseExcellenceCertificationService)  # Missao 131
