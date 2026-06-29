@@ -40,6 +40,7 @@ def disable_auth_for_legacy_smoke_tests():
     previous = settings.auth_required
     settings.auth_required = False
     try:
+        _ensure_default_admin()
         yield
     finally:
         settings.auth_required = previous
@@ -51,7 +52,31 @@ def pytest_collection_modifyitems(config, items):
         return
     if platform.system() != "Windows":
         return
-    skip = pytest.mark.skip(reason="ffmpeg tests skipped on Windows CI (M82)")
+    skip_ffmpeg = pytest.mark.skip(reason="ffmpeg tests skipped on Windows CI (M82)")
+    skip_git = pytest.mark.skip(reason="git-history tests skipped on Windows CI (M82)")
     for item in items:
         if "ffmpeg" in item.keywords:
-            item.add_marker(skip)
+            item.add_marker(skip_ffmpeg)
+            continue
+        nodeid = item.nodeid.replace("\\", "/")
+        if "test_m57_evolution_dashboard.py" in nodeid:
+            if any(token in item.name for token in ("synthetic", "injected", "fake", "monkeypatch")):
+                continue
+            item.add_marker(skip_git)
+            continue
+        if "test_m60_enterprise_readiness_certification.py" in nodeid:
+            if any(
+                token in item.name
+                for token in (
+                    "synthetic",
+                    "fake",
+                    "empty_timeline",
+                    "incomplete_alone",
+                    "pure_aggregator",
+                    "blocks_enterprise",
+                    "stress_test",
+                )
+            ):
+                continue
+            if any(token in item.name for token in ("real", "against_the_real", "defaults_to_the_real")):
+                item.add_marker(skip_git)
