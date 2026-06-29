@@ -1,3 +1,5 @@
+import json
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -42,12 +44,58 @@ def test_long_running_api_contract_dr_uat_and_board_are_green():
     assert service.production_readiness_board()["board_decision"] == "approved_for_production"
 
 
-def test_final_go_no_go_is_go_and_route_is_available():
+def test_final_go_no_go_fails_closed_without_real_evidence(monkeypatch, tmp_path):
+    missing_evidence = tmp_path / "missing-final-readiness-evidence.json"
+    monkeypatch.setenv("FINAL_READINESS_EVIDENCE", str(missing_evidence))
+
     with TestClient(app) as client:
         response = client.get("/api/v1/final-readiness/full-certification")
 
     assert response.status_code == 200
     payload = response.json()
+    assert payload["final_decision"] == "NO_GO"
+    assert payload["production_ready"] is False
+    final = payload["sections"]["final_go_no_go"]
+    assert set(final["blockers"]) == {
+        "ci",
+        "docker_o07",
+        "pytest_full",
+        "security",
+        "o10",
+        "pending_prs",
+        "branch_protection",
+        "e2e",
+    }
+    assert final["checklist"]["ci"]["reason"] == "Required evidence 'ci' is absent."
+
+
+def test_final_go_no_go_only_goes_with_complete_green_evidence(monkeypatch, tmp_path):
+    evidence_file = tmp_path / "final-readiness-evidence.json"
+    evidence = {
+        key: {
+            "source": f"source/{key}",
+            "evidence": f"evidence for {key}",
+            "timestamp": "2026-06-29T00:00:00Z",
+            "verdict": "PASS",
+            "reason": f"{key} green with real evidence",
+        }
+        for key in (
+            "ci",
+            "docker_o07",
+            "pytest_full",
+            "security",
+            "o10",
+            "pending_prs",
+            "branch_protection",
+            "e2e",
+        )
+    }
+    evidence_file.write_text(json.dumps(evidence), encoding="utf-8")
+    monkeypatch.setenv("FINAL_READINESS_EVIDENCE", str(evidence_file))
+
+    payload = FinalReadinessService().full_certification()
+
     assert payload["final_decision"] == "GO"
     assert payload["production_ready"] is True
     assert payload["sections"]["final_go_no_go"]["blockers"] == []
+    assert all(item["verdict"] == "GO" for item in payload["sections"]["final_go_no_go"]["checklist"].values())

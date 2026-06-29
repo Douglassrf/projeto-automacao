@@ -19,10 +19,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _run(cmd: list[str], env: dict[str, str]) -> None:
+def _run(cmd: list[str], env: dict[str, str], timeout_seconds: int) -> None:
     print(f"::group::{ ' '.join(cmd) }")
     try:
-        subprocess.run(cmd, cwd=ROOT, env=env, check=True)
+        subprocess.run(cmd, cwd=ROOT, env=env, check=True, timeout=timeout_seconds)
     finally:
         print("::endgroup::")
 
@@ -53,6 +53,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repeat", type=int, default=int(os.environ.get("CI_GREEN_REPEAT", "1")))
     parser.add_argument("--pytest-args", default=os.environ.get("CI_PYTEST_ARGS", "-q"))
+    parser.add_argument("--command-timeout", type=int, default=int(os.environ.get("CI_COMMAND_TIMEOUT", "1800")))
     args = parser.parse_args()
     if args.repeat < 1:
         parser.error("--repeat must be >= 1")
@@ -62,11 +63,11 @@ def main() -> int:
         for attempt in range(1, args.repeat + 1):
             print(f"\n=== CI green attempt {attempt}/{args.repeat} on {platform.system()} ===")
             env = _attempt_env(attempt, base_tmp)
-            _run([sys.executable, "-m", "compileall", "-q", "src"], env)
+            _run([sys.executable, "-m", "compileall", "-q", "src"], env, args.command_timeout)
             pytest_cmd = [sys.executable, "-m", "pytest", *args.pytest_args.split()]
             if platform.system() == "Windows" and "-m" not in pytest_cmd:
                 pytest_cmd.extend(["-m", "not ffmpeg"])
-            _run(pytest_cmd, env)
+            _run(pytest_cmd, env, args.command_timeout)
         print(f"\nCI green certification: {args.repeat}/{args.repeat} clean attempts passed.")
         return 0
     finally:
