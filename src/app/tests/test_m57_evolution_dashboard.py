@@ -161,10 +161,14 @@ def test_timeline_health_reports_no_duplicate_in_the_real_history_today():
         health = service.timeline_health()
         # Homologacao pos-M91 pode gerar commits adicionais "Missao 91:" (correcoes
         # pos-M82) antes do merge em master; duplicata neste numero e esperada.
+        # Missao 60 tambem duplica: commit 6bb474d entrou em master via M81
+        # (PR #25) e o commit 504cd28, com a mesma mensagem, e a base local da
+        # cadeia missao-122 a missao-131 (Fase v2.1) - duas equipes integrando
+        # a mesma missao em paralelo, mesmo padrao ja documentado para M91.
         unexpected = [
             n
             for n in health["duplicate_mission_numbers"]
-            if n not in {91}
+            if n not in {91, 60}
         ]
         assert unexpected == []
     finally:
