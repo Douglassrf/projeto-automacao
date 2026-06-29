@@ -61,8 +61,8 @@ class UGCEdgeProcessor:
         self.image_target_width = image_target_width
         self.video_target_width = video_target_width
         self.video_crf = video_crf
-        self.ffmpeg_bin = ffmpeg_bin
-        self.ffprobe_bin = ffprobe_bin
+        self.ffmpeg_bin = shutil.which(ffmpeg_bin) or ffmpeg_bin
+        self.ffprobe_bin = shutil.which(ffprobe_bin) or ffprobe_bin
 
     def process(self, filename: str, content: bytes, target_preset: str = "social_ad") -> UGCProcessResult:
         if not content:

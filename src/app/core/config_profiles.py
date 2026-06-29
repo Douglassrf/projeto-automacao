@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # evita import circular em tempo de execução
 # Versão do ESQUEMA de configuração (não é a versão do app). Sobe quando um
 # campo crítico é adicionado/removido/muda de significado em `Settings`.
 # Ver CONFIG_CHANGELOG.md na raiz do repositório para o histórico completo.
-CONFIG_SCHEMA_VERSION = "3.0.0"
+CONFIG_SCHEMA_VERSION = "4.0.0"
 
 # Placeholder conhecido de jwt_secret_key (valor de desenvolvimento em
 # app/core/config.py). Produção nunca pode rodar com este valor.
@@ -250,6 +250,48 @@ def validate_settings(settings: "Settings", environment: Environment) -> list[st
                 "autonomous_ops_require_all_domains=False em produção: "
                 "o capstone /autonomous-operations/* nunca reportaria prontidao "
                 "autonoma (gate fail-closed permanentemente fechado)."
+            )
+        if not settings.ci_cd_require_green_pipeline:
+            issues.append(
+                "ci_cd_require_green_pipeline=False em produção: "
+                "o endpoint /ci-stabilization/* nunca reportaria pipeline_ready=True "
+                "(gate fail-closed permanentemente fechado)."
+            )
+
+        if not settings.test_reliability_max_retries:
+            issues.append(
+                "test_reliability_max_retries=False em produção: gate fail-closed permanentemente fechado (M84)."
+            )
+
+        if not settings.rc1_freeze_enabled:
+            issues.append(
+                "rc1_freeze_enabled=False em produção: gate fail-closed permanentemente fechado (M85)."
+            )
+
+        if not settings.security_audit_fail_closed:
+            issues.append(
+                "security_audit_fail_closed=False em produção: gate fail-closed permanentemente fechado (M86)."
+            )
+
+        if not settings.disaster_recovery_simulate_db_down:
+            issues.append(
+                "disaster_recovery_simulate_db_down=False em produção: gate fail-closed permanentemente fechado (M88)."
+            )
+
+        if not settings.documentation_review_require_complete:
+            issues.append(
+                "documentation_review_require_complete=False em produção: gate fail-closed permanentemente fechado (M89)."
+            )
+
+        if not settings.pre_production_require_all_missions:
+            issues.append(
+                "pre_production_require_all_missions=False em produção: gate fail-closed permanentemente fechado (M90)."
+            )
+
+        if not settings.production_launch_fail_closed:
+            issues.append(
+                "production_launch_fail_closed=False em produção: "
+                "o capstone /production-launch/* nunca autorizaria producao."
             )
 
     if environment is Environment.TESTING:

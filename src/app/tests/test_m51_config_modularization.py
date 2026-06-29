@@ -23,12 +23,10 @@ from app.core.config_loader import (
     domain_summary,
 )
 
-# Conjunto de campos esperado apos integracao M81 (missoes 51-59 + 71-80).
-# Original M51: 141 campos / 29 dominios. M81 adiciona 10 dominios (71-80)
-# com 14 campos novos -> 155 campos / 39 dominios.
-EXPECTED_FIELD_COUNT = 155
+# Conjunto de campos esperado apos integracao M91 (M81: 155 + M82-M91: +20).
+EXPECTED_FIELD_COUNT = 175
 
-EXPECTED_DOMAIN_COUNT = 39
+EXPECTED_DOMAIN_COUNT = 49
 
 
 def test_settings_is_a_real_basesettings_subclass():
@@ -70,6 +68,11 @@ def test_known_fields_from_specific_missions_resolve_to_expected_domains():
         "certification_platinum_require_clean_diagnostics" in summary["certification"]
     )  # Missao 50
     assert "backup_dir" in summary["backup"]  # Codex 31-40
+    assert (
+        "operational_intelligence_include_unpinned_in_risk"
+        in summary["operational_intelligence"]
+    )  # Missao 71
+    assert "autonomous_ops_require_all_domains" in summary["autonomous_operations"]  # Missao 80
 
 
 def test_settings_instantiates_with_defaults_from_every_domain():

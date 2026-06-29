@@ -155,7 +155,7 @@ class CacheService:
         victims = (
             self.db.query(CacheEntry)
             .filter(CacheEntry.namespace == namespace)
-            .order_by(CacheEntry.last_accessed_at.asc())
+            .order_by(CacheEntry.last_accessed_at.asc(), CacheEntry.id.asc())
             .limit(overflow)
             .all()
         )

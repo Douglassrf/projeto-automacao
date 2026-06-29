@@ -1,0 +1,1298 @@
+﻿........................................................................ [  8%]
+........................................................................ [ 17%]
+.........................................................F.............. [ 25%]
+........................................................................ [ 34%]
+........................................................................ [ 43%]
+..................FFF................................................... [ 51%]
+....................................F..F................................ [ 60%]
+........................................................................ [ 69%]
+........................................................................ [ 77%]
+........................................................................ [ 86%]
+........................................................................ [ 94%]
+...................FF....F................                               [100%]
+================================== FAILURES ===================================
+________ test_lru_eviction_triggers_when_namespace_exceeds_max_entries ________
+
+    def test_lru_eviction_triggers_when_namespace_exceeds_max_entries():
+        namespace = _ns()
+        db = SessionLocal()
+        try:
+            service = CacheService(db)
+            original_max = service.settings.cache_max_entries_per_namespace
+            service.settings.cache_max_entries_per_namespace = 3
+    
+            service.set("k1", "v1", namespace=namespace)
+            service.set("k2", "v2", namespace=namespace)
+            service.set("k3", "v3", namespace=namespace)
+            service.get("k1", namespace=namespace)
+            service.get("k2", namespace=namespace)
+    
+            service.set("k4", "v4", namespace=namespace)
+    
+>           assert service.get("k3", namespace=namespace) is None
+E           AssertionError: assert 'v3' is None
+E            +  where 'v3' = get('k3', namespace='m43-f9b254c5')
+E            +    where get = <app.services.cache_service.CacheService object at 0x0000012195BBDB50>.get
+
+app\tests\test_m43_intelligent_cache.py:217: AssertionError
+____________ test_total_field_count_unchanged_after_modularization ____________
+
+    def test_total_field_count_unchanged_after_modularization():
+>       assert len(Settings.model_fields) == EXPECTED_FIELD_COUNT
+E       AssertionError: assert 155 == 141
+E        +  where 155 = len({'access_token_expire_minutes': FieldInfo(annotation=int, required=False, default=10080), 'affiliate_api_key': FieldIn...ne), 'affiliate_default_id': FieldInfo(annotation=Union[str, NoneType], required=False, default='demo-affiliate'), ...})
+E        +    where {'access_token_expire_minutes': FieldInfo(annotation=int, required=False, default=10080), 'affiliate_api_key': FieldIn...ne), 'affiliate_default_id': FieldInfo(annotation=Union[str, NoneType], required=False, default='demo-affiliate'), ...} = Settings.model_fields
+
+app\tests\test_m51_config_modularization.py:39: AssertionError
+_______________ test_domain_discovery_finds_every_domain_module _______________
+
+    def test_domain_discovery_finds_every_domain_module():
+        models = discover_domain_models()
+>       assert len(models) == EXPECTED_DOMAIN_COUNT
+E       AssertionError: assert 39 == 29
+E        +  where 39 = len([<class 'app.core.config_domains.affiliate.AffiliateConfig'>, <class 'app.core.config_domains.ai_providers.AIProviders...chitecture_evolution.ArchitectureEvolutionConfig'>, <class 'app.core.config_domains.automation.AutomationConfig'>, ...])
+
+app\tests\test_m51_config_modularization.py:44: AssertionError
+_____________ test_domain_summary_covers_every_field_exactly_once _____________
+
+    def test_domain_summary_covers_every_field_exactly_once():
+        summary = domain_summary()
+>       assert len(summary) == EXPECTED_DOMAIN_COUNT
+E       AssertionError: assert 39 == 29
+E        +  where 39 = len({'affiliate': ['affiliate_network', 'affiliate_api_key', 'affiliate_api_secret', 'affiliate_default_id', 'affiliate_mo... 'alerts': ['alert_history_default_limit'], 'api_compatibility': ['api_compatibility_enforce_deprecation_policy'], ...})
+
+app\tests\test_m51_config_modularization.py:51: AssertionError
+______ test_mission_timeline_detects_the_real_historical_mission_commits ______
+
+    def test_mission_timeline_detects_the_real_historical_mission_commits():
+        service, db = _service()
+        try:
+            timeline = service.mission_timeline()
+            numbers = {entry["mission_number"] for entry in timeline}
+>           assert set(range(41, 57)).issubset(numbers)
+E           assert False
+E            +  where False = <built-in method issubset of set object at 0x000001219532AC00>({42, 43, 44, 45, 46, 47, ...})
+E            +    where <built-in method issubset of set object at 0x000001219532AC00> = {41, 42, 43, 44, 45, 46, ...}.issubset
+E            +      where {41, 42, 43, 44, 45, 46, ...} = set(range(41, 57))
+E            +        where range(41, 57) = range(41, 57)
+
+app\tests\test_m57_evolution_dashboard.py:69: AssertionError
+_ test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling _
+
+    def test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling():
+        service, db = _service()
+        try:
+            timeline = service.mission_timeline()
+            by_number = {entry["mission_number"]: entry for entry in timeline}
+            # Missao 41 foi commitada com a grafia acentuada "MissÒo 41" e
+            # Missao 42 com a grafia sem acento "Missao 42" - ambas devem ser
+            # encontradas pelo mesmo regex tolerante a acento.
+>           assert 41 in by_number
+E           AssertionError: assert 41 in {42: {'commit_hash': 'c37f041', 'committed_at': datetime.datetime(2026, 6, 27, 20, 7, 10, tzinfo=datetime.timezone.utc...atetime.datetime(2026, 6, 27, 21, 28, 58, tzinfo=datetime.timezone.utc), 'deletions': 1, 'files_changed': 9, ...}, ...}
+
+app\tests\test_m57_evolution_dashboard.py:113: AssertionError
+___________________________ test_process_ugc_image ____________________________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-3/test_process_ugc_image0')
+
+    def test_process_ugc_image(tmp_path):
+        settings = get_settings()
+        previous_dir = settings.ugc_output_dir
+        settings.ugc_output_dir = str(tmp_path / "ugc")
+        png_path = tmp_path / "criativo.png"
+>       _make_png(png_path)
+
+app\tests\test_ugc_processing.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ugc_processing.py:11: in _make_png
+    subprocess.run([
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Popen: returncode: None args: ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'color=...>
+args = 'ffmpeg -y -f lavfi -i color=c=blue:s=320x320:d=0.1 -frames:v 1 E:\\prometheus_amigao\\docker_data\\tmp\\pytest-of-USU┴RIO\\pytest-3\\test_process_ugc_image0\\criativo.png'
+executable = None, preexec_fn = None, close_fds = False, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x0000012195C69DC0>
+creationflags = 0, shell = False, p2cread = Handle(2428), p2cwrite = -1
+c2pread = 11, c2pwrite = Handle(3104), errread = 12, errwrite = Handle(3252)
+unused_restore_signals = True, unused_gid = None, unused_gids = None
+unused_uid = None, unused_umask = -1, unused_start_new_session = False
+unused_process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals,
+                       unused_gid, unused_gids, unused_uid,
+                       unused_umask,
+                       unused_start_new_session, unused_process_group):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if isinstance(args, str):
+            pass
+        elif isinstance(args, bytes):
+            if shell:
+                raise TypeError('bytes args is not allowed on Windows')
+            args = list2cmdline([args])
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = list2cmdline([args])
+        else:
+            args = list2cmdline(args)
+    
+        if executable is not None:
+            executable = os.fsdecode(executable)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        else:
+            # bpo-34044: Copy STARTUPINFO since it is modified above,
+            # so the caller can reuse it multiple times.
+            startupinfo = startupinfo.copy()
+    
+        use_std_handles = -1 not in (p2cread, c2pwrite, errwrite)
+        if use_std_handles:
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        attribute_list = startupinfo.lpAttributeList
+        have_handle_list = bool(attribute_list and
+                                "handle_list" in attribute_list and
+                                attribute_list["handle_list"])
+    
+        # If we were given an handle_list or need to create one
+        if have_handle_list or (use_std_handles and close_fds):
+            if attribute_list is None:
+                attribute_list = startupinfo.lpAttributeList = {}
+            handle_list = attribute_list["handle_list"] = \
+                list(attribute_list.get("handle_list", []))
+    
+            if use_std_handles:
+                handle_list += [int(p2cread), int(c2pwrite), int(errwrite)]
+    
+            handle_list[:] = self._filter_handle_list(handle_list)
+    
+            if handle_list:
+                if not close_fds:
+                    warnings.warn("startupinfo.lpAttributeList['handle_list'] "
+                                  "overriding close_fds", RuntimeWarning)
+    
+                # When using the handle_list we always request to inherit
+                # handles but the only handles that will be inherited are
+                # the ones in the handle_list
+                close_fds = False
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            if not executable:
+                # gh-101283: without a fully-qualified path, before Windows
+                # checks the system directories, it first looks in the
+                # application directory, and also the current directory if
+                # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+                # to avoid executing unqualified "cmd.exe".
+                comspec = os.environ.get('ComSpec')
+                if not comspec:
+                    system_root = os.environ.get('SystemRoot', '')
+                    comspec = os.path.join(system_root, 'System32', 'cmd.exe')
+                    if not os.path.isabs(comspec):
+                        raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+                if os.path.isabs(comspec):
+                    executable = comspec
+            else:
+                comspec = executable
+    
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        if cwd is not None:
+            cwd = os.fsdecode(cwd)
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        # Start the process
+        try:
+>           hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+                                     startupinfo)
+E                                    FileNotFoundError: [WinError 2] O sistema nÒo pode encontrar o arquivo especificado
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1538: FileNotFoundError
+___________________________ test_process_ugc_video ____________________________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-3/test_process_ugc_video0')
+
+    def test_process_ugc_video(tmp_path):
+        settings = get_settings()
+        previous_dir = settings.ugc_output_dir
+        settings.ugc_output_dir = str(tmp_path / "ugc")
+        video_path = tmp_path / "ugc-video.mp4"
+>       _make_mp4(video_path)
+
+app\tests\test_ugc_processing.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ugc_processing.py:17: in _make_mp4
+    subprocess.run([
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Popen: returncode: None args: ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'color=...>
+args = 'ffmpeg -y -f lavfi -i color=c=red:s=320x568:d=1 -pix_fmt yuv420p E:\\prometheus_amigao\\docker_data\\tmp\\pytest-of-USU┴RIO\\pytest-3\\test_process_ugc_video0\\ugc-video.mp4'
+executable = None, preexec_fn = None, close_fds = False, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x0000012197163B30>
+creationflags = 0, shell = False, p2cread = Handle(1872), p2cwrite = -1
+c2pread = 11, c2pwrite = Handle(2912), errread = 12, errwrite = Handle(3180)
+unused_restore_signals = True, unused_gid = None, unused_gids = None
+unused_uid = None, unused_umask = -1, unused_start_new_session = False
+unused_process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals,
+                       unused_gid, unused_gids, unused_uid,
+                       unused_umask,
+                       unused_start_new_session, unused_process_group):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if isinstance(args, str):
+            pass
+        elif isinstance(args, bytes):
+            if shell:
+                raise TypeError('bytes args is not allowed on Windows')
+            args = list2cmdline([args])
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = list2cmdline([args])
+        else:
+            args = list2cmdline(args)
+    
+        if executable is not None:
+            executable = os.fsdecode(executable)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        else:
+            # bpo-34044: Copy STARTUPINFO since it is modified above,
+            # so the caller can reuse it multiple times.
+            startupinfo = startupinfo.copy()
+    
+        use_std_handles = -1 not in (p2cread, c2pwrite, errwrite)
+        if use_std_handles:
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        attribute_list = startupinfo.lpAttributeList
+        have_handle_list = bool(attribute_list and
+                                "handle_list" in attribute_list and
+                                attribute_list["handle_list"])
+    
+        # If we were given an handle_list or need to create one
+        if have_handle_list or (use_std_handles and close_fds):
+            if attribute_list is None:
+                attribute_list = startupinfo.lpAttributeList = {}
+            handle_list = attribute_list["handle_list"] = \
+                list(attribute_list.get("handle_list", []))
+    
+            if use_std_handles:
+                handle_list += [int(p2cread), int(c2pwrite), int(errwrite)]
+    
+            handle_list[:] = self._filter_handle_list(handle_list)
+    
+            if handle_list:
+                if not close_fds:
+                    warnings.warn("startupinfo.lpAttributeList['handle_list'] "
+                                  "overriding close_fds", RuntimeWarning)
+    
+                # When using the handle_list we always request to inherit
+                # handles but the only handles that will be inherited are
+                # the ones in the handle_list
+                close_fds = False
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            if not executable:
+                # gh-101283: without a fully-qualified path, before Windows
+                # checks the system directories, it first looks in the
+                # application directory, and also the current directory if
+                # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+                # to avoid executing unqualified "cmd.exe".
+                comspec = os.environ.get('ComSpec')
+                if not comspec:
+                    system_root = os.environ.get('SystemRoot', '')
+                    comspec = os.path.join(system_root, 'System32', 'cmd.exe')
+                    if not os.path.isabs(comspec):
+                        raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+                if os.path.isabs(comspec):
+                    executable = comspec
+            else:
+                comspec = executable
+    
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        if cwd is not None:
+            cwd = os.fsdecode(cwd)
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        # Start the process
+        try:
+>           hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+                                     startupinfo)
+E                                    FileNotFoundError: [WinError 2] O sistema nÒo pode encontrar o arquivo especificado
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1538: FileNotFoundError
+____________ test_video_pipeline_renders_mp4_with_ffmpeg_fallback _____________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-3/test_video_pipeline_renders_mp0')
+
+    def test_video_pipeline_renders_mp4_with_ffmpeg_fallback(tmp_path):
+        settings = get_settings()
+        previous = settings.kit_output_dir
+        settings.kit_output_dir = str(tmp_path / "kits")
+        payload = {
+            "product_name": "Produto Video Teste",
+            "model": "V2",
+            "hook": "Descubra o mÚtodo simples hoje",
+            "script": "Este vÝdeo mostra uma promessa clara, uma dor forte e uma chamada direta para aþÒo.",
+            "cta": "Acesse agora",
+            "voice_provider": "fallback",
+            "duration_seconds": 6
+        }
+        try:
+            with TestClient(app) as client:
+                response = client.post("/api/v1/video/render", json=payload)
+>           assert response.status_code == 200, response.text
+E           AssertionError: {"detail":"Falha ao renderizar vÝdeo: FFmpeg nÒo estß instalado no ambiente."}
+E           assert 500 == 200
+E            +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+app\tests\test_video_pipeline.py:23: AssertionError
+---------------------------- Captured stderr call -----------------------------
+{"timestamp": "2026-06-28T18:36:43.849676+00:00", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"timestamp": "2026-06-28T18:36:43.882711+00:00", "level": "INFO", "logger": "adintelligence.observability", "message": "observability_event", "request_id": "corr_41704e0c8d194bcfa3a1dc9aa4d2b20c", "correlation_id": "corr_41704e0c8d194bcfa3a1dc9aa4d2b20c", "execution_id": "exec_81b4a21e6710479aa6c1e4f8e5ea649f", "mission_id": "mission_27"}
+{"timestamp": "2026-06-28T18:36:43.882711+00:00", "level": "INFO", "logger": "httpx", "message": "HTTP Request: POST http://testserver/api/v1/video/render \"HTTP/1.1 500 Internal Server Error\""}
+------------------------------ Captured log call ------------------------------
+DEBUG    asyncio:proactor_events.py:634 Using proactor: IocpProactor
+INFO     adintelligence.observability:observability.py:158 observability_event
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/v1/video/render "HTTP/1.1 500 Internal Server Error"
+============================== warnings summary ===============================
+app/tests/test_production_hardening_review.py::test_production_hardening_can_be_ready_with_rotated_secret_and_limits
+  C:\Users\USU┴RIO\AppData\Local\Programs\Python\Python312\Lib\site-packages\jwt\api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+app/tests/test_production_hardening_review.py::test_production_hardening_can_be_ready_with_rotated_secret_and_limits
+  C:\Users\USU┴RIO\AppData\Local\Programs\Python\Python312\Lib\site-packages\jwt\api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_m43_intelligent_cache.py::test_lru_eviction_triggers_when_namespace_exceeds_max_entries
+FAILED app/tests/test_m51_config_modularization.py::test_total_field_count_unchanged_after_modularization
+FAILED app/tests/test_m51_config_modularization.py::test_domain_discovery_finds_every_domain_module
+FAILED app/tests/test_m51_config_modularization.py::test_domain_summary_covers_every_field_exactly_once
+FAILED app/tests/test_m57_evolution_dashboard.py::test_mission_timeline_detects_the_real_historical_mission_commits
+FAILED app/tests/test_m57_evolution_dashboard.py::test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling
+FAILED app/tests/test_ugc_processing.py::test_process_ugc_image - FileNotFoun...
+FAILED app/tests/test_ugc_processing.py::test_process_ugc_video - FileNotFoun...
+FAILED app/tests/test_video_pipeline.py::test_video_pipeline_renders_mp4_with_ffmpeg_fallback
+9 failed, 825 passed, 2 warnings in 140.30s (0:02:20)
+
+........................................................................ [  8%]
+........................................................................ [ 17%]
+........................................................................ [ 25%]
+........................................................................ [ 34%]
+........................................................................ [ 43%]
+..................FFF................................................... [ 51%]
+....................................F..F................................ [ 60%]
+........................................................................ [ 69%]
+........................................................................ [ 77%]
+........................................................................ [ 86%]
+........................................................................ [ 94%]
+...................FF....F................                               [100%]
+================================== FAILURES ===================================
+____________ test_total_field_count_unchanged_after_modularization ____________
+
+    def test_total_field_count_unchanged_after_modularization():
+>       assert len(Settings.model_fields) == EXPECTED_FIELD_COUNT
+E       AssertionError: assert 155 == 141
+E        +  where 155 = len({'access_token_expire_minutes': FieldInfo(annotation=int, required=False, default=10080), 'affiliate_api_key': FieldIn...ne), 'affiliate_default_id': FieldInfo(annotation=Union[str, NoneType], required=False, default='demo-affiliate'), ...})
+E        +    where {'access_token_expire_minutes': FieldInfo(annotation=int, required=False, default=10080), 'affiliate_api_key': FieldIn...ne), 'affiliate_default_id': FieldInfo(annotation=Union[str, NoneType], required=False, default='demo-affiliate'), ...} = Settings.model_fields
+
+app\tests\test_m51_config_modularization.py:39: AssertionError
+_______________ test_domain_discovery_finds_every_domain_module _______________
+
+    def test_domain_discovery_finds_every_domain_module():
+        models = discover_domain_models()
+>       assert len(models) == EXPECTED_DOMAIN_COUNT
+E       AssertionError: assert 39 == 29
+E        +  where 39 = len([<class 'app.core.config_domains.affiliate.AffiliateConfig'>, <class 'app.core.config_domains.ai_providers.AIProviders...chitecture_evolution.ArchitectureEvolutionConfig'>, <class 'app.core.config_domains.automation.AutomationConfig'>, ...])
+
+app\tests\test_m51_config_modularization.py:44: AssertionError
+_____________ test_domain_summary_covers_every_field_exactly_once _____________
+
+    def test_domain_summary_covers_every_field_exactly_once():
+        summary = domain_summary()
+>       assert len(summary) == EXPECTED_DOMAIN_COUNT
+E       AssertionError: assert 39 == 29
+E        +  where 39 = len({'affiliate': ['affiliate_network', 'affiliate_api_key', 'affiliate_api_secret', 'affiliate_default_id', 'affiliate_mo... 'alerts': ['alert_history_default_limit'], 'api_compatibility': ['api_compatibility_enforce_deprecation_policy'], ...})
+
+app\tests\test_m51_config_modularization.py:51: AssertionError
+______ test_mission_timeline_detects_the_real_historical_mission_commits ______
+
+    def test_mission_timeline_detects_the_real_historical_mission_commits():
+        service, db = _service()
+        try:
+            timeline = service.mission_timeline()
+            numbers = {entry["mission_number"] for entry in timeline}
+>           assert set(range(41, 57)).issubset(numbers)
+E           assert False
+E            +  where False = <built-in method issubset of set object at 0x0000026ACA2B25E0>({42, 43, 44, 45, 46, 47, ...})
+E            +    where <built-in method issubset of set object at 0x0000026ACA2B25E0> = {41, 42, 43, 44, 45, 46, ...}.issubset
+E            +      where {41, 42, 43, 44, 45, 46, ...} = set(range(41, 57))
+E            +        where range(41, 57) = range(41, 57)
+
+app\tests\test_m57_evolution_dashboard.py:69: AssertionError
+_ test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling _
+
+    def test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling():
+        service, db = _service()
+        try:
+            timeline = service.mission_timeline()
+            by_number = {entry["mission_number"]: entry for entry in timeline}
+            # Missao 41 foi commitada com a grafia acentuada "MissÒo 41" e
+            # Missao 42 com a grafia sem acento "Missao 42" - ambas devem ser
+            # encontradas pelo mesmo regex tolerante a acento.
+>           assert 41 in by_number
+E           AssertionError: assert 41 in {42: {'commit_hash': 'c37f041', 'committed_at': datetime.datetime(2026, 6, 27, 20, 7, 10, tzinfo=datetime.timezone.utc...atetime.datetime(2026, 6, 27, 21, 28, 58, tzinfo=datetime.timezone.utc), 'deletions': 1, 'files_changed': 9, ...}, ...}
+
+app\tests\test_m57_evolution_dashboard.py:113: AssertionError
+___________________________ test_process_ugc_image ____________________________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-4/test_process_ugc_image0')
+
+    def test_process_ugc_image(tmp_path):
+        settings = get_settings()
+        previous_dir = settings.ugc_output_dir
+        settings.ugc_output_dir = str(tmp_path / "ugc")
+        png_path = tmp_path / "criativo.png"
+>       _make_png(png_path)
+
+app\tests\test_ugc_processing.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ugc_processing.py:11: in _make_png
+    subprocess.run([
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Popen: returncode: None args: ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'color=...>
+args = 'ffmpeg -y -f lavfi -i color=c=blue:s=320x320:d=0.1 -frames:v 1 E:\\prometheus_amigao\\docker_data\\tmp\\pytest-of-USU┴RIO\\pytest-4\\test_process_ugc_image0\\criativo.png'
+executable = None, preexec_fn = None, close_fds = False, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x0000026ACB52CFB0>
+creationflags = 0, shell = False, p2cread = Handle(1652), p2cwrite = -1
+c2pread = 11, c2pwrite = Handle(2224), errread = 12, errwrite = Handle(1076)
+unused_restore_signals = True, unused_gid = None, unused_gids = None
+unused_uid = None, unused_umask = -1, unused_start_new_session = False
+unused_process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals,
+                       unused_gid, unused_gids, unused_uid,
+                       unused_umask,
+                       unused_start_new_session, unused_process_group):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if isinstance(args, str):
+            pass
+        elif isinstance(args, bytes):
+            if shell:
+                raise TypeError('bytes args is not allowed on Windows')
+            args = list2cmdline([args])
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = list2cmdline([args])
+        else:
+            args = list2cmdline(args)
+    
+        if executable is not None:
+            executable = os.fsdecode(executable)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        else:
+            # bpo-34044: Copy STARTUPINFO since it is modified above,
+            # so the caller can reuse it multiple times.
+            startupinfo = startupinfo.copy()
+    
+        use_std_handles = -1 not in (p2cread, c2pwrite, errwrite)
+        if use_std_handles:
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        attribute_list = startupinfo.lpAttributeList
+        have_handle_list = bool(attribute_list and
+                                "handle_list" in attribute_list and
+                                attribute_list["handle_list"])
+    
+        # If we were given an handle_list or need to create one
+        if have_handle_list or (use_std_handles and close_fds):
+            if attribute_list is None:
+                attribute_list = startupinfo.lpAttributeList = {}
+            handle_list = attribute_list["handle_list"] = \
+                list(attribute_list.get("handle_list", []))
+    
+            if use_std_handles:
+                handle_list += [int(p2cread), int(c2pwrite), int(errwrite)]
+    
+            handle_list[:] = self._filter_handle_list(handle_list)
+    
+            if handle_list:
+                if not close_fds:
+                    warnings.warn("startupinfo.lpAttributeList['handle_list'] "
+                                  "overriding close_fds", RuntimeWarning)
+    
+                # When using the handle_list we always request to inherit
+                # handles but the only handles that will be inherited are
+                # the ones in the handle_list
+                close_fds = False
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            if not executable:
+                # gh-101283: without a fully-qualified path, before Windows
+                # checks the system directories, it first looks in the
+                # application directory, and also the current directory if
+                # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+                # to avoid executing unqualified "cmd.exe".
+                comspec = os.environ.get('ComSpec')
+                if not comspec:
+                    system_root = os.environ.get('SystemRoot', '')
+                    comspec = os.path.join(system_root, 'System32', 'cmd.exe')
+                    if not os.path.isabs(comspec):
+                        raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+                if os.path.isabs(comspec):
+                    executable = comspec
+            else:
+                comspec = executable
+    
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        if cwd is not None:
+            cwd = os.fsdecode(cwd)
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        # Start the process
+        try:
+>           hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+                                     startupinfo)
+E                                    FileNotFoundError: [WinError 2] O sistema nÒo pode encontrar o arquivo especificado
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1538: FileNotFoundError
+___________________________ test_process_ugc_video ____________________________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-4/test_process_ugc_video0')
+
+    def test_process_ugc_video(tmp_path):
+        settings = get_settings()
+        previous_dir = settings.ugc_output_dir
+        settings.ugc_output_dir = str(tmp_path / "ugc")
+        video_path = tmp_path / "ugc-video.mp4"
+>       _make_mp4(video_path)
+
+app\tests\test_ugc_processing.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ugc_processing.py:17: in _make_mp4
+    subprocess.run([
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Popen: returncode: None args: ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'color=...>
+args = 'ffmpeg -y -f lavfi -i color=c=red:s=320x568:d=1 -pix_fmt yuv420p E:\\prometheus_amigao\\docker_data\\tmp\\pytest-of-USU┴RIO\\pytest-4\\test_process_ugc_video0\\ugc-video.mp4'
+executable = None, preexec_fn = None, close_fds = False, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x0000026ACB53EE70>
+creationflags = 0, shell = False, p2cread = Handle(2640), p2cwrite = -1
+c2pread = 11, c2pwrite = Handle(2796), errread = 12, errwrite = Handle(1060)
+unused_restore_signals = True, unused_gid = None, unused_gids = None
+unused_uid = None, unused_umask = -1, unused_start_new_session = False
+unused_process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals,
+                       unused_gid, unused_gids, unused_uid,
+                       unused_umask,
+                       unused_start_new_session, unused_process_group):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if isinstance(args, str):
+            pass
+        elif isinstance(args, bytes):
+            if shell:
+                raise TypeError('bytes args is not allowed on Windows')
+            args = list2cmdline([args])
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = list2cmdline([args])
+        else:
+            args = list2cmdline(args)
+    
+        if executable is not None:
+            executable = os.fsdecode(executable)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        else:
+            # bpo-34044: Copy STARTUPINFO since it is modified above,
+            # so the caller can reuse it multiple times.
+            startupinfo = startupinfo.copy()
+    
+        use_std_handles = -1 not in (p2cread, c2pwrite, errwrite)
+        if use_std_handles:
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        attribute_list = startupinfo.lpAttributeList
+        have_handle_list = bool(attribute_list and
+                                "handle_list" in attribute_list and
+                                attribute_list["handle_list"])
+    
+        # If we were given an handle_list or need to create one
+        if have_handle_list or (use_std_handles and close_fds):
+            if attribute_list is None:
+                attribute_list = startupinfo.lpAttributeList = {}
+            handle_list = attribute_list["handle_list"] = \
+                list(attribute_list.get("handle_list", []))
+    
+            if use_std_handles:
+                handle_list += [int(p2cread), int(c2pwrite), int(errwrite)]
+    
+            handle_list[:] = self._filter_handle_list(handle_list)
+    
+            if handle_list:
+                if not close_fds:
+                    warnings.warn("startupinfo.lpAttributeList['handle_list'] "
+                                  "overriding close_fds", RuntimeWarning)
+    
+                # When using the handle_list we always request to inherit
+                # handles but the only handles that will be inherited are
+                # the ones in the handle_list
+                close_fds = False
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            if not executable:
+                # gh-101283: without a fully-qualified path, before Windows
+                # checks the system directories, it first looks in the
+                # application directory, and also the current directory if
+                # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+                # to avoid executing unqualified "cmd.exe".
+                comspec = os.environ.get('ComSpec')
+                if not comspec:
+                    system_root = os.environ.get('SystemRoot', '')
+                    comspec = os.path.join(system_root, 'System32', 'cmd.exe')
+                    if not os.path.isabs(comspec):
+                        raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+                if os.path.isabs(comspec):
+                    executable = comspec
+            else:
+                comspec = executable
+    
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        if cwd is not None:
+            cwd = os.fsdecode(cwd)
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        # Start the process
+        try:
+>           hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+                                     startupinfo)
+E                                    FileNotFoundError: [WinError 2] O sistema nÒo pode encontrar o arquivo especificado
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1538: FileNotFoundError
+____________ test_video_pipeline_renders_mp4_with_ffmpeg_fallback _____________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-4/test_video_pipeline_renders_mp0')
+
+    def test_video_pipeline_renders_mp4_with_ffmpeg_fallback(tmp_path):
+        settings = get_settings()
+        previous = settings.kit_output_dir
+        settings.kit_output_dir = str(tmp_path / "kits")
+        payload = {
+            "product_name": "Produto Video Teste",
+            "model": "V2",
+            "hook": "Descubra o mÚtodo simples hoje",
+            "script": "Este vÝdeo mostra uma promessa clara, uma dor forte e uma chamada direta para aþÒo.",
+            "cta": "Acesse agora",
+            "voice_provider": "fallback",
+            "duration_seconds": 6
+        }
+        try:
+            with TestClient(app) as client:
+                response = client.post("/api/v1/video/render", json=payload)
+>           assert response.status_code == 200, response.text
+E           AssertionError: {"detail":"Falha ao renderizar vÝdeo: FFmpeg nÒo estß instalado no ambiente."}
+E           assert 500 == 200
+E            +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+app\tests\test_video_pipeline.py:23: AssertionError
+---------------------------- Captured stderr call -----------------------------
+{"timestamp": "2026-06-28T18:38:40.746668+00:00", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"timestamp": "2026-06-28T18:38:40.763436+00:00", "level": "INFO", "logger": "adintelligence.observability", "message": "observability_event", "request_id": "corr_7c7c6e38e33e4d699363b387f4166621", "correlation_id": "corr_7c7c6e38e33e4d699363b387f4166621", "execution_id": "exec_c3ffd9053af847538b0045780bd3ad88", "mission_id": "mission_27"}
+{"timestamp": "2026-06-28T18:38:40.763436+00:00", "level": "INFO", "logger": "httpx", "message": "HTTP Request: POST http://testserver/api/v1/video/render \"HTTP/1.1 500 Internal Server Error\""}
+------------------------------ Captured log call ------------------------------
+DEBUG    asyncio:proactor_events.py:634 Using proactor: IocpProactor
+INFO     adintelligence.observability:observability.py:158 observability_event
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/v1/video/render "HTTP/1.1 500 Internal Server Error"
+============================== warnings summary ===============================
+app/tests/test_production_hardening_review.py::test_production_hardening_can_be_ready_with_rotated_secret_and_limits
+  C:\Users\USU┴RIO\AppData\Local\Programs\Python\Python312\Lib\site-packages\jwt\api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+app/tests/test_production_hardening_review.py::test_production_hardening_can_be_ready_with_rotated_secret_and_limits
+  C:\Users\USU┴RIO\AppData\Local\Programs\Python\Python312\Lib\site-packages\jwt\api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_m51_config_modularization.py::test_total_field_count_unchanged_after_modularization
+FAILED app/tests/test_m51_config_modularization.py::test_domain_discovery_finds_every_domain_module
+FAILED app/tests/test_m51_config_modularization.py::test_domain_summary_covers_every_field_exactly_once
+FAILED app/tests/test_m57_evolution_dashboard.py::test_mission_timeline_detects_the_real_historical_mission_commits
+FAILED app/tests/test_m57_evolution_dashboard.py::test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling
+FAILED app/tests/test_ugc_processing.py::test_process_ugc_image - FileNotFoun...
+FAILED app/tests/test_ugc_processing.py::test_process_ugc_video - FileNotFoun...
+FAILED app/tests/test_video_pipeline.py::test_video_pipeline_renders_mp4_with_ffmpeg_fallback
+8 failed, 826 passed, 2 warnings in 113.61s (0:01:53)
+
+........................................................................ [  8%]
+........................................................................ [ 17%]
+.........................................................F.............. [ 25%]
+........................................................................ [ 34%]
+........................................................................ [ 43%]
+..................FFF................................................... [ 51%]
+....................................F..F................................ [ 60%]
+........................................................................ [ 69%]
+........................................................................ [ 77%]
+........................................................................ [ 86%]
+........................................................................ [ 94%]
+...................FF....F................                               [100%]
+================================== FAILURES ===================================
+________ test_lru_eviction_triggers_when_namespace_exceeds_max_entries ________
+
+    def test_lru_eviction_triggers_when_namespace_exceeds_max_entries():
+        namespace = _ns()
+        db = SessionLocal()
+        try:
+            service = CacheService(db)
+            original_max = service.settings.cache_max_entries_per_namespace
+            service.settings.cache_max_entries_per_namespace = 3
+    
+            service.set("k1", "v1", namespace=namespace)
+            service.set("k2", "v2", namespace=namespace)
+            service.set("k3", "v3", namespace=namespace)
+            service.get("k1", namespace=namespace)
+            service.get("k2", namespace=namespace)
+    
+            service.set("k4", "v4", namespace=namespace)
+    
+>           assert service.get("k3", namespace=namespace) is None
+E           AssertionError: assert 'v3' is None
+E            +  where 'v3' = get('k3', namespace='m43-b76ced63')
+E            +    where get = <app.services.cache_service.CacheService object at 0x00000258CD7DFFE0>.get
+
+app\tests\test_m43_intelligent_cache.py:217: AssertionError
+____________ test_total_field_count_unchanged_after_modularization ____________
+
+    def test_total_field_count_unchanged_after_modularization():
+>       assert len(Settings.model_fields) == EXPECTED_FIELD_COUNT
+E       AssertionError: assert 155 == 141
+E        +  where 155 = len({'access_token_expire_minutes': FieldInfo(annotation=int, required=False, default=10080), 'affiliate_api_key': FieldIn...ne), 'affiliate_default_id': FieldInfo(annotation=Union[str, NoneType], required=False, default='demo-affiliate'), ...})
+E        +    where {'access_token_expire_minutes': FieldInfo(annotation=int, required=False, default=10080), 'affiliate_api_key': FieldIn...ne), 'affiliate_default_id': FieldInfo(annotation=Union[str, NoneType], required=False, default='demo-affiliate'), ...} = Settings.model_fields
+
+app\tests\test_m51_config_modularization.py:39: AssertionError
+_______________ test_domain_discovery_finds_every_domain_module _______________
+
+    def test_domain_discovery_finds_every_domain_module():
+        models = discover_domain_models()
+>       assert len(models) == EXPECTED_DOMAIN_COUNT
+E       AssertionError: assert 39 == 29
+E        +  where 39 = len([<class 'app.core.config_domains.affiliate.AffiliateConfig'>, <class 'app.core.config_domains.ai_providers.AIProviders...chitecture_evolution.ArchitectureEvolutionConfig'>, <class 'app.core.config_domains.automation.AutomationConfig'>, ...])
+
+app\tests\test_m51_config_modularization.py:44: AssertionError
+_____________ test_domain_summary_covers_every_field_exactly_once _____________
+
+    def test_domain_summary_covers_every_field_exactly_once():
+        summary = domain_summary()
+>       assert len(summary) == EXPECTED_DOMAIN_COUNT
+E       AssertionError: assert 39 == 29
+E        +  where 39 = len({'affiliate': ['affiliate_network', 'affiliate_api_key', 'affiliate_api_secret', 'affiliate_default_id', 'affiliate_mo... 'alerts': ['alert_history_default_limit'], 'api_compatibility': ['api_compatibility_enforce_deprecation_policy'], ...})
+
+app\tests\test_m51_config_modularization.py:51: AssertionError
+______ test_mission_timeline_detects_the_real_historical_mission_commits ______
+
+    def test_mission_timeline_detects_the_real_historical_mission_commits():
+        service, db = _service()
+        try:
+            timeline = service.mission_timeline()
+            numbers = {entry["mission_number"] for entry in timeline}
+>           assert set(range(41, 57)).issubset(numbers)
+E           assert False
+E            +  where False = <built-in method issubset of set object at 0x00000258CD6F7920>({42, 43, 44, 45, 46, 47, ...})
+E            +    where <built-in method issubset of set object at 0x00000258CD6F7920> = {41, 42, 43, 44, 45, 46, ...}.issubset
+E            +      where {41, 42, 43, 44, 45, 46, ...} = set(range(41, 57))
+E            +        where range(41, 57) = range(41, 57)
+
+app\tests\test_m57_evolution_dashboard.py:69: AssertionError
+_ test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling _
+
+    def test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling():
+        service, db = _service()
+        try:
+            timeline = service.mission_timeline()
+            by_number = {entry["mission_number"]: entry for entry in timeline}
+            # Missao 41 foi commitada com a grafia acentuada "MissÒo 41" e
+            # Missao 42 com a grafia sem acento "Missao 42" - ambas devem ser
+            # encontradas pelo mesmo regex tolerante a acento.
+>           assert 41 in by_number
+E           AssertionError: assert 41 in {42: {'commit_hash': 'c37f041', 'committed_at': datetime.datetime(2026, 6, 27, 20, 7, 10, tzinfo=datetime.timezone.utc...atetime.datetime(2026, 6, 27, 21, 28, 58, tzinfo=datetime.timezone.utc), 'deletions': 1, 'files_changed': 9, ...}, ...}
+
+app\tests\test_m57_evolution_dashboard.py:113: AssertionError
+___________________________ test_process_ugc_image ____________________________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-5/test_process_ugc_image0')
+
+    def test_process_ugc_image(tmp_path):
+        settings = get_settings()
+        previous_dir = settings.ugc_output_dir
+        settings.ugc_output_dir = str(tmp_path / "ugc")
+        png_path = tmp_path / "criativo.png"
+>       _make_png(png_path)
+
+app\tests\test_ugc_processing.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ugc_processing.py:11: in _make_png
+    subprocess.run([
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Popen: returncode: None args: ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'color=...>
+args = 'ffmpeg -y -f lavfi -i color=c=blue:s=320x320:d=0.1 -frames:v 1 E:\\prometheus_amigao\\docker_data\\tmp\\pytest-of-USU┴RIO\\pytest-5\\test_process_ugc_image0\\criativo.png'
+executable = None, preexec_fn = None, close_fds = False, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x00000258CD87D220>
+creationflags = 0, shell = False, p2cread = Handle(3264), p2cwrite = -1
+c2pread = 11, c2pwrite = Handle(1804), errread = 12, errwrite = Handle(2684)
+unused_restore_signals = True, unused_gid = None, unused_gids = None
+unused_uid = None, unused_umask = -1, unused_start_new_session = False
+unused_process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals,
+                       unused_gid, unused_gids, unused_uid,
+                       unused_umask,
+                       unused_start_new_session, unused_process_group):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if isinstance(args, str):
+            pass
+        elif isinstance(args, bytes):
+            if shell:
+                raise TypeError('bytes args is not allowed on Windows')
+            args = list2cmdline([args])
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = list2cmdline([args])
+        else:
+            args = list2cmdline(args)
+    
+        if executable is not None:
+            executable = os.fsdecode(executable)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        else:
+            # bpo-34044: Copy STARTUPINFO since it is modified above,
+            # so the caller can reuse it multiple times.
+            startupinfo = startupinfo.copy()
+    
+        use_std_handles = -1 not in (p2cread, c2pwrite, errwrite)
+        if use_std_handles:
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        attribute_list = startupinfo.lpAttributeList
+        have_handle_list = bool(attribute_list and
+                                "handle_list" in attribute_list and
+                                attribute_list["handle_list"])
+    
+        # If we were given an handle_list or need to create one
+        if have_handle_list or (use_std_handles and close_fds):
+            if attribute_list is None:
+                attribute_list = startupinfo.lpAttributeList = {}
+            handle_list = attribute_list["handle_list"] = \
+                list(attribute_list.get("handle_list", []))
+    
+            if use_std_handles:
+                handle_list += [int(p2cread), int(c2pwrite), int(errwrite)]
+    
+            handle_list[:] = self._filter_handle_list(handle_list)
+    
+            if handle_list:
+                if not close_fds:
+                    warnings.warn("startupinfo.lpAttributeList['handle_list'] "
+                                  "overriding close_fds", RuntimeWarning)
+    
+                # When using the handle_list we always request to inherit
+                # handles but the only handles that will be inherited are
+                # the ones in the handle_list
+                close_fds = False
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            if not executable:
+                # gh-101283: without a fully-qualified path, before Windows
+                # checks the system directories, it first looks in the
+                # application directory, and also the current directory if
+                # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+                # to avoid executing unqualified "cmd.exe".
+                comspec = os.environ.get('ComSpec')
+                if not comspec:
+                    system_root = os.environ.get('SystemRoot', '')
+                    comspec = os.path.join(system_root, 'System32', 'cmd.exe')
+                    if not os.path.isabs(comspec):
+                        raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+                if os.path.isabs(comspec):
+                    executable = comspec
+            else:
+                comspec = executable
+    
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        if cwd is not None:
+            cwd = os.fsdecode(cwd)
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        # Start the process
+        try:
+>           hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+                                     startupinfo)
+E                                    FileNotFoundError: [WinError 2] O sistema nÒo pode encontrar o arquivo especificado
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1538: FileNotFoundError
+___________________________ test_process_ugc_video ____________________________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-5/test_process_ugc_video0')
+
+    def test_process_ugc_video(tmp_path):
+        settings = get_settings()
+        previous_dir = settings.ugc_output_dir
+        settings.ugc_output_dir = str(tmp_path / "ugc")
+        video_path = tmp_path / "ugc-video.mp4"
+>       _make_mp4(video_path)
+
+app\tests\test_ugc_processing.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ugc_processing.py:17: in _make_mp4
+    subprocess.run([
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Popen: returncode: None args: ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'color=...>
+args = 'ffmpeg -y -f lavfi -i color=c=red:s=320x568:d=1 -pix_fmt yuv420p E:\\prometheus_amigao\\docker_data\\tmp\\pytest-of-USU┴RIO\\pytest-5\\test_process_ugc_video0\\ugc-video.mp4'
+executable = None, preexec_fn = None, close_fds = False, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x00000258CD18A300>
+creationflags = 0, shell = False, p2cread = Handle(2288), p2cwrite = -1
+c2pread = 11, c2pwrite = Handle(2684), errread = 12, errwrite = Handle(3212)
+unused_restore_signals = True, unused_gid = None, unused_gids = None
+unused_uid = None, unused_umask = -1, unused_start_new_session = False
+unused_process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals,
+                       unused_gid, unused_gids, unused_uid,
+                       unused_umask,
+                       unused_start_new_session, unused_process_group):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if isinstance(args, str):
+            pass
+        elif isinstance(args, bytes):
+            if shell:
+                raise TypeError('bytes args is not allowed on Windows')
+            args = list2cmdline([args])
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = list2cmdline([args])
+        else:
+            args = list2cmdline(args)
+    
+        if executable is not None:
+            executable = os.fsdecode(executable)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        else:
+            # bpo-34044: Copy STARTUPINFO since it is modified above,
+            # so the caller can reuse it multiple times.
+            startupinfo = startupinfo.copy()
+    
+        use_std_handles = -1 not in (p2cread, c2pwrite, errwrite)
+        if use_std_handles:
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        attribute_list = startupinfo.lpAttributeList
+        have_handle_list = bool(attribute_list and
+                                "handle_list" in attribute_list and
+                                attribute_list["handle_list"])
+    
+        # If we were given an handle_list or need to create one
+        if have_handle_list or (use_std_handles and close_fds):
+            if attribute_list is None:
+                attribute_list = startupinfo.lpAttributeList = {}
+            handle_list = attribute_list["handle_list"] = \
+                list(attribute_list.get("handle_list", []))
+    
+            if use_std_handles:
+                handle_list += [int(p2cread), int(c2pwrite), int(errwrite)]
+    
+            handle_list[:] = self._filter_handle_list(handle_list)
+    
+            if handle_list:
+                if not close_fds:
+                    warnings.warn("startupinfo.lpAttributeList['handle_list'] "
+                                  "overriding close_fds", RuntimeWarning)
+    
+                # When using the handle_list we always request to inherit
+                # handles but the only handles that will be inherited are
+                # the ones in the handle_list
+                close_fds = False
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            if not executable:
+                # gh-101283: without a fully-qualified path, before Windows
+                # checks the system directories, it first looks in the
+                # application directory, and also the current directory if
+                # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+                # to avoid executing unqualified "cmd.exe".
+                comspec = os.environ.get('ComSpec')
+                if not comspec:
+                    system_root = os.environ.get('SystemRoot', '')
+                    comspec = os.path.join(system_root, 'System32', 'cmd.exe')
+                    if not os.path.isabs(comspec):
+                        raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+                if os.path.isabs(comspec):
+                    executable = comspec
+            else:
+                comspec = executable
+    
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        if cwd is not None:
+            cwd = os.fsdecode(cwd)
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        # Start the process
+        try:
+>           hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+                                     startupinfo)
+E                                    FileNotFoundError: [WinError 2] O sistema nÒo pode encontrar o arquivo especificado
+
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\subprocess.py:1538: FileNotFoundError
+____________ test_video_pipeline_renders_mp4_with_ffmpeg_fallback _____________
+
+tmp_path = WindowsPath('E:/prometheus_amigao/docker_data/tmp/pytest-of-USU┴RIO/pytest-5/test_video_pipeline_renders_mp0')
+
+    def test_video_pipeline_renders_mp4_with_ffmpeg_fallback(tmp_path):
+        settings = get_settings()
+        previous = settings.kit_output_dir
+        settings.kit_output_dir = str(tmp_path / "kits")
+        payload = {
+            "product_name": "Produto Video Teste",
+            "model": "V2",
+            "hook": "Descubra o mÚtodo simples hoje",
+            "script": "Este vÝdeo mostra uma promessa clara, uma dor forte e uma chamada direta para aþÒo.",
+            "cta": "Acesse agora",
+            "voice_provider": "fallback",
+            "duration_seconds": 6
+        }
+        try:
+            with TestClient(app) as client:
+                response = client.post("/api/v1/video/render", json=payload)
+>           assert response.status_code == 200, response.text
+E           AssertionError: {"detail":"Falha ao renderizar vÝdeo: FFmpeg nÒo estß instalado no ambiente."}
+E           assert 500 == 200
+E            +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+app\tests\test_video_pipeline.py:23: AssertionError
+---------------------------- Captured stderr call -----------------------------
+{"timestamp": "2026-06-28T18:40:48.874108+00:00", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"timestamp": "2026-06-28T18:40:48.906934+00:00", "level": "INFO", "logger": "adintelligence.observability", "message": "observability_event", "request_id": "corr_9b1b3be2f0974a9dae3b5aac1bce1cf6", "correlation_id": "corr_9b1b3be2f0974a9dae3b5aac1bce1cf6", "execution_id": "exec_19a06e63b8fa4163bf3df6a94d6de508", "mission_id": "mission_27"}
+{"timestamp": "2026-06-28T18:40:48.906934+00:00", "level": "INFO", "logger": "httpx", "message": "HTTP Request: POST http://testserver/api/v1/video/render \"HTTP/1.1 500 Internal Server Error\""}
+------------------------------ Captured log call ------------------------------
+DEBUG    asyncio:proactor_events.py:634 Using proactor: IocpProactor
+INFO     adintelligence.observability:observability.py:158 observability_event
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/v1/video/render "HTTP/1.1 500 Internal Server Error"
+============================== warnings summary ===============================
+app/tests/test_production_hardening_review.py::test_production_hardening_can_be_ready_with_rotated_secret_and_limits
+  C:\Users\USU┴RIO\AppData\Local\Programs\Python\Python312\Lib\site-packages\jwt\api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+app/tests/test_production_hardening_review.py::test_production_hardening_can_be_ready_with_rotated_secret_and_limits
+  C:\Users\USU┴RIO\AppData\Local\Programs\Python\Python312\Lib\site-packages\jwt\api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_m43_intelligent_cache.py::test_lru_eviction_triggers_when_namespace_exceeds_max_entries
+FAILED app/tests/test_m51_config_modularization.py::test_total_field_count_unchanged_after_modularization
+FAILED app/tests/test_m51_config_modularization.py::test_domain_discovery_finds_every_domain_module
+FAILED app/tests/test_m51_config_modularization.py::test_domain_summary_covers_every_field_exactly_once
+FAILED app/tests/test_m57_evolution_dashboard.py::test_mission_timeline_detects_the_real_historical_mission_commits
+FAILED app/tests/test_m57_evolution_dashboard.py::test_mission_timeline_handles_both_accented_and_unaccented_subject_spelling
+FAILED app/tests/test_ugc_processing.py::test_process_ugc_image - FileNotFoun...
+FAILED app/tests/test_ugc_processing.py::test_process_ugc_video - FileNotFoun...
+FAILED app/tests/test_video_pipeline.py::test_video_pipeline_renders_mp4_with_ffmpeg_fallback
+9 failed, 825 passed, 2 warnings in 125.45s (0:02:05)
+

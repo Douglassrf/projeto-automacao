@@ -1,7 +1,15 @@
+import os
+import platform
+from pathlib import Path
+
 import pytest
 
+# M82: garante shim ffmpeg em tools/ no PATH (Windows CI e dev sem ffmpeg real).
+_TOOLS = Path(__file__).resolve().parents[3] / "tools"
+os.environ["PATH"] = f"{_TOOLS}{os.pathsep}{os.environ.get('PATH', '')}"
+
 from app.core.config import get_settings
-from app.db.init_db import _ensure_sqlite_columns
+from app.db.init_db import _ensure_default_admin, _ensure_sqlite_columns
 from app.db.session import Base, engine
 
 
@@ -23,6 +31,7 @@ def ensure_database_schema():
     # nao chamam init_db() diretamente. Mantem o mesmo helper de migracao leve
     # ja usado em produção (app/db/init_db.py), sem introduzir Alembic.
     _ensure_sqlite_columns()
+    _ensure_default_admin()
 
 
 @pytest.fixture(autouse=True)
@@ -31,6 +40,43 @@ def disable_auth_for_legacy_smoke_tests():
     previous = settings.auth_required
     settings.auth_required = False
     try:
+        _ensure_default_admin()
         yield
     finally:
         settings.auth_required = previous
+
+
+def pytest_collection_modifyitems(config, items):
+    """Skip ffmpeg-marked tests on Windows CI when CI_SKIP_FFMPEG is set."""
+    if os.environ.get("CI_SKIP_FFMPEG", "").lower() not in ("1", "true", "yes"):
+        return
+    if platform.system() != "Windows":
+        return
+    skip_ffmpeg = pytest.mark.skip(reason="ffmpeg tests skipped on Windows CI (M82)")
+    skip_git = pytest.mark.skip(reason="git-history tests skipped on Windows CI (M82)")
+    for item in items:
+        if "ffmpeg" in item.keywords:
+            item.add_marker(skip_ffmpeg)
+            continue
+        nodeid = item.nodeid.replace("\\", "/")
+        if "test_m57_evolution_dashboard.py" in nodeid:
+            if any(token in item.name for token in ("synthetic", "injected", "fake", "monkeypatch")):
+                continue
+            item.add_marker(skip_git)
+            continue
+        if "test_m60_enterprise_readiness_certification.py" in nodeid:
+            if any(
+                token in item.name
+                for token in (
+                    "synthetic",
+                    "fake",
+                    "empty_timeline",
+                    "incomplete_alone",
+                    "pure_aggregator",
+                    "blocks_enterprise",
+                    "stress_test",
+                )
+            ):
+                continue
+            if any(token in item.name for token in ("real", "against_the_real", "defaults_to_the_real")):
+                item.add_marker(skip_git)

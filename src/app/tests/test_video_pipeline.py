@@ -1,9 +1,18 @@
 from pathlib import Path
+import pytest
 from fastapi.testclient import TestClient
 from app.core.config import get_settings
 from app.main import app
+import shutil
+
+FFMPEG = shutil.which("ffmpeg")
+pytestmark = pytest.mark.skipif(
+    not FFMPEG,
+    reason="ffmpeg nao instalado (M83 skip em Windows sem ffmpeg)",
+)
 
 
+@pytest.mark.ffmpeg
 def test_video_pipeline_renders_mp4_with_ffmpeg_fallback(tmp_path):
     settings = get_settings()
     previous = settings.kit_output_dir
@@ -29,6 +38,7 @@ def test_video_pipeline_renders_mp4_with_ffmpeg_fallback(tmp_path):
         settings.kit_output_dir = previous
 
 
+@pytest.mark.ffmpeg
 def test_war_kit_can_render_video_assets(tmp_path):
     settings = get_settings()
     previous = settings.kit_output_dir

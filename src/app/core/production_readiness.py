@@ -9,8 +9,8 @@ import signal
 import sqlite3
 try:
     import resource
-except ModuleNotFoundError:  # Windows — resource e modulo POSIX-only
-    resource = None  # type: ignore[assignment]
+except ImportError:  # Windows — resource.getrusage indisponivel
+    resource = None  # type: ignore[assignment,misc]
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path

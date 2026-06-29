@@ -1,7 +1,7 @@
 from sqlalchemy import inspect, text
 
 from app.core.config import get_settings
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from app.db.session import Base, SessionLocal, engine
 from app.domain.models import User, AdAnalysis, DecisionLog, QueueJob, ContentWorkflow, Campaign, CampaignMetric, AdLibraryBenchmark, PerformanceTicket, MetaActionRequest, FinancialMetric, ScalingRule, ManualRevenueEntry, CacheEntry, CacheStat  # noqa: F401
 
@@ -119,7 +119,10 @@ def _ensure_default_admin() -> None:
     with SessionLocal() as db:
         user = db.query(User).filter(User.email == settings.default_admin_email.lower()).first()
         if user:
-            if not user.hashed_password:
+            needs_hash = not user.hashed_password or not verify_password(
+                settings.default_admin_password, user.hashed_password
+            )
+            if needs_hash:
                 user.hashed_password = hash_password(settings.default_admin_password)
                 db.commit()
             return

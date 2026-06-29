@@ -7,6 +7,59 @@ Centralizada. Isto é versionado separadamente da versão do produto
 significado em `Settings` (`src/app/core/config.py`), ou quando uma regra de
 `validate_settings()` muda.
 
+## 4.0.0 — 2026-06-28 (Missão 91 — Production Launch Authorization)
+
+Campos: `production_launch_fail_closed`, `production_launch_require_evidence_archive`. Rotas `/production-launch/live`, `/markdown`.
+
+## 3.9.0 — 2026-06-28 (Missão 90 — Pre Production Approval)
+
+Campos: `pre_production_require_all_missions`, `pre_production_block_on_issues`. Rotas `/pre-production-approval/live`, `/markdown`.
+
+## 3.8.0 — 2026-06-28 (Missão 89 — Final Documentation Review)
+
+Campos: `documentation_review_require_complete`, `documentation_review_include_ops`. Rotas `/documentation-review/live`, `/markdown`.
+
+## 3.7.0 — 2026-06-28 (Missão 88 — Disaster Recovery Validation)
+
+Campos: `disaster_recovery_simulate_db_down`, `disaster_recovery_validate_backup`. Rotas `/disaster-recovery/live`, `/markdown`.
+
+## 3.6.0 — 2026-06-28 (Missão 87 — Performance Certification)
+
+Campos: `performance_cert_max_latency_ms`, `performance_cert_enable_stress`. Rotas `/performance-certification/live`, `/markdown`.
+
+## 3.5.0 — 2026-06-28 (Missão 86 — Production Security Audit)
+
+Campos: `security_audit_fail_closed`, `security_audit_scan_routes`. Rotas `/production-security-audit/live`, `/markdown`.
+
+## 3.4.0 — 2026-06-28 (Missão 85 — Release Candidate 1)
+
+Campos: `rc1_freeze_enabled`, `rc1_require_checklist`. Rotas `/release-candidate/live`, `/markdown`.
+
+## 3.4.0 — 2026-06-28 (Missão 85 — Release Candidate 1)
+
+Campos: `rc1_freeze_enabled`, `rc1_require_checklist`. Rotas `/release-candidate/live`, `/markdown`.
+
+## 3.3.0 — 2026-06-28 (Missão 84 — Test Reliability Program)
+
+Campos: `test_reliability_max_retries`, `test_reliability_track_flaky`. Rotas `/test-reliability/live`, `/markdown`.
+
+## 3.3.0 — 2026-06-28 (Missão 84 — Test Reliability Program)
+
+Campos: `test_reliability_max_retries`, `test_reliability_track_flaky`. Rotas `/test-reliability/live`, `/markdown`.
+
+## 3.2.0 — 2026-06-28 (Missão 83 — FFmpeg Production Layer)
+
+Deteccao ffmpeg, fallback quando ausente, marker pytest `ffmpeg`.
+Campos: `ffmpeg_require_binary`, `ffmpeg_fallback_when_absent`.
+Rotas: `/ffmpeg-production/live`, `/markdown`.
+
+## 3.1.0 — 2026-06-28 (Missão 82 — CI/CD Stabilization)
+
+Estabilização de pipeline CI/CD: workflows Linux + Windows, skip ffmpeg no
+Windows CI, correção LRU tie-break (M43), timeline M57 menos flaky.
+Campos: `ci_cd_require_green_pipeline`, `ci_cd_skip_ffmpeg_on_windows`.
+Rotas: `/ci-stabilization/live`, `/markdown`.
+
 ## 3.0.0 — 2026-06-28 (Missão 80 — CAPSTONE)
 
 Autonomous Operations Readiness — agrega M71-M79 + M41-M50, valida 10

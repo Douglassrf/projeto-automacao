@@ -69,7 +69,8 @@ def test_env_file_candidates_order_and_shape():
         assert candidates[-1] == ".env"
 
 
-def test_validate_settings_flags_unsafe_production_defaults():
+def test_validate_settings_flags_unsafe_production_defaults(monkeypatch):
+    monkeypatch.delenv("DEFAULT_ADMIN_PASSWORD", raising=False)
     settings = Settings(_env_file=())
     issues = validate_settings(settings, Environment.PRODUCTION)
     assert any("jwt_secret_key" in issue for issue in issues)

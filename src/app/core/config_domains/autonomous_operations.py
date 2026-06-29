@@ -1,4 +1,4 @@
-"""Domínio: Autonomous Operations Readiness (Missão 80)."""
+"""Domínio: Autonomous Operations Readiness CAPSTONE (Missão 80)."""
 
 from pydantic import BaseModel
 
