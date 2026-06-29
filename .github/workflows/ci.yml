@@ -4,10 +4,30 @@ on:
   pull_request:
   push:
     branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      repeat:
+        description: "Number of clean CI executions per OS (use 3 for final green certification)"
+        required: false
+        default: "1"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   lint-and-test:
-    runs-on: ubuntu-latest
+    name: lint-and-test-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     env:
       DEFAULT_ADMIN_PASSWORD: test-only-admin-password
       AUTH_REQUIRED: "true"
@@ -15,23 +35,28 @@ jobs:
       META_AUTOPUBLISH: "false"
       META_ALLOW_ACTIVE_LAUNCH: "false"
       META_ALLOW_PRODUCTION_REAL: "false"
+      CI_SKIP_FFMPEG: ${{ matrix.os == 'windows-latest' && 'true' || 'false' }}
+      CI_GREEN_REPEAT: ${{ github.event.inputs.repeat || '1' }}
+      PYTHONFAULTHANDLER: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
 
-      - name: Install system dependencies
+      - name: Install Linux system dependencies
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg libmagic1
 
       - name: Install dependencies
         run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
 
-      - name: Lint Python syntax
-        run: python -m compileall -q src
-
-      - name: Run pytest suite
-        run: pytest
+      - name: Run deterministic CI guard
+        run: python scripts/ci_green_check.py --repeat "$CI_GREEN_REPEAT"

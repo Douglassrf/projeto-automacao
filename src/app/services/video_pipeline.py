@@ -179,9 +179,14 @@ Formato: {payload.aspect_ratio}
             ],
         }
 
-    def _render_scene_with_ffmpeg(self, payload: VideoRenderRequest, scene_file: Path, audio_file: Path, final_file: Path, duration: float, warnings: list[str]) -> None:
-        if shutil.which("ffmpeg") is None:
+    def _ffmpeg_exe(self) -> str:
+        path = shutil.which("ffmpeg")
+        if not path:
             raise RuntimeError("FFmpeg não está instalado no ambiente.")
+        return path
+
+    def _render_scene_with_ffmpeg(self, payload: VideoRenderRequest, scene_file: Path, audio_file: Path, final_file: Path, duration: float, warnings: list[str]) -> None:
+        ffmpeg = self._ffmpeg_exe()
 
         size = {"9:16": "720x1280", "1:1": "1080x1080", "16:9": "1280x720"}[payload.aspect_ratio]
         headline_lines = _wrap(payload.hook, 24, 3)
@@ -205,7 +210,7 @@ Formato: {payload.aspect_ratio}
         vf = ",".join(filters)
 
         base_cmd = [
-            "ffmpeg", "-y",
+            ffmpeg, "-y",
             "-f", "lavfi", "-i", f"color=c=0x111827:s={size}:d={duration}",
             "-vf", vf,
             "-c:v", "libx264", "-pix_fmt", "yuv420p",
@@ -214,7 +219,7 @@ Formato: {payload.aspect_ratio}
         subprocess.run(base_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=90)
 
         final_cmd = [
-            "ffmpeg", "-y",
+            ffmpeg, "-y",
             "-i", str(scene_file),
             "-i", str(audio_file),
             "-c:v", "copy", "-c:a", "aac", "-shortest",

@@ -1,21 +1,30 @@
 from pathlib import Path
+import shutil
 import subprocess
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import get_settings
 from app.main import app
 
+def _ffmpeg_exe() -> str | None:
+    return shutil.which("ffmpeg")
+
 
 def _make_png(path: Path):
+    exe = _ffmpeg_exe()
+    assert exe, "ffmpeg required"
     subprocess.run([
-        "ffmpeg", "-y", "-f", "lavfi", "-i", "color=c=blue:s=320x320:d=0.1", "-frames:v", "1", str(path)
+        exe, "-y", "-f", "lavfi", "-i", "color=c=blue:s=320x320:d=0.1", "-frames:v", "1", str(path)
     ], check=True, capture_output=True)
 
 
 def _make_mp4(path: Path):
+    exe = _ffmpeg_exe()
+    assert exe, "ffmpeg required"
     subprocess.run([
-        "ffmpeg", "-y", "-f", "lavfi", "-i", "color=c=red:s=320x568:d=1", "-pix_fmt", "yuv420p", str(path)
+        exe, "-y", "-f", "lavfi", "-i", "color=c=red:s=320x568:d=1", "-pix_fmt", "yuv420p", str(path)
     ], check=True, capture_output=True)
 
 
