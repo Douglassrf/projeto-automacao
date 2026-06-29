@@ -16,6 +16,7 @@ on:
 jobs:
   o07-docker:
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,7 +55,7 @@ jobs:
         run: |
           echo ""
           echo "=== 6) Testes automatizados dentro do container ==="
-          docker compose exec -T api python scripts/ci_green_check.py
+          docker compose exec -T api python scripts/ci_green_check.py --repeat 1
 
       - name: "=== 7) Status final dos containers ==="
         run: |
@@ -63,3 +64,7 @@ jobs:
           docker compose ps
           echo ""
           echo "=== Concluído. Copie os logs deste job para o relatório O07. ==="
+
+      - name: "=== 8) Teardown dos containers ==="
+        if: always()
+        run: docker compose down --remove-orphans
