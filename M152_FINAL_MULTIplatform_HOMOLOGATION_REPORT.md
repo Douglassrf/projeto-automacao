@@ -4,7 +4,7 @@
 **Operador:** Cursor Agent (autorização Douglas — ORDEM FINAL DE HOMOLOGAÇÃO)  
 **Repositório:** https://github.com/Douglassrf/projeto-automacao  
 **Branch de entrega:** `missao-152-homologacao-final-multiplataforma`  
-**SHA auditado (M152):** `cf9cebd1e7815b55917e6795ec93be1ec7235fe7`  
+**SHA auditado (M152):** `54c00c52c100d66bf1177e44eb38ec3a19441ad6`  
 **SHA master remoto:** `836f555e43d22a7e64a5f9e141ba2e2c08ca70f6`  
 **VERSION:** `1.7.0`  
 **CONFIG_SCHEMA_VERSION:** `4.0.0`  
@@ -65,7 +65,7 @@ gh run list --workflow=ci.yml --limit 6
 
 ## ETAPA 2 — GitHub Actions
 
-### 2.1 Workflow M152 (`ci.yml` @ `cf9cebd`)
+### 2.1 Workflow M152 (`ci.yml` @ `54c00c5`)
 
 - `workflow_dispatch` com input `repeat` (`1` | `2` | `3`) ✅
 - Loop consecutivo pytest Linux + Windows (`-m "not ffmpeg"` no Windows) ✅
@@ -224,3 +224,63 @@ Homologação final multiplataforma **não certificada**. Próximos passos obrig
 - Evidências locais: `m152_docker_o07_output.txt`, `m152_coverage_output.txt`
 
 **Push:** branch `missao-152-homologacao-final-multiplataforma` (autorizado Douglas).
+---
+
+## Anexo — evidencia final M152 GO (fail-closed)
+
+**Registro:** 2026-06-29 (execucao evidencia final GO — Cursor subagent, autorizacao Douglas explicita)  
+**Branch:** `missao-152-homologacao-final-multiplataforma`  
+**SHA local (`git rev-parse HEAD`):** `54c00c52c100d66bf1177e44eb38ec3a19441ad6` (`54c00c5`)
+
+### Terminal literal — preparacao
+
+```
+git checkout missao-152-homologacao-final-multiplataforma
+Already on 'missao-152-homologacao-final-multiplataforma'
+Your branch is up to date with 'origin/missao-152-homologacao-final-multiplataforma'.
+54c00c52c100d66bf1177e44eb38ec3a19441ad6
+54c00c5 M152: ORDEM FINAL homologacao — NO GO com evidencias exec 2
+```
+
+### Terminal literal — autenticacao
+
+```
+gh auth status
+You are not logged into any GitHub hosts. To log in, run: gh auth login
+
+GH_TOKEN not set
+GITHUB_TOKEN not set
+```
+
+### Terminal literal — dispatch CI (repeat=3)
+
+```
+gh workflow run ci.yml --ref missao-152-homologacao-final-multiplataforma -f repeat=3
+To get started with GitHub CLI, please run:  gh auth login
+Alternatively, populate the GH_TOKEN environment variable with a GitHub API authentication token.
+(exit code 4)
+```
+
+**Run URL / jobs:** nao aplicavel — workflow nao disparado nesta execucao.
+
+### GitHub API publica (sem token)
+
+```
+GET .../actions/runs?branch=missao-152-homologacao-final-multiplataforma
+total_count 0
+```
+
+Referencia CI recente em master (nao substitui criterio M152): run 28375712227 — failure — https://github.com/Douglassrf/projeto-automacao/actions/runs/28375712227
+
+### Criterio repeat=3 (Linux + Windows success no mesmo run)
+
+| Item | Resultado |
+|------|-----------|
+| lint-and-test-linux x3 no run M152 | NAO ATINGIDO (0 runs na branch) |
+| lint-and-test-windows x3 no run M152 | NAO ATINGIDO (0 runs na branch) |
+
+### Veredito tecnico M152
+
+NO GO — fail-closed: exige ambos jobs success no run disparado com repeat=3. Autenticacao gh ainda necessaria no terminal do Douglas (gh auth login ou GH_TOKEN).
+
+**Assinatura Douglas (GO manual):** pendente
