@@ -1,8 +1,9 @@
 # FINAL PLATFORM AUDIT — Projeto Automação
 
 **Missão:** M152 — Homologação Final Multiplataforma  
-**Data UTC:** 2026-06-29  
-**SHA:** `17a093f773a54a605807d1c46b5e0e594370ece9`  
+**Data UTC:** 2026-06-29 (execução ORDEM FINAL)  
+**SHA M152:** `cf9cebd1e7815b55917e6795ec93be1ec7235fe7`  
+**SHA master remoto:** `836f555e43d22a7e64a5f9e141ba2e2c08ca70f6`  
 **VERSION:** `1.7.0`  
 **CONFIG_SCHEMA_VERSION:** `4.0.0`  
 **Repositório:** https://github.com/Douglassrf/projeto-automacao  
@@ -15,7 +16,7 @@
 | Dimensão | Resultado |
 |----------|-----------|
 | **Veredito final M152** | 🔴 **NO GO** |
-| Fail-closed | Sim — etapas obrigatórias incompletas |
+| Fail-closed | Sim — CI 3× multiplataforma não certificado |
 
 ---
 
@@ -24,10 +25,11 @@
 | Métrica | Valor |
 |---------|-------|
 | Workflow | `CI` — `.github/workflows/ci.yml` |
+| Runs branch M152 | **0** (workflow nunca disparado — `gh` sem auth) |
 | Run SHA `17a093f` | https://github.com/Douglassrf/projeto-automacao/actions/runs/28368490969 |
-| Job `lint-and-test-linux` | ✅ **success** (1 execução, ~2 min) |
-| Critério 3× consecutivo verde | ❌ **0/3** disparos certificados (1 verde observado; sem `workflow_dispatch repeat=3`) |
-| Último push master (`836f555`) | ❌ failure — run 28375712227 |
+| Job `lint-and-test-linux` | ✅ **success** (~2 min) — **1/3 apenas** |
+| Último master (`836f555`) | ❌ failure — https://github.com/Douglassrf/projeto-automacao/actions/runs/28375712227 |
+| Critério 3× consecutivo verde | ❌ **0/3** certificado |
 
 ---
 
@@ -36,10 +38,10 @@
 | Métrica | Valor |
 |---------|-------|
 | Run SHA `17a093f` | https://github.com/Douglassrf/projeto-automacao/actions/runs/28368490969 |
-| Job `lint-and-test-windows` | ⏳ **in_progress** (>2 horas — anormal; possível runner travado) |
+| Job `lint-and-test-windows` | ⏳ **in_progress** (>3 horas — runner travado) |
+| Run SHA `836f555` | ❌ **failure** (~1 min) |
 | Critério 3× consecutivo verde | ❌ **0/3** |
-| Evidência local (Windows host) | ✅ 888 passed × 3 runs (~175–195 s cada) |
-| Bloqueador conhecido M151/M82 | Windows CI lento/flaky; job atual não conclui |
+| Evidência local (Windows host) | ✅ 886 passed, cobertura 92% (~368 s) |
 
 ---
 
@@ -47,12 +49,14 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Docker client local | 29.5.3 instalado |
-| Docker daemon local | ❌ **indisponível** (`dockerDesktopLinuxEngine` pipe ausente) |
-| Script local | `verificar_docker_O07.sh` — **não executado** |
+| Docker client local | 29.5.3 ✅ |
+| Docker daemon local | ✅ **disponível** após iniciar Docker Desktop 4.78.0 |
+| Script local `verificar_docker_O07.ps1` | ✅ **executado** — exit 0, ~312 s |
+| `/api/v1/health` | ✅ `{"status":"ok","loaded_routes":43}` |
+| Testes container | ✅ **302 passed** in 17.79s |
+| Teardown `docker compose down -v` | ✅ executado |
 | O07 Actions recentes | ❌ failure — runs 28373078913, 28372135306 |
-| Workflow O07 | `.github/workflows/o07-docker.yml` (tem `workflow_dispatch`, sem `repeat`) |
-| `/health`, `ci_green_check.py`, teardown | ❌ **sem evidência verde no SHA alvo** |
+| Critério M152 remoto | ❌ **NÃO ATINGIDO** |
 
 ---
 
@@ -60,13 +64,12 @@
 
 | Escopo | Cobertura |
 |--------|-----------|
-| `src/app` total | **92%** (22586 stmts, 1792 miss) |
-| `src/app/services` + `src/app/api` | **87%** |
-| Meta documentada | Nenhuma meta % de linhas; M74 usa contagem de arquivos de teste |
-| Relatório HTML | `htmlcov_m152/` (local) |
-| pytest-cov | Instalado ad hoc; **não** em `requirements.txt` |
+| `src/app` total | **92%** (22586 stmts, 1875 miss) |
+| pytest local | 886 passed, 28 skipped, 368 s |
+| Relatório HTML | `htmlcov_m152_exec2/` (local) |
+| Meta documentada | Nenhuma meta % de linhas formal |
 
-Módulos abaixo de 80% (amostra): `video_pipeline.py` (59%), `workers/celery_app.py` (0%), `upload_security.py` (76%).
+Módulos abaixo de 80%: `video_pipeline.py` (59%), `workers/celery_app.py` (0%), `upload_security.py` (76%).
 
 ---
 
@@ -76,32 +79,28 @@ Módulos abaixo de 80% (amostra): `video_pipeline.py` (59%), `workers/celery_app
 |------|--------|
 | Script | `python scripts/audit_secrets_before_git.py` |
 | Exit code | **1 (BLOQUEADO)** |
-| Segredos em `src/app` produção | **0** achados HIGH (excl. tests, venv) |
-| `.env.*.example` | Falso positivo — exemplos versionados |
-| `*.db` locais | Gitignored; não no índice git |
-| Achados HIGH em `.venv/` | Falso positivo — dependências |
-
-Detalhes: `M152_FINAL_MULTIplatform_HOMOLOGATION_REPORT.md` § ETAPA 4.
+| Segredos em `src/app` produção | **0** achados HIGH |
+| Classificação humana M152 | Aceitável — falsos positivos venv/exemplos |
 
 ---
 
 ## 6. CI / workflow_dispatch M152
 
-| Item | Antes | Depois (branch M152) |
-|------|-------|----------------------|
-| `workflow_dispatch` | Ausente em `ci.yml` | ✅ Adicionado |
-| Input `repeat=3` | Ausente | ✅ Opções 1/2/3 |
-| Disparo remoto | ❌ `gh` não autenticado | Pendente Douglas |
+| Item | Status |
+|------|--------|
+| `workflow_dispatch` + `repeat=3` | ✅ na branch M152 |
+| Disparo remoto | ❌ `gh auth login` pendente (Douglas) |
+| Runs M152 no GitHub | **0** |
 
 ---
 
-## 7. O10 (Fase Ômega)
+## 7. Autenticação gh
 
-| Item | Status |
-|------|--------|
-| Documento | `AUTOMACAO_V11_FINAL_CERTIFICATION.md` |
-| Veredito histórico | **REPROVADO** (O07/O08 pendentes na época v1.1) |
-| M152 | O10 **não recertificado** nesta missão; foco v1.7.0 / CI multiplataforma |
+```
+gh auth status → not logged in
+GH_TOKEN / GITHUB_TOKEN → not set
+git credential-manager → Douglassrf (git OK, gh NOK)
+```
 
 ---
 
@@ -110,44 +109,21 @@ Detalhes: `M152_FINAL_MULTIplatform_HOMOLOGATION_REPORT.md` § ETAPA 4.
 | Item | Status |
 |------|--------|
 | Arquivo declarativo | `.github/branch-protection-v1.1.0.json` |
-| Contextos exigidos | `lint-and-test` (nome genérico; jobs reais: `lint-and-test-linux`, `lint-and-test-windows`) |
-| Verificação remota | ❌ Não confirmada via API (sem auth admin); **não verificado enforced** |
+| Verificação remota | ❌ Não confirmada (sem auth admin) |
 
 ---
 
-## 9. FinalReadiness / Enterprise
+## 9. Riscos Remanescentes
 
-| Serviço | Indicador |
-|---------|-----------|
-| `ContinuousQualityService` (M74) | Gate por arquivos de teste + deps + padrões — não por % cobertura |
-| `EnterpriseReadinessService` (M60) | Exige O01-O10 + tag remota separadamente |
-| Estado M152 | FinalReadiness **não homologado** enquanto CI/Docker falharem |
-
----
-
-## 10. PRs Abertas (GitHub API pública)
-
-| PR | Título |
-|----|--------|
-| #22 | O07 shutdown/restart test + O10 recertificacao |
-| #13 | Add platform readiness certification gates |
-
-Nenhum merge realizado nesta missão (conforme restrição).
+1. **Windows CI travado** — run 28368490969 >3h in_progress.
+2. **CI master vermelho** — run 28375712227 (836f555).
+3. **gh sem auth** — impossível disparar `repeat=3` autonomamente.
+4. **O07 Actions falhou** — apenas evidência local verde nesta execução.
+5. **Script G02** escaneia `.venv` — ruído operacional.
 
 ---
 
-## 11. Riscos Remanescentes
-
-1. **Windows CI travado** — run 28368490969 impede certificação do SHA master atual.
-2. **CI master vermelho** em commits posteriores (`836f555`) — regressão ou conflito de pipeline.
-3. **Docker indisponível** localmente e O07 Actions falhando — deploy container não certificado.
-4. **`gh`/token ausente** — impossível operação autônoma de workflows e branch protection.
-5. **Script G02** escaneia `.venv` — falso positivo operacional; melhorar exclusões.
-6. **Branch protection declarativa** pode não refletir configuração real do GitHub (`lint-and-test` vs nomes de job).
-
----
-
-## 12. Conselho Técnico — Síntese
+## 10. Conselho Técnico — Síntese
 
 | Área | Parecer |
 |------|---------|
@@ -159,14 +135,10 @@ Nenhum merge realizado nesta missão (conforme restrição).
 
 ---
 
-## 13. Veredito Final M152
+## 11. Veredito Final M152
 
 ### 🔴 NO GO
 
-Plataforma **não homologada** para release multiplataforma v1.7.0 nesta data. Reexecutar M152 após:
+Plataforma **não homologada** para release multiplataforma v1.7.0. Docker O07 local passou; CI remoto 3× não. Reexecutar após `gh auth login` + CI `repeat=3` verde.
 
-- 3× CI Linux verde + 3× CI Windows verde (links de run)
-- O07 Docker verde (local ou Actions)
-- `gh auth` operacional para disparo e auditoria remota
-
-Relatório detalhado: `M152_FINAL_MULTIplatform_HOMOLOGATION_REPORT.md`
+Relatório detalhado: `M152_FINAL_MULTIPLATFORM_HOMOLOGATION_REPORT.md`

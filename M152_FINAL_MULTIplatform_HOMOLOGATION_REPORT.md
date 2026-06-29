@@ -1,10 +1,11 @@
 # M152 — Homologação Final Multiplataforma
 
 **Data UTC:** 2026-06-29  
-**Operador:** Cursor Agent (autorização Douglas)  
+**Operador:** Cursor Agent (autorização Douglas — ORDEM FINAL DE HOMOLOGAÇÃO)  
 **Repositório:** https://github.com/Douglassrf/projeto-automacao  
 **Branch de entrega:** `missao-152-homologacao-final-multiplataforma`  
-**SHA auditado (master):** `17a093f773a54a605807d1c46b5e0e594370ece9`  
+**SHA auditado (M152):** `cf9cebd1e7815b55917e6795ec93be1ec7235fe7`  
+**SHA master remoto:** `836f555e43d22a7e64a5f9e141ba2e2c08ca70f6`  
 **VERSION:** `1.7.0`  
 **CONFIG_SCHEMA_VERSION:** `4.0.0`  
 **Clone:** `C:\Users\USUÁRIO\Documents\projeto-automacao-m81`
@@ -15,140 +16,141 @@
 
 ### 🔴 NO GO
 
-Critério fail-closed: **nenhuma etapa obrigatória atingiu 3× verde Linux + 3× verde Windows no CI remoto**, Docker O07 não foi executado (daemon indisponível localmente; O07 remoto falhou em runs recentes), e `gh` não autenticado impede disparo controlado do workflow M152.
+Critério fail-closed: **nenhuma etapa obrigatória atingiu 3× verde Linux + 3× verde Windows no CI remoto**, `gh` não autenticado impede disparo controlado do workflow M152 com `repeat=3`, e O07 remoto (Actions) continua vermelho. Docker O07 **local** passou nesta execução após iniciar Docker Desktop — evidência positiva, mas **não substitui** CI multiplataforma 3×.
 
 ---
 
-## ETAPA 1 — GitHub Actions
+## ETAPA 1 — Autenticação GitHub CLI
 
-### 1.1 Verificação de `workflow_dispatch` + `repeat=3`
-
-**Antes (master `17a093f`):** `.github/workflows/ci.yml` **não** tinha `workflow_dispatch` nem input `repeat`.
-
-**Correção mínima M152 (nesta branch):** adicionado `workflow_dispatch` com input `repeat` (`1` | `2` | `3`) e loop consecutivo de `pytest` em Linux e Windows.
-
-### 1.2 Disparo via `gh workflow run`
+### 1.1 `gh auth status`
 
 ```
 gh auth status
 You are not logged into any GitHub hosts. To log in, run: gh auth login
 
-GH_TOKEN set: no
-GITHUB_TOKEN set: no
+GH_TOKEN: not set
+GITHUB_TOKEN: not set
 ```
 
-**Bloqueador:** impossível disparar `gh workflow run ci.yml -f repeat=3` neste ambiente. Douglas deve executar:
+### 1.2 Arquivos de configuração gh
+
+```
+MISSING: C:\Users\USUÁRIO\AppData\Local\GitHub CLI\hosts.yml
+MISSING: C:\Users\USUÁRIO\AppData\Roaming\GitHub CLI\hosts.yml
+MISSING: C:\Users\USUÁRIO\.config\gh\hosts.yml
+```
+
+### 1.3 Git Credential Manager
+
+```
+git credential-manager github list
+Douglassrf
+```
+
+Git HTTPS funciona (`git ls-remote origin HEAD` → `836f555`), mas **gh CLI não compartilha sessão** com GCM neste ambiente headless.
+
+### 1.4 Bloqueador
+
+Impossível executar `gh workflow run ci.yml --ref missao-152-homologacao-final-multiplataforma -f repeat=3` sem login interativo. Douglas deve executar:
 
 ```powershell
 cd C:\Users\USUÁRIO\Documents\projeto-automacao-m81
 gh auth login
 gh workflow run ci.yml --ref missao-152-homologacao-final-multiplataforma -f repeat=3
+gh run watch
 gh run list --workflow=ci.yml --limit 6
 ```
 
-### 1.3 Runs observados (API pública GitHub, 2026-06-29)
+---
 
-| Run ID | SHA | Workflow | Linux | Windows | URL |
-|--------|-----|----------|-------|---------|-----|
-| 28368490969 | `17a093f` | CI | ✅ success (~2 min) | ⏳ in_progress (>2h, aparentemente travado) | https://github.com/Douglassrf/projeto-automacao/actions/runs/28368490969 |
-| 28375712227 | `836f555` | CI | ❌ failure | ❌ failure | https://github.com/Douglassrf/projeto-automacao/actions/runs/28375712227 |
-| 28373078913 | `ca18a35` | O07 Docker | — | — | ❌ failure — https://github.com/Douglassrf/projeto-automacao/actions/runs/28373078913 |
-| 28372135306 | `6b99c20` | O07 Docker | — | — | ❌ failure — https://github.com/Douglassrf/projeto-automacao/actions/runs/28372135306 |
+## ETAPA 2 — GitHub Actions
 
-**Critério M152:** Linux 3× verde + Windows 3× verde → **NÃO ATINGIDO** (0/3 Windows certificado; 1/3 Linux no SHA alvo; runs anteriores falharam).
+### 2.1 Workflow M152 (`ci.yml` @ `cf9cebd`)
 
-### 1.4 Evidência local Windows (referência, não substitui CI)
+- `workflow_dispatch` com input `repeat` (`1` | `2` | `3`) ✅
+- Loop consecutivo pytest Linux + Windows (`-m "not ffmpeg"` no Windows) ✅
+- **Runs na branch M152:** **0** (API pública, 2026-06-29T14:48Z)
 
-Três execuções consecutivas locais (`CI_SKIP_FFMPEG=true`, `-m "not ffmpeg"`):
+### 2.2 Runs observados (API pública GitHub, 2026-06-29)
 
-```
-=== PYTEST RUN 1/3 ===
-888 passed, 26 skipped, 3 deselected, 4 warnings in 195.01s
+| Run ID | SHA | Branch | Workflow | Linux | Windows | URL |
+|--------|-----|--------|----------|-------|---------|-----|
+| 28375712227 | `836f555` | master | CI | ❌ failure (~3 min) | ❌ failure (~1 min) | https://github.com/Douglassrf/projeto-automacao/actions/runs/28375712227 |
+| 28368490969 | `17a093f` | master | CI | ✅ success (~2 min) | ⏳ **in_progress** (>3h — runner travado) | https://github.com/Douglassrf/projeto-automacao/actions/runs/28368490969 |
+| 28373078913 | `ca18a35` | master | O07 Docker | — | — | ❌ failure — https://github.com/Douglassrf/projeto-automacao/actions/runs/28373078913 |
+| 28372135306 | `6b99c20` | master | O07 Docker | — | — | ❌ failure — https://github.com/Douglassrf/projeto-automacao/actions/runs/28372135306 |
 
-=== PYTEST RUN 2/3 ===
-888 passed, 26 skipped, 3 deselected, 4 warnings in 175.60s
+**Critério M152:** Linux 3× verde + Windows 3× verde → **NÃO ATINGIDO** (0/3 certificado na branch M152; master vermelho/travado).
 
-=== PYTEST RUN 3/3 ===
-888 passed, 26 skipped, 3 deselected, 4 warnings in 178.48s
-```
+### 2.3 Evidência local Windows (referência, não substitui CI)
 
-**Nota:** evidência local positiva; **não** satisfaz critério remoto multiplataforma.
+Execução anterior documentada: 888 passed × 3 runs (~175–195 s cada).
 
 ---
 
-## ETAPA 2 — Docker O07
+## ETAPA 3 — Docker O07
 
-### 2.1 Disponibilidade local
+### 3.1 Disponibilidade local
+
+**Antes desta execução:** daemon off (`dockerDesktopLinuxEngine` pipe ausente).
+
+**Ação:** Docker Desktop iniciado programaticamente. Após ~15 s:
 
 ```
-docker --version
+docker version
 Client: Version 29.5.3
-
-docker version (daemon)
-failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine
-The system cannot find the file specified.
-
-docker compose version
-Docker Compose version v5.1.4
+Server: Docker Desktop 4.78.0 (229452) — Engine 29.5.3 linux/amd64
 ```
 
-**Bloqueador:** Docker Desktop/daemon **não está em execução**. Script `verificar_docker_O07.sh` **não executado**.
+### 3.2 Script `verificar_docker_O07.ps1` — EXECUTADO ✅
 
-### 2.2 O07 remoto (GitHub Actions)
-
-Runs recentes em `O07 Docker Production` concluíram **failure** (ver tabela ETAPA 1). Não há evidência de `docker compose up -d --wait`, `/health`, `ci_green_check.py` verde no SHA alvo.
-
-**Critério M152:** **NÃO ATINGIDO** (fail-closed).
-
----
-
-## ETAPA 3 — Cobertura de Testes
-
-`pytest-cov` instalado ad hoc (não estava em `requirements.txt`).
-
-Comando:
-
-```powershell
-pytest --cov=src/app --cov-report=term-missing:skip-covered --cov-report=html:htmlcov_m152 -q -m "not ffmpeg"
-```
-
-Resultado:
+Tempo total: **~312 s** (build + compose + testes + teardown).
 
 ```
-TOTAL 22586   1792    92%
-888 passed, 26 skipped, 3 deselected, 4 warnings in 283.80s
+=== 5) Smoke test do endpoint de saude ===
+{"status":"ok","scope":"api","loaded_routes":43,"failed_routes":0}
+HEALTH OK
+
+=== 6) Testes automatizados dentro do container ===
+302 passed, 4 warnings in 17.79s
+
+=== 7) Status final dos containers ===
+projeto-automacao-m81-api-1   Up 51 seconds (healthy)   0.0.0.0:8000->8000/tcp
+
+=== Concluido. ===
+exit_code: 0
 ```
 
-Breakdown parcial:
+### 3.3 Teardown
 
-| Escopo | Cobertura linhas |
-|--------|------------------|
-| `src/app` (total) | **92%** |
-| `src/app/services` + `src/app/api` | **87%** |
-| Módulos fracos | `video_pipeline.py` 59%, `upload_security.py` 76%, `celery workers` 0% |
+```
+docker compose down -v
+Container projeto-automacao-m81-api-1 Stopped/Removed
+Volumes Removed, Network Removed
+```
 
-**Meta da equipe:** documentação (`ContinuousQualityService`, M74) usa **contagem de arquivos de teste**, não meta percentual de linhas. Nenhuma meta numérica de cobertura de linhas encontrada em docs. **Relatado: 92% obtido.**
+### 3.4 O07 remoto (GitHub Actions)
 
-HTML: `htmlcov_m152/index.html` (local, não versionado).
+Runs recentes **failure** (28373078913, 28372135306). Sem evidência verde no SHA alvo via Actions.
+
+**Critério M152:** Local ✅ | Remoto ❌ → **NÃO ATINGIDO** (fail-closed exige CI 3× + O07 remoto ou certificação completa).
 
 ---
 
 ## ETAPA 4 — Auditoria de Segredos
 
-Comando:
-
 ```powershell
 python scripts/audit_secrets_before_git.py
 ```
 
-Saída literal:
+Saída literal (2026-06-29T14:50Z):
 
 ```
 Status: BLOQUEADO
 Arquivos .env reais encontrados: 4
 Arquivos de banco encontrados: 2
 Achados HIGH (possivel segredo hardcoded): 182
-Achados INFO (referencia/placeholder): 17093
+Achados INFO (referencia/placeholder): 17757
 Relatorio: secrets_audit_report.json
 exit code: 1
 ```
@@ -157,21 +159,35 @@ exit code: 1
 
 | Ocorrência | Classificação | Ação |
 |------------|---------------|------|
-| `.env.development.example`, `.env.production.example`, `.env.staging.example`, `.env.testing.example` | **Falso positivo / exemplo permitido** | Arquivos `.example` versionados de propósito; script trata sufixo `.example` como `.env` real — heurística do script |
-| `adintelligence.db`, `src/adintelligence.db` (locais) | **Legado local / não versionado** | `git check-ignore` confirma `.gitignore:25` |
-| 182 achados HIGH em `.venv/` e `venv/` | **Falso positivo** | Dependências de terceiros |
-| 2 achados HIGH em `src/app/tests/test_m41_*`, `test_m53_*` | **Falso positivo / teste** | Strings de fixture com placeholders |
-| **0 achados HIGH em `src/app` produção (excl. tests)** | **OK** | Nenhuma credencial real hardcoded em código de produção |
+| `.env.*.example` (4 arquivos) | **Falso positivo / exemplo** | Versionados de propósito |
+| `adintelligence.db`, `src/adintelligence.db` | **Legado local / gitignored** | Não no índice git |
+| 182 HIGH em `.venv/` | **Falso positivo** | Dependências terceiros |
+| 2 HIGH em `test_m41_*`, `test_m53_*` | **Falso positivo / fixture** | Placeholders de teste |
+| **0 HIGH em `src/app` produção** | **OK** | Nenhuma credencial real hardcoded |
 
-**Correção mínima aplicada:** nenhuma (não há segredo real em código produtivo; DB já gitignored).
-
-**Critério script G02:** exit 1 neste workspace por scan amplo incluindo venv — **fail-closed para automação G02**; **classificação humana M152:** aceitável com ressalva de melhorar exclusão de `.venv` no script.
+**Correção mínima:** nenhuma (sem segredo real em código produtivo).
 
 ---
 
-## ETAPA 5 — Consolidação
+## ETAPA 5 — Cobertura de Testes
 
-Ver `FINAL_PLATFORM_AUDIT.md` (gerado nesta entrega).
+```powershell
+pytest --cov=src/app --cov-report=term-missing:skip-covered --cov-report=html:htmlcov_m152_exec2 -q -m "not ffmpeg"
+```
+
+Resultado (2026-06-29T14:57Z):
+
+```
+TOTAL 22586   1875    92%
+886 passed, 28 skipped, 3 deselected, 4 warnings in 368.43s (0:06:08)
+```
+
+| Escopo | Cobertura |
+|--------|-----------|
+| `src/app` (total) | **92%** |
+| Módulos fracos | `video_pipeline.py` 59%, `upload_security.py` 76%, `celery workers` 0% |
+
+HTML: `htmlcov_m152_exec2/index.html` (local, não versionado).
 
 ---
 
@@ -179,11 +195,11 @@ Ver `FINAL_PLATFORM_AUDIT.md` (gerado nesta entrega).
 
 | Área | Veredito | Justificativa |
 |------|----------|---------------|
-| **Arquitetura** | REPROVADO | VERSION 1.7.0 / CONFIG 4.0.0 coerentes; CI Windows instável/travado impede certificação multiplataforma |
-| **QA** | REPROVADO | Local 3× verde; CI remoto não comprovou 3× Linux + 3× Windows; cobertura 92% sem gate percentual formal |
-| **Segurança** | APROVADO COM RESSALVA | Zero segredos em código prod; script G02 ruidoso; `.env.example` e DB local classificados |
-| **Performance** | APROVADO COM RESSALVA | Suite local ~3 min/run; Windows CI >2h in_progress indica problema operacional |
-| **Operação** | REPROVADO | Docker daemon off; `gh` sem auth; O07 CI falhou; branch protection não verificada no remoto |
+| **Arquitetura** | REPROVADO | VERSION/CONFIG coerentes; CI remoto não certifica multiplataforma |
+| **QA** | REPROVADO | Local 886 passed + Docker 302 passed; CI 3× Linux+Windows **não comprovado** |
+| **Segurança** | APROVADO COM RESSALVA | Zero segredos prod; script G02 ruidoso (venv) |
+| **Performance** | APROVADO COM RESSALVA | Suite local ~6 min; Windows CI travado >3h |
+| **Operações** | REPROVADO | `gh` sem auth; O07 Actions falhou; branch protection não verificada |
 
 ---
 
@@ -193,17 +209,18 @@ Ver `FINAL_PLATFORM_AUDIT.md` (gerado nesta entrega).
 
 Homologação final multiplataforma **não certificada**. Próximos passos obrigatórios para GO:
 
-1. `gh auth login` + disparar CI `repeat=3` na branch M152 (ou master após merge).
-2. Investigar/corrigir job Windows travado (`28368490969`) e falhas em `836f555`.
-3. Iniciar Docker Desktop e reexecutar O07 (local ou via Actions verde).
-4. Reexecutar M152 após 3× verde Linux + 3× verde Windows com links de run.
+1. `gh auth login` + disparar CI `repeat=3` na branch M152.
+2. Aguardar conclusão: **3× verde Linux + 3× verde Windows** (links de run).
+3. Corrigir Windows CI travado (run 28368490969) e falhas master (836f555).
+4. Reexecutar O07 via Actions verde ou documentar run M152 com repeat.
+5. Reexecutar M152 com evidência completa.
 
 ---
 
-## Artefatos desta entrega
+## Artefatos desta execução
 
-- `.github/workflows/ci.yml` — `workflow_dispatch` + `repeat`
-- `FINAL_PLATFORM_AUDIT.md`
+- `FINAL_PLATFORM_AUDIT.md` (atualizado)
 - Este relatório
+- Evidências locais: `m152_docker_o07_output.txt`, `m152_coverage_output.txt`
 
 **Push:** branch `missao-152-homologacao-final-multiplataforma` (autorizado Douglas).
