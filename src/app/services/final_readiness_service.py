@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 UTC = timezone.utc
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 CHAOS_SCENARIOS = (
     ("database_unavailable", "read_only_mode", "queue writes paused; health returns 503 without data mutation"),
@@ -29,6 +30,10 @@ REQUIRED_FINAL_EVIDENCE = (
     "pending_prs",
     "branch_protection",
     "e2e",
+    "docker_green",
+    "final_readiness_real",
+    "backup",
+    "minimum_real_spend_plan",
 )
 EVIDENCE_REQUIRED_FIELDS = ("source", "evidence", "timestamp", "verdict", "reason")
 
@@ -175,6 +180,130 @@ class FinalReadinessService:
             "blockers": blockers,
         }
 
+    def minimal_real_spend_plan(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Planejamento deterministico do primeiro voo com verba real minima.
+
+        Nao executa Meta, nao altera orcamento e nao cria campanha. O objetivo e
+        transformar a ordem operacional em criterios auditaveis antes de qualquer
+        acao humana fora da API.
+        """
+        payload = payload or {}
+        daily_budget_brl = float(payload.get("daily_budget_brl") or 6)
+        campaign_cap_brl = float(payload.get("campaign_cap_brl") or daily_budget_brl)
+        account_count = int(payload.get("account_count") or 1)
+        campaign_count = int(payload.get("campaign_count") or 1)
+        human_supervision = bool(payload.get("human_supervision"))
+        logs_enabled = bool(payload.get("logs_enabled"))
+        kill_switch_verified = bool(payload.get("kill_switch_verified"))
+        ai_budget_increase_allowed = bool(payload.get("ai_budget_increase_allowed"))
+
+        checks = {
+            "one_account_only": account_count == 1,
+            "one_campaign_only": campaign_count == 1,
+            "minimum_real_budget": 6 <= daily_budget_brl <= 10,
+            "campaign_cap_matches_daily_cap": campaign_cap_brl <= daily_budget_brl,
+            "human_supervision_required": human_supervision,
+            "logs_enabled_required": logs_enabled,
+            "kill_switch_verified_required": kill_switch_verified,
+            "ai_budget_increase_forbidden": not ai_budget_increase_allowed,
+        }
+        blockers = [name for name, ok in checks.items() if not ok]
+        return {
+            "generated_at": self._now(),
+            "status": "ready_for_human_minimum_spend_test" if not blockers else "blocked",
+            "executes_meta": False,
+            "account_count": account_count,
+            "campaign_count": campaign_count,
+            "daily_budget_brl": daily_budget_brl,
+            "campaign_cap_brl": campaign_cap_brl,
+            "checks": checks,
+            "blockers": blockers,
+            "policy": {
+                "launch_state": "paused_or_lowest_risk_assisted_only",
+                "manual_budget_changes_only": True,
+                "ai_can_increase_budget": False,
+                "logs_must_remain_enabled": True,
+            },
+        }
+
+    def financial_limits(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        payload = payload or {}
+        daily_cap_brl = float(payload.get("daily_cap_brl") or payload.get("daily_budget_brl") or 6)
+        campaign_cap_brl = float(payload.get("campaign_cap_brl") or daily_cap_brl)
+        requested_budget_brl = float(payload.get("requested_budget_brl") or daily_cap_brl)
+        kill_switch_ready = bool(payload.get("kill_switch_ready"))
+        ai_budget_increase_allowed = bool(payload.get("ai_budget_increase_allowed"))
+        checks = {
+            "daily_cap_present": daily_cap_brl > 0,
+            "daily_cap_minimal": daily_cap_brl <= 10,
+            "campaign_cap_present": campaign_cap_brl > 0,
+            "campaign_cap_not_above_daily_cap": campaign_cap_brl <= daily_cap_brl,
+            "requested_budget_not_above_caps": requested_budget_brl <= min(daily_cap_brl, campaign_cap_brl),
+            "kill_switch_ready": kill_switch_ready,
+            "ai_budget_increase_forbidden": not ai_budget_increase_allowed,
+        }
+        blockers = [name for name, ok in checks.items() if not ok]
+        return {
+            "generated_at": self._now(),
+            "status": "limits_ready" if not blockers else "blocked",
+            "executes_meta": False,
+            "daily_cap_brl": daily_cap_brl,
+            "campaign_cap_brl": campaign_cap_brl,
+            "requested_budget_brl": requested_budget_brl,
+            "checks": checks,
+            "blockers": blockers,
+            "non_delegable_controls": ["budget_increase", "kill_switch", "campaign_activation"],
+        }
+
+    def backup_before_first_flight(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        payload = payload or {}
+        artifacts = {
+            "database_backup": bool(payload.get("database_backup")),
+            "env_example_backup": (PROJECT_ROOT / ".env.example").exists(),
+            "configs_backup": bool(payload.get("configs_backup")),
+            "version_report": (PROJECT_ROOT / "VERSION").exists() and bool(payload.get("version_report")),
+            "git_tag_or_release": bool(payload.get("git_tag_or_release")),
+        }
+        blockers = [name for name, ok in artifacts.items() if not ok]
+        return {
+            "generated_at": self._now(),
+            "status": "backup_ready" if not blockers else "blocked",
+            "executes_backup": False,
+            "required_artifacts": artifacts,
+            "blockers": blockers,
+            "recommended_command": "python scripts/create_immutable_backup.py && git tag <release-tag>",
+        }
+
+    def emergency_plan(self) -> dict[str, Any]:
+        return {
+            "generated_at": self._now(),
+            "status": "documented",
+            "executes_meta": False,
+            "critical_error": "pause_campaign_immediately",
+            "wrong_spend": "disable_meta_autopublish_and_enable_kill_switch",
+            "api_failure": "return_to_dry_run",
+            "database_corruption": "restore_latest_verified_backup_immediately",
+            "human_owner_required": True,
+        }
+
+    def ordered_launch_sequence(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        payload = payload or {}
+        steps = [
+            ("ci_green", bool(payload.get("ci_green"))),
+            ("docker_green", bool(payload.get("docker_green"))),
+            ("final_readiness_real", bool(payload.get("final_readiness_real"))),
+            ("backup_completed", bool(payload.get("backup_completed"))),
+            ("minimum_real_spend_test", bool(payload.get("minimum_real_spend_test"))),
+        ]
+        first_blocker = next((name for name, ok in steps if not ok), None)
+        return {
+            "generated_at": self._now(),
+            "status": "sequence_complete" if first_blocker is None else "blocked",
+            "ordered_steps": [{"name": name, "complete": ok} for name, ok in steps],
+            "next_required_step": first_blocker,
+            "sequence": "CI verde → Docker verde → FinalReadiness real → backup → teste com verba mínima",
+        }
+
     def full_certification(self) -> dict[str, Any]:
         sections = {
             "chaos_engineering": self.chaos_engineering(),
@@ -186,6 +315,11 @@ class FinalReadinessService:
             "uat": self.user_acceptance_test(),
             "production_readiness_board": self.production_readiness_board(),
             "final_go_no_go": self.final_go_no_go(),
+            "minimal_real_spend_plan": self.minimal_real_spend_plan(),
+            "financial_limits": self.financial_limits(),
+            "backup_before_first_flight": self.backup_before_first_flight(),
+            "emergency_plan": self.emergency_plan(),
+            "ordered_launch_sequence": self.ordered_launch_sequence(),
         }
         final_decision = sections["final_go_no_go"]["decision"]
         return {
