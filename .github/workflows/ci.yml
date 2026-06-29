@@ -4,6 +4,17 @@ on:
   pull_request:
   push:
     branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      repeat:
+        description: "Execucoes consecutivas de pytest (M152 homologacao)"
+        required: false
+        default: "1"
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "3"
 
 jobs:
   lint-and-test-linux:
@@ -35,8 +46,14 @@ jobs:
       - name: Lint Python syntax
         run: python -m compileall -q src
 
-      - name: Run pytest suite
-        run: pytest -q
+      - name: Run pytest suite (repeat ${{ inputs.repeat || '1' }}x)
+        env:
+          PYTEST_REPEAT: ${{ inputs.repeat || '1' }}
+        run: |
+          for i in $(seq 1 "${PYTEST_REPEAT}"); do
+            echo "=== pytest run ${i}/${PYTEST_REPEAT} (linux) ==="
+            pytest -q || exit 1
+          done
 
   lint-and-test-windows:
     runs-on: windows-latest
@@ -63,5 +80,12 @@ jobs:
       - name: Lint Python syntax
         run: python -m compileall -q src
 
-      - name: Run pytest suite (ffmpeg tests skipped on Windows CI)
-        run: pytest -q -m "not ffmpeg"
+      - name: Run pytest suite (ffmpeg tests skipped on Windows CI, repeat ${{ inputs.repeat || '1' }}x)
+        env:
+          PYTEST_REPEAT: ${{ inputs.repeat || '1' }}
+        shell: bash
+        run: |
+          for i in $(seq 1 "${PYTEST_REPEAT}"); do
+            echo "=== pytest run ${i}/${PYTEST_REPEAT} (windows) ==="
+            pytest -q -m "not ffmpeg" || exit 1
+          done
