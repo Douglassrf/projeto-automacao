@@ -304,7 +304,7 @@ $ cd src && pytest app/tests/test_m82_ci_cd_stabilization.py ... test_m91_produc
 
 | Item | Valor |
 |------|-------|
-| Commit bump VERSION | *(preencher apos push)* |
+| Commit bump VERSION | `2e4b540` (`2e4b540d10c7a4004a197fe902b150bdd1e24b72`) |
 | `VERSION` | `1.7.0` |
 | Tag | `v1.7.0` (anotada) |
 | Artefatos | `CHANGELOG.md`, `RELEASE_NOTES_v1.7.0.md` |
@@ -330,4 +330,5 @@ URL: https://github.com/Douglassrf/projeto-automacao/actions/runs/28365793123
 ---
 
 *Gerado automaticamente ao fechar FASE v1.7 M82â€“M91. Secao PR e CI atualizada 2026-06-29.*
+
 
