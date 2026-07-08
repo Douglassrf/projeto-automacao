@@ -9,7 +9,7 @@ _TOOLS = Path(__file__).resolve().parents[3] / "tools"
 os.environ["PATH"] = f"{_TOOLS}{os.pathsep}{os.environ.get('PATH', '')}"
 
 from app.core.config import get_settings
-from app.db.init_db import _ensure_default_admin, _ensure_sqlite_columns
+from app.db.init_db import _ensure_default_admin, _ensure_schema_version, _ensure_sqlite_columns
 from app.db.session import Base, engine
 
 
@@ -32,6 +32,11 @@ def ensure_database_schema():
     # ja usado em produção (app/db/init_db.py), sem introduzir Alembic.
     _ensure_sqlite_columns()
     _ensure_default_admin()
+    # Fase Omega - Omega-01A / correcao B005: conftest cria as tabelas via
+    # create_all() direto (linha acima), sem passar por init_db() inteira -
+    # sem esta chamada, schema_meta nunca seria populada nos testes e todo
+    # GET /health passaria a responder 503 bootstrap_required indevidamente.
+    _ensure_schema_version()
 
 
 @pytest.fixture(autouse=True)

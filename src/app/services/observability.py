@@ -422,5 +422,86 @@ def component_health_snapshot(engine_override: Any | None = None) -> dict[str, A
     return {"status": status, "components": components, "dashboard": health_dashboard(limit=5)}
 
 
+def schema_bootstrap_status(engine_override: Any | None = None) -> dict[str, Any]:
+    """Fase Omega - Missao Omega-01A / correcao B003 (false healthy state).
+
+    Antes desta correcao, /health so testava conectividade (SELECT 1),
+    que funciona mesmo com um arquivo SQLite vazio - resultado: a
+    aplicacao respondia "healthy" no exato momento em que nenhuma rota
+    real conseguia operar (achado ao vivo em RELATORIO_OMEGA_01A_BOOTSTRAP.md).
+
+    Esta funcao verifica, nesta ordem, e falha fechada (fail-closed) em
+    qualquer etapa que nao passar:
+      1. conectividade real com o banco;
+      2. existencia de todas as tabelas esperadas pelo codigo atual;
+      3. versao de schema (schema_meta) compativel com DB_SCHEMA_VERSION;
+      4. uma consulta funcional real (nao so metadados).
+    """
+    from sqlalchemy import inspect, text
+    from sqlalchemy.exc import SQLAlchemyError
+
+    from app.db.init_db import DB_SCHEMA_VERSION
+    from app.db.session import Base, SessionLocal, engine
+    from app.domain.models import SchemaMeta
+
+    database_engine = engine_override or engine
+    result: dict[str, Any] = {
+        "state": "unavailable",
+        "schema_version_expected": DB_SCHEMA_VERSION,
+        "schema_version_found": None,
+        "missing_tables": [],
+        "detail": None,
+    }
+
+    try:
+        with database_engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except SQLAlchemyError as exc:
+        result["detail"] = f"database_unreachable:{type(exc).__name__}"
+        return result
+
+    inspector = inspect(database_engine)
+    existing_tables = set(inspector.get_table_names())
+    expected_tables = set(Base.metadata.tables.keys())
+    missing = sorted(expected_tables - existing_tables)
+    if missing:
+        result["state"] = "bootstrap_required"
+        result["missing_tables"] = missing
+        result["detail"] = "missing_tables:" + ",".join(missing)
+        return result
+
+    db = SessionLocal()
+    try:
+        try:
+            row = db.query(SchemaMeta).filter(SchemaMeta.id == 1).first()
+        except SQLAlchemyError as exc:
+            result["state"] = "bootstrap_required"
+            result["detail"] = f"schema_meta_unreadable:{type(exc).__name__}"
+            return result
+
+        if row is None:
+            result["state"] = "bootstrap_required"
+            result["detail"] = "schema_meta_row_missing"
+            return result
+
+        result["schema_version_found"] = row.version
+        if row.version != DB_SCHEMA_VERSION:
+            result["state"] = "degraded"
+            result["detail"] = "schema_version_mismatch"
+            return result
+
+        try:
+            db.execute(text("SELECT COUNT(*) FROM users"))
+        except SQLAlchemyError as exc:
+            result["state"] = "degraded"
+            result["detail"] = f"functional_query_failed:{type(exc).__name__}"
+            return result
+    finally:
+        db.close()
+
+    result["state"] = "healthy"
+    return result
+
+
 def operational_dashboard_snapshot() -> dict[str, Any]:
     return component_health_snapshot()
