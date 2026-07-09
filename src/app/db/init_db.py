@@ -3,7 +3,13 @@ from sqlalchemy import inspect, text
 from app.core.config import get_settings
 from app.core.security import hash_password, verify_password
 from app.db.session import Base, SessionLocal, engine
-from app.domain.models import User, AdAnalysis, DecisionLog, QueueJob, ContentWorkflow, Campaign, CampaignMetric, AdLibraryBenchmark, PerformanceTicket, MetaActionRequest, FinancialMetric, ScalingRule, ManualRevenueEntry, CacheEntry, CacheStat  # noqa: F401
+from app.domain.models import User, AdAnalysis, DecisionLog, QueueJob, ContentWorkflow, Campaign, CampaignMetric, AdLibraryBenchmark, PerformanceTicket, MetaActionRequest, FinancialMetric, ScalingRule, ManualRevenueEntry, CacheEntry, CacheStat, SchemaMeta  # noqa: F401
+from datetime import datetime, timezone
+
+# Fase Omega - Missao Omega-01A / correcao B005 (nao existia controle real
+# de versao de schema/migrations antes desta correcao - ver BUGS_SEMANA_TESTES.md).
+# Subir esta constante sempre que uma mudanca de schema exigir bootstrap novo.
+DB_SCHEMA_VERSION = "1.0.0"
 
 
 def _ensure_sqlite_wal() -> None:
@@ -137,8 +143,34 @@ def _ensure_default_admin() -> None:
         db.commit()
 
 
+class SchemaVersionMismatch(RuntimeError):
+    """Levantado quando o banco tem uma versao de schema diferente da
+    esperada pelo codigo atual (DB_SCHEMA_VERSION). Fail-closed: a
+    aplicacao nao deve seguir como se o banco fosse compativel."""
+
+
+def _ensure_schema_version() -> None:
+    with SessionLocal() as db:
+        row = db.query(SchemaMeta).filter(SchemaMeta.id == 1).first()
+        if row is None:
+            db.add(SchemaMeta(id=1, version=DB_SCHEMA_VERSION, applied_at=datetime.now(timezone.utc)))
+            db.commit()
+            return
+        if row.version != DB_SCHEMA_VERSION:
+            # Fail-closed (recomendacao de Douglas, 08/07/2026): nunca
+            # sobrescrever silenciosamente nem seguir em frente. Quem
+            # chamar init_db() contra um banco de versao incompativel
+            # recebe um erro explicito, nao um "funcionou" enganoso.
+            raise SchemaVersionMismatch(
+                f"Banco tem schema_meta.version={row.version!r}, mas o codigo "
+                f"atual espera DB_SCHEMA_VERSION={DB_SCHEMA_VERSION!r}. "
+                "Bootstrap/restore incompativel - resolva antes de subir a aplicacao."
+            )
+
+
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     _ensure_sqlite_wal()
     _ensure_sqlite_columns()
     _ensure_default_admin()
+    _ensure_schema_version()

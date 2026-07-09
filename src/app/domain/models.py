@@ -341,3 +341,21 @@ class AlertEvent(Base):
     first_seen_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), index=True)
     last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class SchemaMeta(Base):
+    """Fase Omega - Missao Omega-01A / correcao B005.
+
+    Guarda a versao do schema de banco de dados efetivamente aplicada.
+    Existe UMA linha (id=1) que e comparada, no boot, contra
+    DB_SCHEMA_VERSION (app/db/init_db.py). Se a linha nao existir, o
+    banco nunca passou por init_db() (bootstrap nao aplicado). Se a
+    linha existir com versao diferente, o banco e de uma versao
+    incompativel do codigo - falha fechada (fail-closed), nunca
+    assumida como compativel silenciosamente."""
+
+    __tablename__ = "schema_meta"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    version: Mapped[str] = mapped_column(String(20))
+    applied_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))

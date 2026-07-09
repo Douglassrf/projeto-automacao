@@ -59,6 +59,22 @@ from app.services.evolution_dashboard_service import EvolutionDashboardService
 from app.services.tech_debt_manager_service import TechDebtManagerService
 from app.services.architecture_stress_test_service import ArchitectureStressTestService
 from app.services.enterprise_readiness_service import EnterpriseReadinessService
+from app.services.engineering_memory_core_service import EngineeringMemoryCoreService
+from app.services.architecture_evolution_timeline_service import ArchitectureEvolutionTimelineService
+from app.services.enterprise_quality_observatory_service import EnterpriseQualityObservatoryService
+from app.services.predictive_maintenance_service import PredictiveMaintenanceService
+from app.services.intelligent_release_governance_service import (
+    IntelligentReleaseGovernanceService,
+)
+from app.services.architecture_scoring_service import ContinuousArchitectureScoringService
+from app.services.optimization_planner_service import AutonomousOptimizationPlannerService
+from app.services.digital_twin_service import EngineeringDigitalTwinService
+from app.services.strategic_evolution_council_service import (
+    StrategicEvolutionCouncilService,
+)
+from app.services.enterprise_excellence_certification_service import (
+    EnterpriseExcellenceCertificationService,
+)
 
 ServiceT = TypeVar("ServiceT")
 
@@ -161,3 +177,46 @@ def get_architecture_stress_test_service() -> ArchitectureStressTestService:
 
 
 get_enterprise_readiness_service = provide(EnterpriseReadinessService)  # Missao 60
+get_engineering_memory_core_service = provide(EngineeringMemoryCoreService)  # Missao 122
+get_architecture_evolution_timeline_service = provide(ArchitectureEvolutionTimelineService)  # Missao 123
+get_enterprise_quality_observatory_service = provide(EnterpriseQualityObservatoryService)  # Missao 124
+get_predictive_maintenance_service = provide(PredictiveMaintenanceService)  # Missao 125
+get_intelligent_release_governance_service = provide(IntelligentReleaseGovernanceService)  # Missao 126
+
+
+def get_architecture_scoring_service() -> ContinuousArchitectureScoringService:
+    """Missao 127. Mesmo motivo de `get_architecture_audit_service()`
+    (Missao 55), `get_code_review_service()` (Missao 56) e
+    `get_tech_debt_manager_service()` (Missao 58): ContinuousArchitectureScoringService
+    nao depende de `db` - os cinco eixos leem ArchitectureAuditService,
+    CodeReviewService e TechDebtManagerService (todos tambem sem banco).
+    `provide()` forcaria um `db: Session` decorativo, e pior: a fabrica
+    generica passaria `db` como primeiro argumento posicional do
+    construtor, que aqui e `architecture_audit` (nao `db`) - usar
+    `provide()` quebraria a injecao de dependencia silenciosamente."""
+    return ContinuousArchitectureScoringService()
+
+
+def get_optimization_planner_service() -> AutonomousOptimizationPlannerService:
+    """Missao 128. Mesmo motivo das funcoes dedicadas acima (Missoes 55,
+    56, 58, 59, 127): AutonomousOptimizationPlannerService nao depende de
+    `db` - so de TechDebtManagerService e ContinuousArchitectureScoringService,
+    ambos tambem sem banco. `provide()` passaria `db` como primeiro
+    argumento posicional do construtor (aqui `tech_debt_manager`),
+    quebrando a injecao de dependencia silenciosamente."""
+    return AutonomousOptimizationPlannerService()
+
+
+def get_digital_twin_service() -> EngineeringDigitalTwinService:
+    """Missao 129. Mesmo motivo das funcoes dedicadas acima (Missoes 55,
+    56, 58, 59, 127, 128): EngineeringDigitalTwinService nao depende de
+    `db` - so de ContinuousArchitectureScoringService (Missao 127),
+    tambem sem banco. `provide()` passaria `db` como primeiro argumento
+    posicional do construtor (aqui `architecture_scoring`), quebrando a
+    injecao de dependencia silenciosamente."""
+    return EngineeringDigitalTwinService()
+
+
+get_strategic_evolution_council_service = provide(StrategicEvolutionCouncilService)  # Missao 130
+
+get_enterprise_excellence_certification_service = provide(EnterpriseExcellenceCertificationService)  # Missao 131

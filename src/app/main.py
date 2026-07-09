@@ -9,7 +9,7 @@ from app.db.session import engine
 from app.api.router import api_router
 from app.core.api_gateway import api_gateway_guard
 from app.core.config import get_settings
-from app.services.observability import component_health_snapshot, log_event, record_http_metric, trace_context
+from app.services.observability import component_health_snapshot, log_event, record_http_metric, schema_bootstrap_status, trace_context
 
 
 app = FastAPI(title="Projeto Automacao - Runtime Seguro", version="1.0.0-final")
@@ -127,7 +127,30 @@ def health():
             status_code=503,
             content={"ok": False, "status": "unhealthy", "database": "unavailable", "detail": database.get("detail")},
         )
-    return {"ok": True, "status": "healthy", "database": "ok", "motor": "ligado"}
+
+    # Fase Omega - Missao Omega-01A / correcao B003 (false healthy state) e
+    # B005 (versao de schema). Antes desta correcao, chegar ate aqui bastava
+    # para responder "healthy" mesmo com o banco vazio (sem nenhuma tabela) -
+    # ver RELATORIO_OMEGA_01A_BOOTSTRAP.md para a evidencia ao vivo desse bug.
+    schema = schema_bootstrap_status(engine_override=engine)
+    if schema["state"] != "healthy":
+        return JSONResponse(
+            status_code=503,
+            content={
+                "ok": False,
+                "status": schema["state"],  # "bootstrap_required" ou "degraded"
+                "database": "ok",
+                "schema": schema,
+            },
+        )
+
+    return {
+        "ok": True,
+        "status": "healthy",
+        "database": "ok",
+        "motor": "ligado",
+        "schema_version": schema["schema_version_found"],
+    }
 
 
 @app.get("/diagnostics")
