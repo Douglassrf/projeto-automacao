@@ -9,7 +9,14 @@
 #
 # Cole a saída completa no relatório O07 como evidência literal.
 
-set -e
+set -euo pipefail
+
+cleanup() {
+  if command -v docker >/dev/null 2>&1; then
+    docker compose down --remove-orphans || true
+  fi
+}
+trap cleanup EXIT
 
 echo "=== 1) Versão do Docker ==="
 docker --version
@@ -21,7 +28,7 @@ docker build -t projeto-automacao:v1.1.0 .
 
 echo ""
 echo "=== 3) Subindo os containers ==="
-docker compose up -d
+docker compose up -d --wait
 
 echo ""
 echo "=== 4) Aguardando inicialização (10s) ==="
@@ -29,11 +36,11 @@ sleep 10
 
 echo ""
 echo "=== 5) Smoke test do endpoint de saúde ==="
-curl -fsS http://localhost:8000/api/v1/health && echo "" && echo "HEALTH OK"
+curl -fsS http://localhost:8000/health && echo "" && echo "HEALTH OK"
 
 echo ""
 echo "=== 6) Testes automatizados dentro do container ==="
-docker compose exec -T api pytest -q || true
+docker compose exec -T api python scripts/ci_green_check.py --repeat 1
 
 echo ""
 echo "=== 7) Status final dos containers ==="
