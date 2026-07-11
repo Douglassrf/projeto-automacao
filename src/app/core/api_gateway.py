@@ -25,6 +25,12 @@ class ApiGatewayGuard:
     def should_bypass(self, request: Request) -> bool:
         if not self.enabled:
             return True
+        # B010 (Fase Omega / Omega-09A): endpoints de liveness/readiness (/health) nunca podem
+        # ser bloqueados por rate limit -- orquestradores (K8s, load balancer) fazem polling
+        # frequente e um 429 aqui e' lido como "instancia com falha", causando reinicio
+        # desnecessario. Padrao comum: excluir health checks do rate limiting.
+        if request.url.path == "/health":
+            return True
         user_agent = request.headers.get("user-agent", "").lower()
         return "testclient" in user_agent
 
