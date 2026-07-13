@@ -75,6 +75,38 @@ def _project_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+_VERSION_FILE = _project_root() / "VERSION"
+_APP_VERSION_CACHE: str | None = None
+_APP_VERSION_LOADED = False
+
+
+def _app_version() -> str | None:
+    # Achado Omega-11: eventos de log/auditoria nao carregavam a versao do
+    # app que os gerou (so o schema do banco tinha versao, via
+    # DB_SCHEMA_VERSION). Sem isso, um evento de auditoria lido meses depois
+    # nao permite saber qual versao do codigo o produziu -- relevante para
+    # rastreabilidade (Omega-11) e reprodutibilidade (Omega-14). Mesmo
+    # padrao ja usado em app/services/documentation_service.py
+    # (_read_version_file), sem criar camada nova: le o arquivo VERSION uma
+    # vez e reaproveita o valor (cache simples em modulo, mesmo estilo de
+    # _INITIALIZED acima).
+    global _APP_VERSION_CACHE, _APP_VERSION_LOADED
+    if _APP_VERSION_LOADED:
+        return _APP_VERSION_CACHE
+    try:
+        # utf-8-sig (nao utf-8 puro) porque o VERSION real do repositorio
+        # tem BOM (confirmado via `xxd VERSION` -> `ef bb bf 31 2e 37 2e 30`)
+        # -- sem isso, o valor viria com um caractere invisivel colado na
+        # frente (`﻿1.7.0`), corrompendo qualquer comparacao exata de
+        # versao feita a partir do campo `app_version` do log/auditoria.
+        content = _VERSION_FILE.read_text(encoding="utf-8-sig").strip()
+    except OSError:
+        content = ""
+    _APP_VERSION_CACHE = content or None
+    _APP_VERSION_LOADED = True
+    return _APP_VERSION_CACHE
+
+
 def _logs_dir() -> Path:
     path = _project_root() / "logs"
     path.mkdir(parents=True, exist_ok=True)
@@ -153,6 +185,7 @@ def log_event(
         "status": status,
         "latency_ms": round(latency_ms, 2) if latency_ms is not None else None,
         **context,
+        "app_version": _app_version(),
         "details": details or {},
     }
     _LOGGER.info(
@@ -196,6 +229,7 @@ def audit_event(
         "resource_id": resource_id,
         "status": status,
         **context,
+        "app_version": _app_version(),
         "details": details or {},
     }
     try:

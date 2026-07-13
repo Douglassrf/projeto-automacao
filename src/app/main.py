@@ -31,6 +31,26 @@ app.add_middleware(
 )
 
 
+# Fase Omega - Missao Omega-09B (Security Certification) / achado B011.
+# Cabecalhos HTTP de seguranca (OWASP Secure Headers) nao existiam em nenhuma
+# resposta da API (confirmado por busca no codigo-fonte inteiro antes desta
+# correcao). Correcao pontual dentro do middleware ja existente, sem criar
+# nova camada/arquitetura - ver BUGS_SEMANA_TESTES.md, B011.
+SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+    "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Content-Security-Policy": "default-src 'self'; frame-ancestors 'none'",
+}
+
+
+def _apply_security_headers(headers) -> None:
+    for name, value in SECURITY_HEADERS.items():
+        headers[name] = value
+
+
 def _retry_after_seconds(reset_at: str) -> str:
     try:
         reset_time = datetime.fromisoformat(reset_at)
@@ -65,7 +85,7 @@ async def observability_trace_middleware(request: Request, call_next):
             },
             **context,
         )
-        return JSONResponse(
+        rate_limited_response = JSONResponse(
             status_code=429,
             content={
                 "detail": "Rate limit excedido.",
@@ -81,6 +101,8 @@ async def observability_trace_middleware(request: Request, call_next):
                 "Retry-After": _retry_after_seconds(gateway_decision.rate_limit.reset_at),
             },
         )
+        _apply_security_headers(rate_limited_response.headers)
+        return rate_limited_response
     try:
         response = await call_next(request)
     except Exception as exc:
@@ -110,6 +132,7 @@ async def observability_trace_middleware(request: Request, call_next):
     response.headers["x-rate-limit-remaining"] = (
         str(gateway_decision.rate_limit.remaining) if gateway_decision is not None else "not-applied"
     )
+    _apply_security_headers(response.headers)
     return response
 
 

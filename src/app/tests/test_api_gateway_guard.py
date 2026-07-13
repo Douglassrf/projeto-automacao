@@ -60,5 +60,15 @@ def test_gateway_classifies_sensitive_command_by_actor():
 def test_gateway_bypasses_automated_test_client_only():
     guard = ApiGatewayGuard()
 
-    assert guard.should_bypass(_request("/health", {"user-agent": "testclient"})) is True
-    assert guard.should_bypass(_request("/health", {"user-agent": "Mozilla/5.0"})) is False
+    assert guard.should_bypass(_request("/api/v1/dashboard/summary", {"user-agent": "testclient"})) is True
+    assert guard.should_bypass(_request("/api/v1/dashboard/summary", {"user-agent": "Mozilla/5.0"})) is False
+
+
+def test_gateway_bypasses_health_endpoint_regardless_of_user_agent():
+    # B010 (Fase Omega / Omega-09A): /health nunca pode ser bloqueado por rate limit --
+    # orquestradores (K8s, load balancer) fazem polling frequente e um 429 aqui e' lido
+    # como "instancia com falha". Ver app/core/api_gateway.py::should_bypass.
+    guard = ApiGatewayGuard()
+
+    assert guard.should_bypass(_request("/health", {"user-agent": "Mozilla/5.0"})) is True
+    assert guard.should_bypass(_request("/health", {})) is True
