@@ -12,7 +12,7 @@ from uuid import uuid4
 
 import httpx
 
-from app.core.config import get_settings
+from app.core.config import ensure_writable_dir, get_settings
 from app.schemas.capi_enterprise import (
     CapiBrowserPixelPayloadRequest,
     CapiBrowserPixelPayloadResponse,
@@ -25,7 +25,7 @@ from app.schemas.capi_enterprise import (
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-LOG_DIR = PROJECT_ROOT / "logs"
+LOG_DIR = ensure_writable_dir(PROJECT_ROOT / "logs")
 CAPI_ENTERPRISE_LOG = LOG_DIR / "capi_enterprise_events.log"
 CAPI_DEDUP_LOG = LOG_DIR / "capi_event_ids.log"
 _LOCK = threading.Lock()
@@ -40,7 +40,7 @@ class CapiEnterpriseService:
 
     def __init__(self) -> None:
         self.settings = get_settings()
-        LOG_DIR.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no nivel de modulo
 
     def ingest(self, payload: CapiEnterpriseRequest) -> CapiEnterpriseResponse:
         dry_run = self._resolve_dry_run(payload.dry_run)
