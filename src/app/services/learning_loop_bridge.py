@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from app.schemas.learning_loop import CapiIngestRequest, ConversionEventInput, LearningLoopRequest
+from app.schemas.learning_loop import CapiIngestRequest, ConversionEventInput, LearningLoopRequest; from app.core.config import ensure_writable_dir
 from app.services.campaign_brain import CampaignBrainAgent
 from app.services.campaign_memory import CampaignMemoryStore
 from app.services.decision_feed_store import DecisionFeedStore
@@ -25,7 +25,7 @@ class LearningLoopBrainBridge:
         project_root = Path(__file__).resolve().parents[3]
         self.logs_dir = logs_dir or project_root / "logs"
         self.output_dir = project_root / "data" / "campaign_kits"
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir = ensure_writable_dir(self.output_dir)
         self.decision_feed = DecisionFeedStore(logs_dir=self.logs_dir)
         self.memory = CampaignMemoryStore(logs_dir=self.logs_dir)
         self.brain = CampaignBrainAgent(logs_dir=self.logs_dir)
