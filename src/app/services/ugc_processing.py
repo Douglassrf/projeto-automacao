@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-from app.services.upload_security import BLOCKED_EXTENSIONS, secure_user_filename
+from app.services.upload_security import BLOCKED_EXTENSIONS, secure_user_filename; from app.core.config import ensure_writable_dir
 
 
 class UGCProcessingError(ValueError):
@@ -96,8 +96,8 @@ class UGCEdgeProcessor:
         asset_dir = self.output_dir / asset_id
         raw_dir = asset_dir / "raw"
         processed_dir = asset_dir / "processed"
-        raw_dir.mkdir(parents=True, exist_ok=True)
-        processed_dir.mkdir(parents=True, exist_ok=True)
+        raw_dir = ensure_writable_dir(raw_dir)
+        processed_dir = ensure_writable_dir(processed_dir)
 
         raw_path = (raw_dir / safe_name).resolve()
         raw_path.write_bytes(content)
