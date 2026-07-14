@@ -7,7 +7,7 @@ UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from pathlib import Path
 from uuid import uuid4
 
-from app.core.config import get_settings, safe_project_path
+from app.core.config import ensure_writable_dir, get_settings, safe_project_path
 from app.integrations.storage_provider import CampaignKitStorageProvider
 from app.services.knowledge_engine import get_knowledge_engine
 from app.schemas.war_kit import GeneratedFileItem, WarKitRequest, WarKitResponse
@@ -49,7 +49,7 @@ class WarKitGenerator:
             "meta": kit / "Meta_Upload",
         }
         for folder in folders.values():
-            folder.mkdir(parents=True, exist_ok=True)
+            folder = ensure_writable_dir(folder)
 
         files: list[GeneratedFileItem] = []
         warnings: list[str] = []
