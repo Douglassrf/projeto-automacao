@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-from app.core.config import get_settings, safe_project_path
+from app.core.config import ensure_writable_dir, get_settings, safe_project_path
 from app.services.knowledge_engine import KnowledgeEngine
 from app.schemas.hybrid_stack import HybridStackRequest, HybridStackResponse, HybridStackStep
 
@@ -27,14 +27,14 @@ class HybridNoGpuStackPlanner:
     def __init__(self) -> None:
         self.settings = get_settings()
         self.output_root = safe_project_path(self.settings.orchestration_output_dir, "data/orchestration_runs") / "hybrid_stack"
-        self.output_root.mkdir(parents=True, exist_ok=True)
+        self.output_root = ensure_writable_dir(self.output_root)
         self.knowledge = KnowledgeEngine()
 
     def build_plan(self, payload: HybridStackRequest) -> HybridStackResponse:
         generated_at = datetime.now(timezone.utc)
         slug = _safe_slug(payload.product_name)
         output_dir = self.output_root / slug / generated_at.strftime("%Y%m%d-%H%M%S")
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         rules = self.knowledge.load("hybrid_stack_rules")
         warnings: list[str] = []
