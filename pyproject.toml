@@ -2,6 +2,28 @@
 name = "projeto-automacao"
 version = "1.1.0"
 requires-python = ">=3.11"
+dependencies = [
+"fastapi",
+"uvicorn",
+"sqlalchemy",
+"pydantic",
+"pydantic-settings",
+"PyJWT",
+"passlib",
+"bcrypt",
+"python-dotenv",
+"python-multipart",
+"email-validator",
+"httpx",
+"sentry-sdk",
+"pillow",
+"python-magic",
+"werkzeug",
+"celery",
+"requests",
+"pytest",
+"psycopg2-binary",
+]
 
 [tool.vercel]
 entrypoint = "api.index:app"
