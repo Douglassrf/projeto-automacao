@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import APIRouter
 
-from app.schemas.learning_loop import CapiIngestRequest, ConversionEventInput, LearningLoopRequest
+from app.schemas.learning_loop import CapiIngestRequest, ConversionEventInput, LearningLoopRequest; from app.core.config import ensure_writable_dir
 from app.services.learning_loop import CapiLearningLoopService
 
 
@@ -18,7 +18,7 @@ def _service_with_local_output() -> CapiLearningLoopService:
     service = CapiLearningLoopService()
     project_root = Path(__file__).resolve().parents[4]
     output_dir = project_root / "data" / "campaign_kits"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = ensure_writable_dir(output_dir)
     service.settings.kit_output_dir = str(output_dir)
     return service
 
