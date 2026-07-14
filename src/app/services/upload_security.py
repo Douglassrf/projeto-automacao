@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from uuid import uuid4
 
 try:
@@ -153,7 +153,7 @@ def validate_upload(filename: str, content: bytes, max_size_bytes: int) -> tuple
 def store_upload(filename: str, content: bytes, upload_dir: str, max_size_bytes: int) -> StoredUpload:
     safe_name, ext, detected_mime = validate_upload(filename, content, max_size_bytes)
     destination_dir = Path(upload_dir).expanduser().resolve()
-    destination_dir.mkdir(parents=True, exist_ok=True)
+    destination_dir = ensure_writable_dir(destination_dir)
 
     stored_filename = f"{uuid4().hex}{ext}"
     destination_path = (destination_dir / stored_filename).resolve()
