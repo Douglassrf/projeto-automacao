@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 
@@ -18,7 +18,7 @@ class CampaignIntelligenceSafe:
 
     def __init__(self, logs_dir: Path | None = None) -> None:
         project_root = Path(__file__).resolve().parents[3]
-        self.logs_dir = logs_dir or project_root / "logs"
+        self.logs_dir = ensure_writable_dir(logs_dir or project_root / "logs")
         self.decision_feed_file = self.logs_dir / "decision_feed.log"
         self.memory_file = self.logs_dir / "campaign_brain_memory.log"
 
