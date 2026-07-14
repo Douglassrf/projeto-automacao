@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from app.core.config import project_root
+from app.core.config import ensure_writable_dir, project_root
 from app.schemas.ads import AdAnalysisRequest
 from app.services.ad_processor import AdProcessor
 from app.services.facebook_ad_miner import FacebookAdMiner
@@ -237,7 +237,7 @@ class MinerEngine:
 
     def _write_mission28_report(self, report: dict[str, Any]) -> Path:
         reports_dir = project_root() / "logs" / "miner_controlled"
-        reports_dir.mkdir(parents=True, exist_ok=True)
+        reports_dir = ensure_writable_dir(reports_dir)
         path = reports_dir / f"{report['run_id']}.json"
         path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
         return path
