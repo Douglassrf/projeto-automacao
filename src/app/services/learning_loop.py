@@ -9,7 +9,7 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-from app.core.config import get_settings, safe_project_path
+from app.core.config import ensure_writable_dir, get_settings, safe_project_path
 from app.schemas.learning_loop import (
     CapiEventResult,
     CapiIngestRequest,
@@ -25,7 +25,7 @@ from app.services.decision_feed_store import DecisionFeedStore
 from app.services.observability import audit_event, log_event
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-LOG_DIR = PROJECT_ROOT / "logs"
+LOG_DIR = ensure_writable_dir(PROJECT_ROOT / "logs")
 CAPI_LOG = LOG_DIR / "capi_events.log"
 LEARNING_LOG = LOG_DIR / "learning_loop.log"
 _LOCK = threading.Lock()
@@ -43,7 +43,7 @@ class CapiLearningLoopService:
         self.brain = CampaignBrainAgent()
         self.memory = CampaignMemoryStore()
         self.decision_feed = DecisionFeedStore()
-        LOG_DIR.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no nivel de modulo
 
     def ingest_capi_events(self, payload: CapiIngestRequest) -> CapiIngestResponse:
         results: list[CapiEventResult] = []
@@ -261,7 +261,7 @@ class CapiLearningLoopService:
 
     def _write_learning_output(self, payload: LearningLoopRequest, winners: list[WinnerInsight], variations: list[GeneratedVariation]) -> str:
         root = safe_project_path(self.settings.kit_output_dir, "data/campaign_kits") / "Learning_Loop" / payload.product_name.replace(" ", "_")
-        root.mkdir(parents=True, exist_ok=True)
+        root = ensure_writable_dir(root)
         data = {
             "product_name": payload.product_name,
             "generated_at": datetime.now(UTC).isoformat(),
