@@ -13,7 +13,7 @@ from uuid import uuid4
 
 import httpx
 
-from app.core.config import get_settings, safe_project_path
+from app.core.config import ensure_writable_dir, get_settings, safe_project_path
 from app.schemas.video_pipeline import VideoRenderRequest, VideoRenderResponse
 
 
@@ -67,7 +67,7 @@ class VideoRenderPipeline:
         slug = _safe_slug(payload.product_name)
         render_id = f"{slug}-{payload.model.lower()}-{now.strftime('%Y%m%d-%H%M%S')}-{uuid4().hex[:6]}"
         output_dir = safe_project_path(self.settings.kit_output_dir, "data/campaign_kits") / "Video_Renders" / render_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         script_file = output_dir / "script.md"
         audio_file = output_dir / "voiceover.wav"
