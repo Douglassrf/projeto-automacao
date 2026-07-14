@@ -11,7 +11,7 @@ from uuid import uuid4
 
 from PIL import Image, ImageDraw, ImageFilter
 
-from app.core.config import get_settings, safe_project_path
+from app.core.config import ensure_writable_dir, get_settings, safe_project_path
 from app.schemas.premium_render import PremiumRenderRequest, PremiumRenderResponse, WorkerBlueprintResponse
 from app.services.observability import log_event, observability_health, timed_event
 
@@ -48,7 +48,7 @@ class PremiumRenderPipeline:
         now = datetime.now(UTC)
         render_id = f"{_slug(payload.product_name)}-{payload.asset_type}-{now.strftime('%Y%m%d-%H%M%S')}-{uuid4().hex[:6]}"
         output_dir = _safe_output_root(self.settings.premium_render_output_dir) / render_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         worker_payload_file = output_dir / "worker_payload.json"
         worker_payload_file.write_text(json.dumps(payload.model_dump(), ensure_ascii=False, indent=2), encoding="utf-8")
