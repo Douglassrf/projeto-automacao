@@ -4,7 +4,7 @@ import json
 import threading
 from datetime import datetime, timezone
 UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 
@@ -24,7 +24,7 @@ class CampaignMemoryStore:
 
     def __init__(self, logs_dir: Path | None = None) -> None:
         project_root = Path(__file__).resolve().parents[3]
-        self.logs_dir = logs_dir or project_root / "logs"
+        self.logs_dir = ensure_writable_dir(logs_dir or project_root / "logs")
         self.memory_file = self.logs_dir / "campaign_brain_memory.log"
 
     def remember(self, record: dict[str, Any]) -> dict[str, Any]:
