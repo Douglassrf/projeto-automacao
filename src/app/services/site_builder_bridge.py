@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from app.schemas.site_builder import SiteGenerateRequest
+from app.schemas.site_builder import SiteGenerateRequest; from app.core.config import ensure_writable_dir
 from app.services.campaign_brain import CampaignBrainAgent
 from app.services.campaign_memory import CampaignMemoryStore
 from app.services.decision_feed_store import DecisionFeedStore
@@ -37,7 +37,7 @@ class SiteBuilderBridge:
         self.project_root = project_root
         self.logs_dir = logs_dir or project_root / "logs"
         self.output_root = project_root / "data" / "campaign_kits" / "SiteBuilderSafe"
-        self.output_root.mkdir(parents=True, exist_ok=True)
+        self.output_root = ensure_writable_dir(self.output_root)
         self.decision_feed = DecisionFeedStore(logs_dir=self.logs_dir)
         self.memory = CampaignMemoryStore(logs_dir=self.logs_dir)
         self.brain = CampaignBrainAgent(logs_dir=self.logs_dir)
@@ -85,7 +85,7 @@ class SiteBuilderBridge:
         offer = payload.offer
         site_id = f"{_slug(offer.product_name)}-{uuid4().hex[:8]}"
         output_dir = self.output_root / site_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         index_file = output_dir / "index.html"
         css_file = output_dir / "styles.css"
