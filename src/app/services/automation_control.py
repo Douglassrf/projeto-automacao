@@ -8,7 +8,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.core.config import get_settings
+from app.core.config import ensure_writable_dir, get_settings
 from app.integrations.meta_marketing import MetaMarketingClient, MetaMarketingError
 from app.repositories.decision_log_repository import DecisionLogRepository
 from app.schemas.automation_control import (
@@ -21,7 +21,7 @@ from app.schemas.decision_logs import DecisionLogCreate
 from app.services.observability import immutable_audit_event
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-RUNTIME_DIR = PROJECT_ROOT / "data" / "runtime"
+RUNTIME_DIR = ensure_writable_dir(PROJECT_ROOT / "data" / "runtime")
 KILL_SWITCH_FILE = RUNTIME_DIR / "kill_switch.json"
 
 LEVEL_DESCRIPTIONS = {
@@ -159,7 +159,7 @@ class AutomationControlService:
         )
 
     def set_kill_switch(self, enabled: bool, reason: str) -> KillSwitchResponse:
-        RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no nivel de modulo
         payload = {"enabled": enabled, "changed_at": datetime.now(UTC).isoformat(), "reason": reason}
         KILL_SWITCH_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
         return KillSwitchResponse(enabled=enabled, changed_at=datetime.fromisoformat(payload["changed_at"]), reason=reason)
