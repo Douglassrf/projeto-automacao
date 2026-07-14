@@ -12,7 +12,7 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from app.core.config import get_settings
+from app.core.config import ensure_writable_dir, get_settings
 from app.services.campaign_brain import CampaignBrainAgent
 from app.services.campaign_memory import CampaignMemoryStore
 from app.services.decision_feed_store import DecisionFeedStore
@@ -35,7 +35,7 @@ def _project_root() -> Path:
 
 def _reports_dir() -> Path:
     path = _project_root() / "logs" / "load_tests"
-    path.mkdir(parents=True, exist_ok=True)
+    path = ensure_writable_dir(path)
     return path
 
 
