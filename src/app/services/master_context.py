@@ -4,7 +4,7 @@ import json
 import threading
 from datetime import datetime, timezone
 UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 
@@ -73,7 +73,7 @@ class MasterContextStore:
 
     def __init__(self, logs_dir: Path | None = None) -> None:
         project_root = Path(__file__).resolve().parents[3]
-        self.logs_dir = logs_dir or project_root / "logs"
+        self.logs_dir = ensure_writable_dir(logs_dir or project_root / "logs")
         self.context_file = self.logs_dir / "master_context.json"
         self.history_file = self.logs_dir / "master_context_history.log"
         self.decision_feed_file = self.logs_dir / "decision_feed.log"
@@ -91,7 +91,7 @@ class MasterContextStore:
         }
 
     def ensure_initialized(self) -> dict[str, Any]:
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no __init__
         if not self.context_file.exists():
             payload = dict(self.DEFAULT_CONTEXT)
             payload["created_at"] = datetime.now(UTC).isoformat()
@@ -101,7 +101,7 @@ class MasterContextStore:
         return self.snapshot()
 
     def update(self, patch: dict[str, Any]) -> dict[str, Any]:
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no __init__
         current = self._read_context() or dict(self.DEFAULT_CONTEXT)
         before = dict(current)
         for key, value in (patch or {}).items():
@@ -186,12 +186,12 @@ class MasterContextStore:
             return None
 
     def _write_context(self, payload: dict[str, Any]) -> None:
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no __init__
         with _LOCK:
             self.context_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     def _append_history(self, payload: dict[str, Any]) -> None:
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no __init__
         record = dict(payload)
         record.setdefault("recorded_at", datetime.now(UTC).isoformat())
         with _LOCK:
