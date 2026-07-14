@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from app.schemas.orchestration import OrchestrationRequest, OrchestrationResponse, OrchestrationStep
+from app.schemas.orchestration import OrchestrationRequest, OrchestrationResponse, OrchestrationStep; from app.core.config import ensure_writable_dir
 from app.services.campaign_brain import CampaignBrainAgent
 from app.services.campaign_memory import CampaignMemoryStore
 from app.services.content_orchestrator_bridge import ContentOrchestratorBridge
@@ -36,7 +36,7 @@ class OrchestrationPipelineSafe:
         self.project_root = project_root
         self.logs_dir = logs_dir or project_root / "logs"
         self.output_root = project_root / "data" / "campaign_kits" / "OrchestrationSafe"
-        self.output_root.mkdir(parents=True, exist_ok=True)
+        self.output_root = ensure_writable_dir(self.output_root)
 
         self.master_context = MasterContextStore()
         self.decision_feed = DecisionFeedStore(logs_dir=self.logs_dir)
@@ -98,7 +98,7 @@ class OrchestrationPipelineSafe:
         product = payload.product
         run_id = f"{self._slug(product.product_name)}-{now.strftime('%Y%m%d-%H%M%S')}-{uuid4().hex[:6]}"
         output_dir = self.output_root / run_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         steps: list[OrchestrationStep] = []
         warnings: list[str] = []
