@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 
@@ -21,7 +21,7 @@ def inject_dynamic_content(
 
 def save_to_deploy_folder(site_content: str, output_dir: str | Path = "deploy") -> Path:
     deploy_dir = Path(output_dir)
-    deploy_dir.mkdir(parents=True, exist_ok=True)
+    deploy_dir = ensure_writable_dir(deploy_dir)
     output_path = deploy_dir / "index.html"
     output_path.write_text(site_content, encoding="utf-8")
     return output_path
