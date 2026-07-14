@@ -109,8 +109,14 @@ def _app_version() -> str | None:
 
 def _logs_dir() -> Path:
     path = _project_root() / "logs"
-    path.mkdir(parents=True, exist_ok=True)
-    return path
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+    except OSError:
+        import tempfile
+        fallback = Path(tempfile.gettempdir()) / "projeto_automacao_logs"
+        fallback.mkdir(parents=True, exist_ok=True)
+        return fallback
 
 
 def _log_file() -> Path:
