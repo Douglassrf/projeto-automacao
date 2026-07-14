@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from app.schemas.premium_render import PremiumRenderRequest
+from app.schemas.premium_render import PremiumRenderRequest; from app.core.config import ensure_writable_dir
 from app.services.campaign_brain import CampaignBrainAgent
 from app.services.campaign_memory import CampaignMemoryStore
 from app.services.decision_feed_store import DecisionFeedStore
@@ -30,7 +30,7 @@ class PremiumRenderBridge:
         self.project_root = project_root
         self.logs_dir = logs_dir or project_root / "logs"
         self.output_root = project_root / "data" / "campaign_kits" / "PremiumRenderSafe"
-        self.output_root.mkdir(parents=True, exist_ok=True)
+        self.output_root = ensure_writable_dir(self.output_root)
         self.decision_feed = DecisionFeedStore(logs_dir=self.logs_dir)
         self.memory = CampaignMemoryStore(logs_dir=self.logs_dir)
         self.brain = CampaignBrainAgent(logs_dir=self.logs_dir)
@@ -68,7 +68,7 @@ class PremiumRenderBridge:
         now = datetime.now(UTC)
         render_id = f"{payload.product_name.lower().replace(' ', '-')}-{payload.asset_type}-{uuid4().hex[:8]}"
         output_dir = self.output_root / render_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         forced_payload = payload.model_dump(mode="json")
         forced_payload.update({
