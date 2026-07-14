@@ -3,17 +3,17 @@ from __future__ import annotations
 import json
 import threading
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-LOG_DIR = PROJECT_ROOT / "logs"
+LOG_DIR = ensure_writable_dir(PROJECT_ROOT / "logs")
 AFFILIATE_ACTIVITY_LOG = LOG_DIR / "affiliate_activity.log"
 _LOG_LOCK = threading.Lock()
 
 
 def ensure_log_file() -> None:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    pass  # ja garantido no nivel de modulo
     AFFILIATE_ACTIVITY_LOG.touch(exist_ok=True)
 
 
