@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-from app.core.config import get_settings, safe_project_path
+from app.core.config import ensure_writable_dir, get_settings, safe_project_path
 from app.schemas.zero_cost_stack import ZeroCostStackArtifact, ZeroCostStackRequest, ZeroCostStackResponse
 from app.services.knowledge_engine import KnowledgeEngine
 
@@ -28,12 +28,12 @@ class ZeroCostStackPlanner:
         self.settings = get_settings()
         self.knowledge = KnowledgeEngine()
         self.output_root = safe_project_path(self.settings.orchestration_output_dir, "data/orchestration_runs") / "zero_cost_stack"
-        self.output_root.mkdir(parents=True, exist_ok=True)
+        self.output_root = ensure_writable_dir(self.output_root)
 
     def build(self, payload: ZeroCostStackRequest) -> ZeroCostStackResponse:
         generated_at = datetime.now(timezone.utc)
         output_dir = self.output_root / _slug(payload.product_name) / generated_at.strftime("%Y%m%d-%H%M%S")
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         rules = self.knowledge.load("zero_cost_stack_rules")
         warnings = self._warnings(payload)
