@@ -7,7 +7,7 @@ UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from pathlib import Path
 from uuid import uuid4
 
-from app.core.config import get_settings, safe_project_path
+from app.core.config import ensure_writable_dir, get_settings, safe_project_path
 from app.schemas.serverless_render import ServerlessRenderRequest, ServerlessRenderJobResponse
 
 
@@ -31,7 +31,7 @@ class ServerlessRenderPlanner:
         now = datetime.now(UTC)
         job_id = f"srv-{_slug(payload.product_name)}-{payload.asset_type}-{uuid4().hex[:8]}"
         output_dir = safe_project_path(self.settings.orchestration_output_dir, "data/orchestration_runs") / "serverless_render_jobs" / job_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         base_payload = self._base_payload(payload, job_id, now)
         queue_file = output_dir / "queue_payload.json"
