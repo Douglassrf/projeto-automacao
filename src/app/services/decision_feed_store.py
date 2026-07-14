@@ -4,7 +4,7 @@ import json
 import threading
 from datetime import datetime, timezone
 UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 
@@ -24,7 +24,7 @@ class DecisionFeedStore:
 
     def __init__(self, logs_dir: Path | None = None) -> None:
         project_root = Path(__file__).resolve().parents[3]
-        self.logs_dir = logs_dir or project_root / "logs"
+        self.logs_dir = ensure_writable_dir(logs_dir or project_root / "logs")
         self.feed_file = self.logs_dir / "decision_feed.log"
 
     def health(self) -> dict[str, Any]:
@@ -58,7 +58,7 @@ class DecisionFeedStore:
             "recommended_solution": review.get("recommended_solution", ""),
             "memory_used_keys": sorted(list((review.get("memory_used") or {}).keys())),
         }
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no __init__
         with _LOCK:
             with self.feed_file.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -107,7 +107,7 @@ class DecisionFeedStore:
                 "output_folder": loop_result.get("output_folder"),
             },
         }
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no __init__
         with _LOCK:
             with self.feed_file.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, ensure_ascii=False) + "\n")
