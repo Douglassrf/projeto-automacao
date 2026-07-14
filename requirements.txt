@@ -17,3 +17,4 @@ werkzeug
 celery
 requests
 pytest
+psycopg2-binary
