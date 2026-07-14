@@ -10,7 +10,7 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from app.core.config import get_settings
+from app.core.config import ensure_writable_dir, get_settings
 from app.integrations.affiliate_provider import AffiliateProvider
 from app.integrations.meta_marketing import MetaMarketingClient, MetaMarketingError
 from app.services.campaign_brain import CampaignBrainAgent
@@ -31,7 +31,7 @@ from app.schemas.meta_operator import (
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-LOG_DIR = PROJECT_ROOT / "logs"
+LOG_DIR = ensure_writable_dir(PROJECT_ROOT / "logs")
 OPERATOR_LOG = LOG_DIR / "meta_campaign_operator.log"
 _LOG_LOCK = threading.Lock()
 META_ENVIRONMENTS = {"sandbox", "test_account", "production"}
@@ -1039,7 +1039,7 @@ class MetaCampaignOperator:
             "ad_id": meta_result.get("ad_id"),
         }
         path = Path(self.settings.meta_created_resources_log)
-        path.parent.mkdir(parents=True, exist_ok=True)
+        path = ensure_writable_dir(path.parent) / path.name
         with _LOG_LOCK:
             with path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -1057,7 +1057,7 @@ class MetaCampaignOperator:
         return records
 
     def _write_log(self, record: dict[str, Any]) -> None:
-        LOG_DIR.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no nivel de modulo
         with _LOG_LOCK:
             with OPERATOR_LOG.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, ensure_ascii=False) + "\n")
