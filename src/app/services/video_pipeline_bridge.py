@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from app.schemas.video_pipeline import VideoRenderRequest
+from app.schemas.video_pipeline import VideoRenderRequest; from app.core.config import ensure_writable_dir
 from app.services.campaign_brain import CampaignBrainAgent
 from app.services.campaign_memory import CampaignMemoryStore
 from app.services.decision_feed_store import DecisionFeedStore
@@ -32,7 +32,7 @@ class VideoPipelineBridge:
         self.project_root = project_root
         self.logs_dir = logs_dir or project_root / "logs"
         self.output_root = project_root / "data" / "campaign_kits" / "VideoPipelineSafe"
-        self.output_root.mkdir(parents=True, exist_ok=True)
+        self.output_root = ensure_writable_dir(self.output_root)
         self.decision_feed = DecisionFeedStore(logs_dir=self.logs_dir)
         self.memory = CampaignMemoryStore(logs_dir=self.logs_dir)
         self.brain = CampaignBrainAgent(logs_dir=self.logs_dir)
@@ -75,7 +75,7 @@ class VideoPipelineBridge:
         now = datetime.now(UTC)
         render_id = f"{payload.product_name.lower().replace(' ', '-')}-{payload.model.lower()}-{uuid4().hex[:8]}"
         output_dir = self.output_root / render_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = ensure_writable_dir(output_dir)
 
         script_file = output_dir / "script.md"
         storyboard_file = output_dir / "storyboard.json"
