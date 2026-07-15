@@ -65,13 +65,8 @@ _CONFIG_PROFILES_PATH = "src/app/core/config_profiles.py"
 def _run_git(args: list[str]) -> str:
     """Comando git real, somente-leitura - mesmo padrao das Missoes
     57/58/59/60/122."""
-    result = subprocess.run(
-        ["git", *args],
-        cwd=project_root(),
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    try: result = subprocess.run(["git", *args], cwd=project_root(), capture_output=True, text=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError): return ""
     return result.stdout
 
 
