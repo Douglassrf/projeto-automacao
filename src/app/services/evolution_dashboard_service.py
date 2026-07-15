@@ -72,8 +72,8 @@ def _run_git(args: list[str]) -> str:
     (checkout, reset, push, commit) - leitura pura. Falha visivel: se o
     comando git falhar, `subprocess.run(check=True)` levanta
     `CalledProcessError` - nunca engolido em silencio."""
-        try: result = subprocess.run(["git", *args], cwd=project_root(), capture_output=True, text=True, check=True)
-        except (subprocess.CalledProcessError, FileNotFoundError, OSError): return ""
+    try: result = subprocess.run(["git", *args], cwd=project_root(), capture_output=True, text=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError): return ""
     return result.stdout
 
 
