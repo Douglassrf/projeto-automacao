@@ -4,7 +4,7 @@ import json
 import threading
 from datetime import datetime, timezone
 UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 
@@ -33,7 +33,7 @@ class MetaUpdateWatcher:
 
     def __init__(self, logs_dir: Path | None = None) -> None:
         project_root = Path(__file__).resolve().parents[3]
-        self.logs_dir = logs_dir or project_root / "logs"
+        self.logs_dir = ensure_writable_dir(logs_dir or project_root / "logs")
         self.update_file = self.logs_dir / "meta_updates.log"
 
     def health(self) -> dict[str, Any]:
@@ -50,7 +50,7 @@ class MetaUpdateWatcher:
 
     def register_update(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Registra uma atualização de política/plataforma em memória local."""
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        pass  # ja garantido no __init__
         record = {
             "id": payload.get("id") or self._make_id(payload),
             "date": payload.get("date") or datetime.now(UTC).date().isoformat(),
