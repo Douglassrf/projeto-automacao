@@ -73,3 +73,12 @@ def safe_project_path(configured_dir: str, fallback_relative: str) -> Path:
         fallback = project_root() / fallback_relative
         fallback.mkdir(parents=True, exist_ok=True)
         return fallback
+
+def ensure_writable_dir(path: str | Path) -> Path:
+    target = Path(path)
+    try: target.mkdir(parents=True, exist_ok=True); probe = target / ".write_probe"; probe.write_text("ok", encoding="utf-8"); probe.unlink(missing_ok=True); return target
+    except OSError:
+        import tempfile
+        try: relative = target.resolve().relative_to(project_root())
+        except ValueError: relative = Path(target.name)
+        fallback = Path(tempfile.gettempdir()) / "projeto_automacao_runtime" / relative; fallback.mkdir(parents=True, exist_ok=True); return fallback
