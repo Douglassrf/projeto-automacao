@@ -70,10 +70,8 @@ def safe_project_path(configured_dir: str, fallback_relative: str) -> Path:
         probe.unlink(missing_ok=True)
         return configured
     except OSError:
-        fallback = project_root() / fallback_relative
-        fallback.mkdir(parents=True, exist_ok=True)
-        return fallback
-
+        return ensure_writable_dir(project_root() / fallback_relative)
+        
 def ensure_writable_dir(path: str | Path) -> Path:
     target = Path(path)
     try: target.mkdir(parents=True, exist_ok=True); probe = target / ".write_probe"; probe.write_text("ok", encoding="utf-8"); probe.unlink(missing_ok=True); return target
