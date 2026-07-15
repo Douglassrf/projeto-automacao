@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
+
+_logger = logging.getLogger("adintelligence.upload_security")
 
 try:
     import magic  # type: ignore
@@ -150,10 +153,38 @@ def validate_upload(filename: str, content: bytes, max_size_bytes: int) -> tuple
     return safe_name, ext, detected_mime
 
 
+def _resolve_writable_upload_dir(upload_dir: str) -> Path:
+    """Resolve UPLOAD_DIR com fallback seguro se o caminho configurado nao for gravavel.
+
+    BUGFIX (homologacao real / Etapa 1): o default de UPLOAD_DIR e "/data/uploads",
+    que nao existe e nao e gravavel em ambientes serverless (Vercel) nem neste
+    sandbox de testes (PermissionError: [Errno 13] Permission denied: '/data').
+    O comportamento anterior deixava esse erro estourar sem tratamento (500 na
+    rota de upload). Este fallback segue o mesmo padrao ja usado em
+    app.core.config.safe_project_path: tenta o diretorio configurado primeiro
+    (respeita UPLOAD_DIR se o operador configurou algo gravavel de verdade) e,
+    se falhar, cai para um diretorio gravavel dentro do projeto.
+    """
+    configured = Path(upload_dir).expanduser().resolve()
+    try:
+        configured.mkdir(parents=True, exist_ok=True)
+        probe = configured / ".write_probe"
+        probe.write_text("ok", encoding="utf-8")
+        probe.unlink(missing_ok=True)
+        return configured
+    except OSError as exc:
+        fallback = Path(__file__).resolve().parents[3] / "data" / "uploads_fallback"
+        fallback.mkdir(parents=True, exist_ok=True)
+        _logger.warning(
+            "upload_dir_fallback_used",
+            extra={"configured_dir": str(configured), "fallback_dir": str(fallback), "reason": str(exc)},
+        )
+        return fallback
+
+
 def store_upload(filename: str, content: bytes, upload_dir: str, max_size_bytes: int) -> StoredUpload:
     safe_name, ext, detected_mime = validate_upload(filename, content, max_size_bytes)
-    destination_dir = Path(upload_dir).expanduser().resolve()
-    destination_dir.mkdir(parents=True, exist_ok=True)
+    destination_dir = _resolve_writable_upload_dir(upload_dir)
 
     stored_filename = f"{uuid4().hex}{ext}"
     destination_path = (destination_dir / stored_filename).resolve()
