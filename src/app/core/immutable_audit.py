@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
-from pathlib import Path
+from pathlib import Path; from app.core.config import ensure_writable_dir
 from typing import Any
 
 
@@ -27,7 +27,7 @@ class ImmutableAuditVerification:
 class ImmutableAuditLog:
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path = ensure_writable_dir(self.path.parent) / self.path.name
 
     def append(self, event: dict[str, Any]) -> dict[str, Any]:
         previous_hash = self.last_hash()
