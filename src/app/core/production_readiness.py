@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from app.core.config import get_settings, project_root
+from app.core.config import ensure_writable_dir, get_settings, project_root
 from app.services.observability import immutable_audit_event, metrics_snapshot, observability_health, component_health_snapshot
 
 UTC = timezone.utc
@@ -88,7 +88,7 @@ def backup_sqlite(database_url: str | None = None, backup_dir: Path | None = Non
     settings = get_settings()
     db_path = _sqlite_path(database_url or settings.database_url)
     target_dir = backup_dir or Path(settings.backup_dir)
-    target_dir.mkdir(parents=True, exist_ok=True)
+    target_dir = ensure_writable_dir(target_dir)
     timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     raw_backup = target_dir / f"sqlite-{timestamp}.db"
     gz_backup = target_dir / f"sqlite-{timestamp}.db.gz"
@@ -129,7 +129,7 @@ def verify_sqlite_integrity(db_file: Path) -> dict[str, Any]:
 
 
 def restore_sqlite(backup_file: Path, destination: Path) -> dict[str, Any]:
-    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination = ensure_writable_dir(destination.parent) / destination.name
     tmp = destination.with_suffix(destination.suffix + ".restore_tmp")
     with gzip.open(backup_file, "rb") as src, tmp.open("wb") as dst:
         shutil.copyfileobj(src, dst)
