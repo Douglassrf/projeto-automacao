@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.services.master_context import MasterContextStore
 
@@ -33,8 +33,10 @@ def update(payload: dict):
 
 @router.post("/record-mission")
 def record_mission(payload: dict):
+    try: mission_number = int(payload.get("mission_number"))
+    except (TypeError, ValueError): raise HTTPException(status_code=422, detail="mission_number e obrigatorio e deve ser um numero inteiro.")
     return MasterContextStore().record_mission(
-        mission_number=int(payload.get("mission_number")),
+                mission_number=mission_number,
         title=str(payload.get("title") or ""),
         status=str(payload.get("status") or "ok"),
         summary=str(payload.get("summary") or ""),
