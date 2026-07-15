@@ -66,15 +66,8 @@ def _run_git(args: list[str]) -> str:
     """Roda um comando git real e somente-leitura. Mesmo padrao das
     Missoes 57/58/59/60 - falha visivel via `CalledProcessError`, nunca
     engolida em silencio."""
-    result = subprocess.run(
-        ["git", *args],
-        cwd=project_root(),
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    return result.stdout
-
+    try: result = subprocess.run(["git", *args], cwd=project_root(), capture_output=True, text=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError): return ""
 
 class EngineeringMemoryCoreService:
     """Missao 122. Depende de `db` porque `AlertService` (Missao 46)
