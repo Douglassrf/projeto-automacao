@@ -66,13 +66,8 @@ _DEBT_RULES = frozenset(_RULE_WEIGHT)
 
 
 def _run_git(args: list[str]) -> str:
-    result = subprocess.run(
-        ["git", *args],
-        cwd=project_root(),
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    try: result = subprocess.run(["git", *args], cwd=project_root(), capture_output=True, text=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError): return ""
     return result.stdout
 
 
