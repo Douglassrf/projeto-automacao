@@ -44,6 +44,11 @@ def test_level_zero_blocks_real_action_and_logs_decision(monkeypatch):
     # este teste quer isolar. Sobe o teto so para este teste, sem mexer no
     # guardrail de producao nem no default seguro da classe (50.0).
     monkeypatch.setenv("AUTOMATION_DAILY_SPEND_LIMIT_BRL", "999")
+    # get_settings.cache_clear() abaixo cria um Settings() novo a partir do
+    # ambiente - sem isto, o fixture autouse disable_auth_for_legacy_smoke_tests
+    # perde efeito e a rota volta a exigir auth (401), ja que o CI roda com
+    # AUTH_REQUIRED=true.
+    monkeypatch.setenv("AUTH_REQUIRED", "false")
     get_settings.cache_clear()
     try:
         with TestClient(app) as client:
@@ -66,6 +71,10 @@ def test_notify_only_is_allowed_in_level_zero(monkeypatch):
     # Mesmo motivo do teste anterior: isola do limite conservador de
     # AUTOMATION_DAILY_SPEND_LIMIT_BRL=6 do .env.example.
     monkeypatch.setenv("AUTOMATION_DAILY_SPEND_LIMIT_BRL", "999")
+    # Mesmo motivo do teste anterior: get_settings.cache_clear() cria um
+    # Settings() novo a partir do ambiente, undoing o fixture autouse
+    # disable_auth_for_legacy_smoke_tests (CI roda com AUTH_REQUIRED=true).
+    monkeypatch.setenv("AUTH_REQUIRED", "false")
     get_settings.cache_clear()
     try:
         with TestClient(app) as client:
@@ -85,6 +94,10 @@ def test_kill_switch_blocks_notify_only_when_enabled(monkeypatch):
     # ligado, inclusive notify_only (que só registra log, nunca toca a Meta).
     # Comportamento mais conservador, mantido de propósito — não é bug.
     monkeypatch.setenv("KILL_SWITCH_ENABLED", "true")
+    # Mesmo motivo dos testes acima: get_settings.cache_clear() cria um
+    # Settings() novo a partir do ambiente, undoing o fixture autouse
+    # disable_auth_for_legacy_smoke_tests (CI roda com AUTH_REQUIRED=true).
+    monkeypatch.setenv("AUTH_REQUIRED", "false")
     get_settings.cache_clear()
     try:
         with TestClient(app) as client:
