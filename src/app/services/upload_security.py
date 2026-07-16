@@ -1,12 +1,24 @@
 from __future__ import annotations
 
 import os
+import platform
 import re
 from dataclasses import dataclass
 from pathlib import Path; from app.core.config import ensure_writable_dir
 from uuid import uuid4
 
 try:
+    # No Windows, o wheel puro-Python de `python-magic` depende de um
+    # libmagic.dll que normalmente nao esta presente (precisaria de
+    # `python-magic-bin`) - quando ausente/incompativel, o carregamento
+    # nativo da DLL pode terminar em STATUS_ACCESS_VIOLATION
+    # (0xC0000005), um crash real da CPython que nenhum `except Exception`
+    # em Python consegue capturar (nao e uma excecao Python, e uma falha
+    # de acesso a memoria no processo). Por isso nem tentamos importar no
+    # Windows - o fallback abaixo (`magic = None`) ja e o caminho
+    # suportado e testado para "sem libmagic disponivel".
+    if platform.system() == "Windows":
+        raise ImportError("magic desabilitado no Windows - libmagic nativo instavel/ausente")
     import magic  # type: ignore
 except Exception:  # pragma: no cover - fallback for systems without libmagic
     magic = None
