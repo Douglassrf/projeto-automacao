@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import faulthandler
 import os
-import sys
 from pathlib import Path
 
 import pytest
@@ -12,13 +10,6 @@ def pytest_configure(config):
     """Expose repository test shims before collection in locked-down runners."""
     tools_dir = Path(__file__).resolve().parent / "tools"
     os.environ["PATH"] = f"{tools_dir}{os.pathsep}{os.environ.get('PATH', '')}"
-    # Diagnostico do hang silencioso no runner Windows do CI (ci_green_check.py
-    # mata o processo apos 1800s sem NENHUMA linha de saida, mesmo com
-    # PYTHONUNBUFFERED=1 - ver commit a9cc7a6). Dump periodico de todas as
-    # threads a cada 60s revela onde o processo esta preso de fato (collection
-    # vs. um teste especifico), coisa que nenhum log do runner consegue ver -
-    # PYTHONFAULTHANDLER=1 sozinho so cobre sinais fatais, nao travamentos.
-    faulthandler.dump_traceback_later(60, repeat=True, file=sys.stderr)
 
 
 def pytest_collection_modifyitems(config, items):
