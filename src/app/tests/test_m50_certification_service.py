@@ -90,10 +90,10 @@ def test_certify_uses_real_dependency_audit_repo_state():
     try:
         snapshot = CertificationService(db).certify()
         dep = snapshot["dependency_audit_summary"]
-        # Mesmo estado real verificado na Missao 49: 19 dependencias
+        # Mesmo estado real verificado na Missao 49: 20 dependencias
         # declaradas, nenhuma fixada.
-        assert dep["total_declared"] == 19
-        assert dep["unpinned_count"] == 19
+        assert dep["total_declared"] == 20
+        assert dep["unpinned_count"] == 20
         # Falta de pin e informativo (Missao 49) - nunca aparece como
         # bloqueante na certificacao Platinum.
         assert not any("sem versão fixa" in issue for issue in snapshot["blocking_issues"])
@@ -376,7 +376,7 @@ def test_certification_live_endpoint_returns_expected_shape():
     assert "platinum_certified" in body
     assert "blocking_issues" in body
     assert len(body["missions_covered"]) == 9
-    assert body["dependency_audit_summary"]["total_declared"] == 19
+    assert body["dependency_audit_summary"]["total_declared"] == 20
 
 
 def test_certification_markdown_endpoint_returns_text_markdown():

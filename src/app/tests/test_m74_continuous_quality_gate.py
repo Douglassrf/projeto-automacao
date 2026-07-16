@@ -35,7 +35,7 @@ def test_technical_debt_uses_dependency_audit():
     db = SessionLocal()
     try:
         debt = ContinuousQualityService(db)._technical_debt_indicators()
-        assert debt["unpinned_dependencies"] == 19
+        assert debt["unpinned_dependencies"] == 20
         assert debt["missing_dependencies"] == 0
     finally:
         db.close()

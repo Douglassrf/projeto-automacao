@@ -1,8 +1,8 @@
 """Missao 49 - Auditoria de Dependencias.
 
 Justificativa real coberta por estes testes: `requirements.txt` deste
-repositorio declara 19 dependencias e nenhuma delas tem versao fixa
-(`==`) - 19/19, 100% sem pin. `DependencyAuditService` le esse arquivo em
+repositorio declara 20 dependencias e nenhuma delas tem versao fixa
+(`==`) - 20/20, 100% sem pin. `DependencyAuditService` le esse arquivo em
 tempo real, classifica cada linha como fixada/nao-fixada via
 `packaging.requirements.Requirement`, cruza com a versao de fato
 instalada via `importlib.metadata` (sem chamadas de rede) e expõe o
@@ -51,9 +51,9 @@ def test_parse_requirements_text_flags_invalid_lines_with_parse_error():
 
 def test_audit_reads_real_requirements_file_and_finds_zero_pins():
     snapshot = DependencyAuditService().audit()
-    assert snapshot["total_declared"] == 19
+    assert snapshot["total_declared"] == 20
     assert snapshot["pinned_count"] == 0
-    assert snapshot["unpinned_count"] == 19
+    assert snapshot["unpinned_count"] == 20
     assert snapshot["missing_count"] == 0
 
 
@@ -77,7 +77,7 @@ def test_audit_suppresses_unpinned_issues_when_flag_disabled():
         snapshot = DependencyAuditService(settings).audit()
         assert not any("sem versão fixa" in issue for issue in snapshot["issues"])
         # a lista bruta de dependencias continua mostrando o estado real
-        assert snapshot["unpinned_count"] == 19
+        assert snapshot["unpinned_count"] == 20
     finally:
         settings.dependency_audit_warn_on_unpinned = previous
 
@@ -173,10 +173,10 @@ def test_live_endpoint_returns_expected_shape():
     response = client.get("/api/v1/dependency-audit/live")
     assert response.status_code == 200
     body = response.json()
-    assert body["total_declared"] == 19
+    assert body["total_declared"] == 20
     assert "dependencies" in body
     assert isinstance(body["dependencies"], list)
-    assert len(body["dependencies"]) == 19
+    assert len(body["dependencies"]) == 20
 
 
 def test_live_endpoint_includes_fastapi_as_unpinned_dependency():

@@ -105,7 +105,7 @@ def test_health_panel_uses_real_dependency_audit_state():
     try:
         panel = OperationalIntelligenceService(db).health_panel()
         risk = panel["risk_indicators"]
-        assert risk["dependency_unpinned_count"] == 19
+        assert risk["dependency_unpinned_count"] == 20
         assert risk["dependency_missing_count"] == 0
     finally:
         db.close()
@@ -382,7 +382,7 @@ def test_health_panel_live_endpoint_returns_expected_shape():
     assert "performance" in body
     assert "risk_indicators" in body
     assert len(body["modules_tracked"]) == 8
-    assert body["risk_indicators"]["dependency_unpinned_count"] == 19
+    assert body["risk_indicators"]["dependency_unpinned_count"] == 20
 
 
 def test_health_panel_markdown_endpoint_returns_text_markdown():
