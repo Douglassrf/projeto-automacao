@@ -79,20 +79,37 @@ def test_ensure_writable_dir_uses_configured_path_when_writable(tmp_path):
     assert resolved == tmp_path
 
 
-def test_ensure_writable_dir_falls_back_to_tmp_when_configured_path_is_not_writable():
+def test_ensure_writable_dir_falls_back_to_tmp_when_configured_path_is_not_writable(monkeypatch, tmp_path):
     """Regressao (Etapa 1 - homologacao real):
 
     UPLOAD_DIR default e "/data/uploads", que nao existe e nao e gravavel em
-    ambientes serverless (Vercel) nem no sandbox de CI (PermissionError). Este
-    teste cobre a correcao ja aplicada em store_upload() via
+    ambientes serverless (Vercel) nem no sandbox de CI Linux (PermissionError).
+    Este teste cobre a correcao ja aplicada em store_upload() via
     app.core.config.ensure_writable_dir(): quando o caminho configurado nao e
     gravavel, cai para um diretorio dentro do tmp do sistema
     (obrigatorio em serverless, onde so /tmp e gravavel).
+
+    Forca a falha via monkeypatch em vez de assumir que "/data/..." e sempre
+    nao-gravavel: essa suposicao nao vale no Windows, onde um path POSIX
+    absoluto sem letra de drive resolve relativo ao drive atual do runner
+    (ex.: D:\\data\\...) e pode ser perfeitamente gravavel la - o teste
+    falhava no CI Windows nao por bug real, so por essa diferenca de SO.
     """
     import os
     import tempfile
+    from pathlib import Path as _Path
     from app.core.config import ensure_writable_dir
-    resolved = ensure_writable_dir("/data/uploads_test_nao_gravavel")
+
+    configured = tmp_path / "sem_permissao"
+    original_mkdir = _Path.mkdir
+
+    def _mkdir_denied(self, *args, **kwargs):
+        if self == configured:
+            raise PermissionError("simulado: sem permissao de escrita")
+        return original_mkdir(self, *args, **kwargs)
+
+    monkeypatch.setattr(_Path, "mkdir", _mkdir_denied)
+    resolved = ensure_writable_dir(configured)
     assert resolved.exists()
     assert os.access(resolved, os.W_OK)
     assert str(Path(tempfile.gettempdir())) in str(resolved)
