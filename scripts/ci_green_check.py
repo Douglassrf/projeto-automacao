@@ -35,6 +35,13 @@ def _attempt_env(attempt: int, base_tmp: Path) -> dict[str, str]:
         {
             "PYTHONPATH": str(ROOT / "src"),
             "PYTHONFAULTHANDLER": "1",
+            # Sem isto, stdout/stderr do subprocesso (compileall/pytest) fica
+            # bufferizado em blocos quando nao esta preso a um console real -
+            # e o caso do Windows runner do GitHub Actions. Se o subprocesso
+            # travar/estourar o timeout, tudo que estava no buffer e perdido
+            # (o processo morre antes de flush), e o log mostra zero linhas
+            # de progresso mesmo que os testes estivessem rodando de verdade.
+            "PYTHONUNBUFFERED": "1",
             "DATABASE_URL": f"sqlite:///{db_path.as_posix()}",
             "DEFAULT_ADMIN_PASSWORD": env.get("DEFAULT_ADMIN_PASSWORD", "test-only-admin-password"),
             "AUTH_REQUIRED": env.get("AUTH_REQUIRED", "true"),
