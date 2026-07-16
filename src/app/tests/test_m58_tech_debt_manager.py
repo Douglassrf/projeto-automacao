@@ -39,9 +39,10 @@ def test_run_git_executes_against_the_real_project_repository():
     assert output.strip() == "true"
 
 
-def test_run_git_raises_visibly_on_an_invalid_subcommand():
-    with pytest.raises(subprocess.CalledProcessError):
-        _run_git(["nao-existe-esse-comando"])
+def test_run_git_returns_empty_string_on_an_invalid_subcommand():
+    """Falha de git nao pode mais propagar (ver fix do crash de git-log no
+    Vercel, onde .git nao existe e todo comando git falha por design)."""
+    assert _run_git(["nao-existe-esse-comando"]) == ""
 
 
 # --- mapa de idade por arquivo (1 unica chamada ao git) --------------------------
