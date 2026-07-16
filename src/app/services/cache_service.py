@@ -6,6 +6,7 @@ UTC = timezone.utc  # compat Python 3.10 (datetime.UTC requer 3.11+)
 from typing import Any
 
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
@@ -52,8 +53,21 @@ class CacheService:
         if stat is None:
             stat = CacheStat(namespace=namespace)
             self.db.add(stat)
-            self.db.commit()
-            self.db.refresh(stat)
+            try:
+                self.db.commit()
+            except IntegrityError:
+                # Race entre requests concorrentes (ex.: burst do
+                # ArchitectureStressTestService): duas threads podem ver
+                # stat is None para o mesmo namespace antes de qualquer
+                # commit, e a segunda INSERT esbarra na UNIQUE constraint.
+                # Sem este rollback, a Session fica marcada como
+                # "rolled back" e a PROXIMA query nela (mesmo de outra
+                # tabela) levanta PendingRollbackError - nao um erro deste
+                # metodo, entao precisa ser tratado aqui.
+                self.db.rollback()
+                stat = self.db.query(CacheStat).filter(CacheStat.namespace == namespace).first()
+            else:
+                self.db.refresh(stat)
         return stat
 
     def get(self, key: str, *, namespace: str = "default") -> Any | None:
