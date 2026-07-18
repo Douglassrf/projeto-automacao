@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
 
 from app.api.deps import get_current_user
+from app.core.ad_library_live_search import ad_library_search_live
+from app.core.ad_library_market_scan import ad_library_market_scan
 from app.core.ad_library_model import ad_library_data_model
 from app.core.ad_library_search import ad_library_search_local
 from app.core.billing_readiness import billing_readiness_local
@@ -51,6 +53,16 @@ def post_winning_ad_score(payload: dict | None = None, current_user: User = Depe
 @router.post("/creative-analysis")
 def post_creative_analysis(payload: dict | None = None, current_user: User = Depends(get_current_user)):
     return creative_intelligence_analysis(payload)
+
+
+@router.post("/ad-library-search-live")
+def post_ad_library_search_live(payload: dict | None = None, current_user: User = Depends(get_current_user)):
+    return ad_library_search_live(payload)
+
+
+@router.post("/ad-library-market-scan")
+def post_ad_library_market_scan(payload: dict | None = None, current_user: User = Depends(get_current_user)):
+    return ad_library_market_scan(payload)
 
 
 @router.post("/country-profile")
