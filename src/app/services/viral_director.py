@@ -81,6 +81,9 @@ MARKETS = {
            "context": "mercado europeu: tom mais sofisticado e confiavel, qualidade e garantia pesam mais que urgencia"},
     "BR": {"currency": "BRL", "language": "pt-BR", "voice_lang": "pt",
            "context": "mercado brasileiro: emocao, humor leve, 'frete rapido', Pix com desconto, prova social calorosa"},
+    "LATAM": {"currency": "USD", "language": "es-419 (espanhol latino)", "voice_lang": "es",
+              "context": "America Latina dolarizada (Equador, El Salvador, Panama, Porto Rico): espanhol latino "
+                         "caloroso, precos em dolar, confianca e familia pesam, envio internacional confiavel"},
 }
 
 

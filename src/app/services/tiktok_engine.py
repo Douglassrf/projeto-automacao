@@ -25,8 +25,11 @@ TIKTOK_TOP_ADS_URL = "https://business-api.tiktok.com/open_api/v1.3/creative/top
 
 REGION_MAP: dict[str, list[str]] = {
     "BR": ["BR"],
-    "US": ["US"],
+    # Mercado dolar: EUA + America Latina dolarizada (Equador, El Salvador, Panama, Porto Rico)
+    "US": ["US", "EC", "SV", "PA", "PR"],
     "EU": ["FR", "DE", "ES", "IT", "PT", "NL"],
+    # Mercado dolar latino separado, para campanhas em espanhol
+    "LATAM_USD": ["EC", "SV", "PA", "PR"],
 }
 
 

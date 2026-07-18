@@ -25,8 +25,10 @@ import httpx
 AD_LIBRARY_URL = "https://graph.facebook.com/v21.0/ads_archive"
 
 CURRENCY_COUNTRIES: dict[str, list[str]] = {
-    "EUR": ["FR", "DE", "ES", "IT", "PT", "NL"],
-    "USD": ["US"],
+    # Europa + Guiana Francesa (territorio frances na America do Sul, usa euro)
+    "EUR": ["FR", "DE", "ES", "IT", "PT", "NL", "GF"],
+    # EUA + paises da America Latina dolarizados: Equador, El Salvador, Panama, Porto Rico
+    "USD": ["US", "EC", "SV", "PA", "PR"],
     "BRL": ["BR"],
 }
 
