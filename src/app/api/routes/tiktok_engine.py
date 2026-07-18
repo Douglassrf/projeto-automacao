@@ -98,3 +98,39 @@ def render_video(payload: TikTokRenderRequest):
         "roteiro": script_data,
         "render": result,
     }
+
+
+class PremiumVideoRequest(BaseModel):
+    product_name: str = Field(..., min_length=2)
+    image_urls: list[str] = Field(..., min_length=1, description="3-8 fotos do produto (URLs ou caminhos locais)")
+    script: str | None = Field(None, description="Roteiro; se vazio, a DeepSeek gera")
+    cta: str = Field("COMPRAR AGORA")
+    language: str = Field("pt-BR")
+    music_path: str | None = Field(None, description="Caminho local de um mp3 de trilha (opcional)")
+
+
+@router.post("/render-premium")
+def render_premium(payload: PremiumVideoRequest):
+    """Video estilo TikTok viral: fotos reais do produto + zoom cinematografico +
+    cortes rapidos + legendas grandes + narracao neural. Roda localmente (FFmpeg)."""
+    from app.services.premium_video import PremiumVideoRenderer
+
+    script = payload.script
+    if not script:
+        data = tiktok_engine.remodel_video_script(payload.product_name)
+        raw = data.get("script")
+        if isinstance(raw, dict):
+            script = " ".join(str(v) for k, v in raw.items() if k not in {"texto_na_tela", "audio"})
+        else:
+            # remover rotulos tipo 'HOOK (0-3s):' do roteiro da IA
+            import re as _re
+            script = _re.sub(r"^[A-Z_+ ]+\(\d+-\d+s\):\s*", "", str(raw), flags=_re.MULTILINE)
+
+    return PremiumVideoRenderer().render(
+        product_name=payload.product_name,
+        script=script or payload.product_name,
+        image_sources=payload.image_urls,
+        cta=payload.cta,
+        language=payload.language,
+        music_path=payload.music_path,
+    )
