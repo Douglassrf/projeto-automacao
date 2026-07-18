@@ -450,6 +450,87 @@ class MetaMarketingClient:
             after = next_after
         return rows
 
+    def search_ad_library(
+        self,
+        search_terms: str,
+        countries: list[str] | None = None,
+        ad_type: str = "ALL",
+        limit: int = 10,
+    ) -> dict[str, Any]:
+        """Busca anúncios reais na Meta Ad Library API (garimpo de anúncio).
+
+        Diferente do resto deste client (que publica campanhas), esta chamada
+        é somente leitura: não cria, altera nem gasta nada. Mesmo assim
+        respeita o mesmo guardrail de dry-run do resto do client — sem
+        META_DRY_RUN=false + META_ACCESS_TOKEN configurados, nunca sai uma
+        requisição real, só uma amostra simulada e claramente marcada.
+
+        A Ad Library API real não expõe métricas de performance (impressões,
+        cliques, gasto, conversões) para anúncios comerciais — só metadados
+        de criativo (texto, página anunciante, data de início). Quem chamar
+        isso não deve esperar métricas reais vindas daqui.
+        """
+        countries = countries or ["BR"]
+        if self.dry_run:
+            suffix = hashlib.sha1(search_terms.encode("utf-8")).hexdigest()[:8]
+            # Amostra simulada com DOIS perfis propositais: um "vencedor" (várias
+            # variações de anúncio da mesma página, simulando recorrência alta) e
+            # um "fraco" (página isolada, 1-2 anúncios só) — assim dá pra testar
+            # a heurística de recorrência (Missão 37W) mesmo sem credencial real.
+            winner_count = min(limit, 18)
+            data = [
+                {
+                    "id": f"dry_ad_archive_{suffix}_w{i}",
+                    "page_name": f"Anunciante Vencedor Simulado ({search_terms})",
+                    "ad_creative_bodies": [
+                        f"Variação {i + 1} do anúncio simulado para '{search_terms}'."
+                    ],
+                    "ad_creative_link_titles": ["Título simulado"],
+                    "ad_snapshot_url": "https://example.com/dry-run-ad-snapshot",
+                    "ad_delivery_start_time": None,
+                    "languages": ["pt"],
+                    "publisher_platforms": ["facebook", "instagram"],
+                }
+                for i in range(winner_count)
+            ]
+            remaining = limit - winner_count
+            if remaining > 0:
+                for i in range(min(remaining, 2)):
+                    data.append(
+                        {
+                            "id": f"dry_ad_archive_{suffix}_low{i}",
+                            "page_name": "Anunciante Fraco Simulado",
+                            "ad_creative_bodies": [f"Anúncio isolado {i + 1} simulado."],
+                            "ad_creative_link_titles": ["Título simulado"],
+                            "ad_snapshot_url": "https://example.com/dry-run-ad-snapshot-low",
+                            "ad_delivery_start_time": None,
+                            "languages": ["pt"],
+                            "publisher_platforms": ["facebook"],
+                        }
+                    )
+            return {"dry_run": True, "data": data[:limit]}
+
+        if not self.credentials.access_token:
+            raise MetaMarketingError(
+                "META_ACCESS_TOKEN ausente: não é possível consultar a Ad Library API real."
+            )
+
+        data = self._get(
+            "/ads_archive",
+            {
+                "search_terms": search_terms,
+                "ad_reached_countries": json.dumps(countries),
+                "ad_type": ad_type,
+                "ad_active_status": "ALL",
+                "limit": limit,
+                "fields": (
+                    "id,page_name,ad_creative_bodies,ad_creative_link_titles,"
+                    "ad_snapshot_url,ad_delivery_start_time,languages,publisher_platforms"
+                ),
+            },
+        )
+        return {"dry_run": False, "data": data.get("data") or [], "paging": data.get("paging")}
+
     def _get(self, path: str, params: dict[str, Any]) -> dict[str, Any]:
         params = {**params, "access_token": self.credentials.access_token}
         try:
