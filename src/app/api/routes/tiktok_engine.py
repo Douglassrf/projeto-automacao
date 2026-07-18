@@ -131,6 +131,20 @@ def viral_script(payload: ViralScriptRequest):
     return viral_director.build_viral_script(payload.product, payload.niche, payload.angle)
 
 
+class GlobalPackRequest(BaseModel):
+    product: str = Field(..., min_length=2)
+    niche: str = Field("")
+    blueprint: str = Field("", description="Esqueleto vencedor minerado (ex: antes/depois l'orient)")
+
+
+@router.post("/global-pack")
+def global_pack(payload: GlobalPackRequest):
+    """Roteiros virais localizados para vender em USD (US), EUR (EU) e BRL (BR)."""
+    from app.services import viral_director
+
+    return viral_director.build_global_pack(payload.product, payload.niche, payload.blueprint)
+
+
 class PremiumVideoRequest(BaseModel):
     product_name: str = Field(..., min_length=2)
     image_urls: list[str] = Field(..., min_length=1, description="3-8 fotos do produto (URLs ou caminhos locais)")

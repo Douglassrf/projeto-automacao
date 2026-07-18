@@ -74,6 +74,42 @@ Passo a passo executavel agora."""
     }
 
 
+MARKETS = {
+    "US": {"currency": "USD", "language": "en-US", "voice_lang": "en",
+           "context": "mercado americano: ritmo agressivo, prova social com numeros, 'free shipping', urgencia direta"},
+    "EU": {"currency": "EUR", "language": "es-ES", "voice_lang": "es",
+           "context": "mercado europeu: tom mais sofisticado e confiavel, qualidade e garantia pesam mais que urgencia"},
+    "BR": {"currency": "BRL", "language": "pt-BR", "voice_lang": "pt",
+           "context": "mercado brasileiro: emocao, humor leve, 'frete rapido', Pix com desconto, prova social calorosa"},
+}
+
+
+def build_global_pack(product: str, niche: str = "", blueprint: str = "") -> dict[str, Any]:
+    """Roteiro viral localizado para os 3 mercados (US/USD, EU/EUR, BR/BRL)."""
+    pack: dict[str, Any] = {"status": "ok", "product": product, "markets": {}}
+    for code, m in MARKETS.items():
+        prompt = f"""{SYSTEM_METHOD}
+
+PRODUTO: {product}
+NICHO: {niche or 'dropshipping'}
+MERCADO: {code} — moeda {m['currency']} — idioma do video: {m['language']}
+CONTEXTO CULTURAL: {m['context']}
+BLUEPRINT DE REFERENCIA (esqueleto vencedor a remodelar, sem copiar): {blueprint or 'antes/depois com prova visual + UGC organico'}
+
+Escreva NO IDIOMA {m['language']} o roteiro de video TikTok de 30s no mais alto padrao viral local:
+6 cenas no formato 'CENA N (Xs-Ys) | IMAGEM: ... | NARRACAO: ... | TEXTO NA TELA: ... | SOM: ...'
+Precos e ofertas em {m['currency']}. Hook stop-scroll nativo da cultura local (nao traduzido ao pe da letra).
+No final: NARRACAO_COMPLETA: (todas as falas juntas, no idioma {m['language']})."""
+        result = deepseek_copy(prompt)
+        pack["markets"][code] = {
+            "currency": m["currency"],
+            "language": m["language"],
+            "engine": "deepseek" if result else "template",
+            "script": result or prompt,
+        }
+    return pack
+
+
 def build_viral_script(product: str, niche: str = "", angle: str = "") -> dict[str, Any]:
     """Roteiro viral completo cena a cena para o renderizador premium."""
     prompt = f"""{SYSTEM_METHOD}

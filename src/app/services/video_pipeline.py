@@ -158,12 +158,20 @@ Formato: {payload.aspect_ratio}
         # forcar o resolvedor do sistema evita "Could not contact DNS servers".
         aiohttp.connector.DefaultResolver = aiohttp.resolver.ThreadedResolver
 
-        voice = "pt-BR-AntonioNeural"
         lang = (language or "auto").lower()
-        if lang.startswith("en") or "ingl" in lang:
-            voice = "en-US-ChristopherNeural"
-        elif lang.startswith("es") or "espan" in lang:
-            voice = "es-ES-AlvaroNeural"
+        voices = {
+            "pt": "pt-BR-AntonioNeural",
+            "en": "en-US-ChristopherNeural",
+            "es": "es-ES-AlvaroNeural",
+            "fr": "fr-FR-HenriNeural",
+            "de": "de-DE-ConradNeural",
+            "it": "it-IT-DiegoNeural",
+        }
+        voice = voices.get(lang[:2], voices["pt"])
+        if "ingl" in lang:
+            voice = voices["en"]
+        elif "espan" in lang:
+            voice = voices["es"]
 
         async def _speak() -> None:
             communicate = edge_tts.Communicate(text, voice)
