@@ -27,7 +27,8 @@ REGION_MAP: dict[str, list[str]] = {
     "BR": ["BR"],
     # Mercado dolar: EUA + America Latina dolarizada (Equador, El Salvador, Panama, Porto Rico)
     "US": ["US", "EC", "SV", "PA", "PR"],
-    "EU": ["FR", "DE", "ES", "IT", "PT", "NL"],
+    # Zona do euro: principais mercados de anuncios (TikTok limita por pais na busca)
+    "EU": ["FR", "DE", "ES", "IT", "PT", "NL", "BE", "AT", "IE", "GR", "FI"],
     # Mercado dolar latino separado, para campanhas em espanhol
     "LATAM_USD": ["EC", "SV", "PA", "PR"],
 }
