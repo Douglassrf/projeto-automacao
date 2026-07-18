@@ -10,6 +10,7 @@ python-dotenv
 python-multipart
 email-validator
 httpx
+socksio
 sentry-sdk
 pillow
 python-magic
