@@ -12,7 +12,7 @@ class VideoRenderRequest(BaseModel):
     cta: str = Field("Acesse agora", max_length=180)
     language: str = Field("auto", max_length=80)
     aspect_ratio: str = Field("9:16", pattern="^(9:16|1:1|16:9)$")
-    voice_provider: str = Field("auto", pattern="^(auto|fallback|elevenlabs|openai)$")
+    voice_provider: str = Field("auto", pattern="^(auto|fallback|edge|elevenlabs|openai)$")
     scene_provider: str = Field("ffmpeg_local", pattern="^(ffmpeg_local|huggingface_svd)$")
     duration_seconds: int | None = Field(None, ge=1, le=90)
 

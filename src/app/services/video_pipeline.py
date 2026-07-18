@@ -135,9 +135,46 @@ Formato: {payload.aspect_ratio}
             except Exception as exc:  # pragma: no cover - depends on external API
                 warnings.append(f"OpenAI TTS falhou; usando fallback local. Detalhe: {exc}")
 
+        if requested in {"auto", "edge"}:
+            try:
+                self._render_edge_tts(payload.script, path, payload.language)
+                return "edge_tts_free"
+            except Exception as exc:
+                warnings.append(f"edge-tts falhou; usando fallback silencioso. Detalhe: {exc}")
+
         self._write_silent_wav(path, duration)
         warnings.append("Voice-over externo não configurado; gerado áudio local silencioso para validar montagem.")
         return "fallback_local_silent_wav"
+
+    def _render_edge_tts(self, text: str, path: Path, language: str = "auto") -> None:
+        """Voz neural gratuita e open source (edge-tts), sem chave de API."""
+        import asyncio
+
+        import aiohttp.connector
+        import aiohttp.resolver
+        import edge_tts
+
+        # Em algumas redes/Windows o resolvedor async (aiodns/UDP) e bloqueado;
+        # forcar o resolvedor do sistema evita "Could not contact DNS servers".
+        aiohttp.connector.DefaultResolver = aiohttp.resolver.ThreadedResolver
+
+        voice = "pt-BR-AntonioNeural"
+        lang = (language or "auto").lower()
+        if lang.startswith("en") or "ingl" in lang:
+            voice = "en-US-ChristopherNeural"
+        elif lang.startswith("es") or "espan" in lang:
+            voice = "es-ES-AlvaroNeural"
+
+        async def _speak() -> None:
+            communicate = edge_tts.Communicate(text, voice)
+            await communicate.save(str(path.with_suffix(".mp3")))
+
+        asyncio.run(_speak())
+        mp3 = path.with_suffix(".mp3")
+        if mp3 != path and mp3.exists():
+            # converter para wav com ffmpeg para manter o pipeline de mixagem
+            import subprocess
+            subprocess.run([self._ffmpeg_exe(), "-y", "-i", str(mp3), str(path)], check=True, capture_output=True)
 
     def _render_elevenlabs(self, text: str, path: Path) -> None:  # pragma: no cover
         voice_id = self.settings.elevenlabs_voice_id or "EXAVITQu4vr4xnSDxMaL"
@@ -195,17 +232,25 @@ Formato: {payload.aspect_ratio}
         body_lines = _wrap(body, 31, 4)
 
         filters: list[str] = []
+        # No Windows o drawtext sem fontfile pode crashar (fontconfig ausente);
+        # apontar uma fonte do sistema resolve.
+        font_opt = ""
+        for candidate in (r"C:/Windows/Fonts/arialbd.ttf", r"C:/Windows/Fonts/arial.ttf"):
+            if Path(candidate).exists():
+                escaped = candidate.replace(":", "\\:")
+                font_opt = f"fontfile='{escaped}':"
+                break
         y = 220
         for line in headline_lines:
-            filters.append(f"drawtext=text='{_escape_drawtext(line)}':fontcolor=white:fontsize=48:x=(w-text_w)/2:y={y}:box=1:boxcolor=black@0.35:boxborderw=18")
+            filters.append(f"drawtext={font_opt}text='{_escape_drawtext(line)}':fontcolor=white:fontsize=48:x=(w-text_w)/2:y={y}:box=1:boxcolor=black@0.35:boxborderw=18")
             y += 62
         y = 560
         for line in body_lines:
-            filters.append(f"drawtext=text='{_escape_drawtext(line)}':fontcolor=white:fontsize=34:x=(w-text_w)/2:y={y}:box=1:boxcolor=black@0.25:boxborderw=14")
+            filters.append(f"drawtext={font_opt}text='{_escape_drawtext(line)}':fontcolor=white:fontsize=34:x=(w-text_w)/2:y={y}:box=1:boxcolor=black@0.25:boxborderw=14")
             y += 48
         y = 980 if payload.aspect_ratio == "9:16" else 610
         for line in cta_lines:
-            filters.append(f"drawtext=text='{_escape_drawtext(line)}':fontcolor=yellow:fontsize=42:x=(w-text_w)/2:y={y}:box=1:boxcolor=black@0.45:boxborderw=18")
+            filters.append(f"drawtext={font_opt}text='{_escape_drawtext(line)}':fontcolor=yellow:fontsize=42:x=(w-text_w)/2:y={y}:box=1:boxcolor=black@0.45:boxborderw=18")
             y += 58
         vf = ",".join(filters)
 

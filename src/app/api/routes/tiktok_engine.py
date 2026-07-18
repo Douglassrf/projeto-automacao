@@ -53,3 +53,48 @@ def pipeline(payload: TikTokPipelineRequest):
 @router.get("/stages")
 def stages():
     return {"status": "ok", "escada": tiktok_engine.TIKTOK_STAGES}
+
+
+class TikTokRenderRequest(BaseModel):
+    product_name: str = Field(..., min_length=2)
+    keyword: str | None = None
+    region: str = Field("BR")
+    voice_provider: str = Field("auto", description="auto usa edge-tts gratuito se nao houver chave paga")
+
+
+@router.post("/render-video")
+def render_video(payload: TikTokRenderRequest):
+    """Gera o roteiro remodelado e RENDERIZA o video 9:16 com voz (ffmpeg + edge-tts).
+
+    Observacao: a renderizacao usa ffmpeg local — funciona no servidor proprio/PC;
+    na Vercel serverless o ffmpeg nao esta disponivel.
+    """
+    from app.schemas.video_pipeline import VideoRenderRequest
+    from app.services.video_pipeline import VideoRenderPipeline
+
+    script_data = tiktok_engine.remodel_video_script(payload.product_name)
+    raw = script_data.get("script")
+    if isinstance(raw, dict):
+        script_text = " ".join(str(v) for k, v in raw.items() if k not in {"texto_na_tela", "audio"})
+        hook = raw.get("hook_0_3s", f"Voce precisa conhecer o {payload.product_name}!")
+    else:
+        script_text = str(raw)
+        hook = script_text.splitlines()[0][:200] if script_text else payload.product_name
+
+    render_req = VideoRenderRequest(
+        product_name=payload.product_name,
+        model="V1",
+        hook=str(hook)[:220],
+        script=script_text[:4000],
+        cta="Comprar agora",
+        language="pt-BR",
+        aspect_ratio="9:16",
+        voice_provider=payload.voice_provider,
+        duration_seconds=35,
+    )
+    result = VideoRenderPipeline().render(render_req)
+    return {
+        "status": "ok",
+        "roteiro": script_data,
+        "render": result,
+    }
