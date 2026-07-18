@@ -144,8 +144,18 @@ class PremiumVideoRenderer:
                 f"zoompan=z='{zoom_dir}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
                 f":d={int(scene_d * fps)}:s=1080x1920:fps={fps},setsar=1[v{i}]"
             )
-        concat_in = "".join(f"[v{i}]" for i in range(n))
-        chains.append(f"{concat_in}concat=n={n}:v=1:a=0[base]")
+        # Transicoes suaves (xfade) entre as cenas — visual de edicao profissional
+        if n == 1:
+            chains.append("[v0]null[base]")
+        else:
+            xf_d = 0.4
+            prev = "v0"
+            for i in range(1, n):
+                out = f"x{i}" if i < n - 1 else "base"
+                offset = scene_d * i - xf_d * i
+                trans = ["fade", "slideleft", "circleopen", "fadeblack", "smoothup"][i % 5]
+                chains.append(f"[{prev}][v{i}]xfade=transition={trans}:duration={xf_d}:offset={offset:.3f}[{out}]")
+                prev = out
 
         # 3) Legendas grandes centrais, uma frase por vez (estilo viral)
         phrases = _phrases(script, n)

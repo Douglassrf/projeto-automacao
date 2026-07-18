@@ -100,6 +100,37 @@ def render_video(payload: TikTokRenderRequest):
     }
 
 
+class ReferenceAnalysisRequest(BaseModel):
+    reference: str = Field(..., min_length=5, description="Link ou descricao do video que viralizou")
+    product: str = Field(..., min_length=2)
+    niche: str = Field("")
+    objective: str = Field("VENDAS")
+
+
+@router.post("/analyze-reference")
+def analyze_reference(payload: ReferenceAnalysisRequest):
+    """Auditoria de Alta Performance (4 camadas) de um video viral de referencia."""
+    from app.services import viral_director
+
+    return viral_director.analyze_reference(
+        payload.reference, payload.product, payload.niche, payload.objective
+    )
+
+
+class ViralScriptRequest(BaseModel):
+    product: str = Field(..., min_length=2)
+    niche: str = Field("")
+    angle: str = Field("")
+
+
+@router.post("/viral-script")
+def viral_script(payload: ViralScriptRequest):
+    """Roteiro viral cena a cena (Diretor Criativo) pronto para o render-premium."""
+    from app.services import viral_director
+
+    return viral_director.build_viral_script(payload.product, payload.niche, payload.angle)
+
+
 class PremiumVideoRequest(BaseModel):
     product_name: str = Field(..., min_length=2)
     image_urls: list[str] = Field(..., min_length=1, description="3-8 fotos do produto (URLs ou caminhos locais)")
