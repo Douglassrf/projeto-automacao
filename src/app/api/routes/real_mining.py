@@ -31,6 +31,8 @@ def status():
         "status": "ok",
         "mode": "real",
         "token_configured": token_ok,
+        "deepseek_configured": ad_library_real._deepseek_key() is not None,
+        "copywriter": "deepseek" if ad_library_real._deepseek_key() else "template",
         "message": (
             "Pronto para minerar a Ad Library em modo real."
             if token_ok

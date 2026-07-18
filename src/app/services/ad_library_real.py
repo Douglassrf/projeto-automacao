@@ -166,6 +166,50 @@ def search_ad_library(
 
 
 # ---------------------------------------------------------------------------
+# DeepSeek (opcional): copywriting por IA quando DEEPSEEK_API_KEY estiver setada
+# ---------------------------------------------------------------------------
+
+DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
+
+
+def _deepseek_key() -> str | None:
+    return os.getenv("DEEPSEEK_API_KEY")
+
+
+def deepseek_copy(prompt: str) -> str | None:
+    """Chama a DeepSeek para gerar copy. Retorna None se nao houver chave ou em erro."""
+    key = _deepseek_key()
+    if not key:
+        return None
+    try:
+        with httpx.Client(timeout=60) as client:
+            resp = client.post(
+                DEEPSEEK_URL,
+                headers={"Authorization": f"Bearer {key}"},
+                json={
+                    "model": "deepseek-chat",
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": (
+                                "Voce e um copywriter de resposta direta especialista em "
+                                "dropshipping e anuncios de Facebook em portugues do Brasil. "
+                                "Responda APENAS com o texto pedido, sem explicacoes."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    "temperature": 0.8,
+                    "max_tokens": 600,
+                },
+            )
+            data = resp.json()
+            return data["choices"][0]["message"]["content"].strip()
+    except Exception:
+        return None
+
+
+# ---------------------------------------------------------------------------
 # Geracao automatica: anuncio remodelado + produtos + subnichos + site
 # ---------------------------------------------------------------------------
 
@@ -182,7 +226,27 @@ CURRENCY_SYMBOL = {"BRL": "R$", "USD": "$", "EUR": "€"}
 
 def remodel_ad(winner: dict[str, Any], product_name: str) -> dict[str, Any]:
     base_body = (winner.get("sample_ad") or {}).get("body") or ""
+    ai = deepseek_copy(
+        f"Produto: {product_name}. Anuncio campeao de referencia (remodele sem copiar): "
+        f"'{base_body[:500]}'. Gere no formato exato:\nHEADLINE: ...\nTEXTO: ...\nCTA: ..."
+    )
+    if ai:
+        parts = {"HEADLINE": "", "TEXTO": "", "CTA": ""}
+        for line in ai.splitlines():
+            for k in parts:
+                if line.upper().startswith(k):
+                    parts[k] = line.split(":", 1)[-1].strip()
+        if parts["HEADLINE"] and parts["TEXTO"]:
+            return {
+                "headline": parts["HEADLINE"],
+                "primary_text": parts["TEXTO"],
+                "cta": parts["CTA"] or "Comprar agora",
+                "generated_by": "deepseek",
+                "inspiration_source": base_body[:280],
+                "advertiser_reference": winner.get("page_name"),
+            }
     return {
+        "generated_by": "template",
         "headline": f"{product_name}: o queridinho do momento chegou",
         "primary_text": (
             f"Milhares de pessoas ja garantiram o {product_name}. "
