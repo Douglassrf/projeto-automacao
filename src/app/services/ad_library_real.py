@@ -173,7 +173,8 @@ DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 
 
 def _deepseek_key() -> str | None:
-    return os.getenv("DEEPSEEK_API_KEY")
+    # "chave" e o nome que a variavel recebeu no painel da Vercel
+    return os.getenv("DEEPSEEK_API_KEY") or os.getenv("chave")
 
 
 def deepseek_copy(prompt: str) -> str | None:
