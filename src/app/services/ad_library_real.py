@@ -69,14 +69,21 @@ def classify(active_ads: int) -> str:
     return "ABAIXO_DO_CORTE"
 
 
+# Metodologia Renda em Dolar: corte de 15 ativos na LATAM/dolar/euro,
+# mas no Brasil o mercado e mais sofisticado — corte sobe para 30.
+MIN_ACTIVE_BY_CURRENCY = {"BRL": 30, "USD": 15, "EUR": 15}
+
+
 def search_ad_library(
     search_terms: str,
     currency: str = "BRL",
-    min_active_ads: int = 15,
+    min_active_ads: int | None = None,
     limit: int = 200,
     countries: list[str] | None = None,
 ) -> dict[str, Any]:
     """Pesquisa real na Ad Library e classifica anunciantes campeoes."""
+    if min_active_ads is None:
+        min_active_ads = MIN_ACTIVE_BY_CURRENCY.get(currency.upper(), 15)
     token = _get_token()
     if not token:
         return {

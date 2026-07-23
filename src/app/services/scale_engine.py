@@ -58,6 +58,12 @@ def _delivery_guardrails(metrics: dict[str, Any]) -> tuple[list[str], list[str]]
         )
     if cpa is not None and target_cpa is not None and cpa > target_cpa * (1 + CPA_TOLERANCE_PCT / 100):
         blocks.append(f"CPA R$ {cpa:.2f} estourou a meta (R$ {target_cpa:.2f} +{CPA_TOLERANCE_PCT}%). Corrigir antes de escalar.")
+    connect_rate = _n(metrics.get("connect_rate"))
+    if connect_rate is not None and connect_rate < 75:
+        blocks.append(
+            f"Connect rate {connect_rate:.0f}% abaixo do minimo de 75% (metodologia Renda em Dolar): "
+            "quem clica nao esta chegando na pagina. Arrumar hospedagem/pagina ANTES de colocar mais dinheiro."
+        )
     if frequency is not None and frequency >= FREQUENCY_FATIGUE:
         warnings.append(f"Frequencia {frequency:.1f} indica fadiga: publico ja viu demais. Trocar criativo antes de escalar.")
     if ctr_trend is not None and ctr_trend <= -20:
