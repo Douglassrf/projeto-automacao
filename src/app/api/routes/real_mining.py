@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Query
+import os
+
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
@@ -11,6 +13,11 @@ from app.services import ad_library_real
 router = APIRouter(prefix="/real-mining", tags=["Real Mining - Ad Library"])
 
 _last_pipeline: dict = {}
+
+# Nichos/produtos que o cron diario garimpa automaticamente na Ad Library,
+# buscando os anuncios campeao (mais recorrentes e ainda ativos) para
+# remodelagem. Ajuste esta lista conforme os produtos ativos do momento.
+DEFAULT_DAILY_NICHES: list[str] = ["Renda em Dolar"]
 
 
 class MiningRequest(BaseModel):
@@ -40,6 +47,11 @@ def status():
         ),
         "currencies": list(ad_library_real.CURRENCY_COUNTRIES.keys()),
         "classification": {"BRONZE": "15+", "PRATA": "20+", "OURO": "25+"},
+        "daily_cron": {
+            "enabled": True,
+            "niches": DEFAULT_DAILY_NICHES,
+            "schedule": "todo dia as 09:00 (America/Sao_Paulo)",
+        },
     }
 
 
@@ -67,6 +79,44 @@ def pipeline(payload: PipelineRequest):
         # nao poluir o JSON com o HTML inteiro
         result = {**result, "site_html": "gerado - abra GET /api/v1/real-mining/site"}
     return result
+
+
+@router.get("/cron-daily")
+def cron_daily(request: Request):
+    """Disparo automatico diario da mineracao de anuncios campeao.
+
+    Garimpa, para cada nicho em DEFAULT_DAILY_NICHES, os 15+ anuncios com
+    mais recorrencia/ativos na Ad Library e roda o pipeline completo de
+    remodelagem (mesma logica de POST /pipeline), sem precisar de acao manual.
+
+    Chamada automaticamente pelo Vercel Cron (ver vercel.json). Protegida por
+    CRON_SECRET quando essa variavel estiver configurada nas env vars da
+    Vercel - a Vercel envia 'Authorization: Bearer <CRON_SECRET>' sozinha.
+    """
+    expected_secret = os.environ.get("CRON_SECRET")
+    if expected_secret:
+        auth_header = request.headers.get("authorization", "")
+        if auth_header != f"Bearer {expected_secret}":
+            return {"status": "unauthorized"}
+
+    global _last_pipeline
+    runs = []
+    for niche in DEFAULT_DAILY_NICHES:
+        try:
+            result = ad_library_real.run_full_pipeline(
+                niche,
+                currency="BRL",
+                min_active_ads=15,
+                product_name=niche,
+            )
+            if result.get("status") == "ok" and result.get("site_html"):
+                _last_pipeline = result
+                result = {**result, "site_html": "gerado - abra GET /api/v1/real-mining/site"}
+            runs.append({"niche": niche, "result": result})
+        except Exception as exc:  # nao deixar 1 nicho com erro derrubar os demais
+            runs.append({"niche": niche, "error": f"{type(exc).__name__}: {exc}"})
+
+    return {"status": "ok", "trigger": "cron", "niches": DEFAULT_DAILY_NICHES, "runs": runs}
 
 
 @router.get("/site", response_class=HTMLResponse)
