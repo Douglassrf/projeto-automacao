@@ -55,8 +55,24 @@ FIELDS = ",".join(
 )
 
 
+def _token_candidates() -> list[str]:
+    """Todos os tokens Meta disponiveis no ambiente, em ordem de preferencia.
+
+    'chaveee' e o nome que o token novo recebeu no painel da Vercel; ele vem
+    primeiro porque o META_AD_LIBRARY_TOKEN original expirou.
+    """
+    names = ["chaveee", "META_AD_LIBRARY_TOKEN", "META_ACCESS_TOKEN"]
+    seen: list[str] = []
+    for n in names:
+        v = os.getenv(n)
+        if v and v not in seen:
+            seen.append(v)
+    return seen
+
+
 def _get_token() -> str | None:
-    return os.getenv("META_AD_LIBRARY_TOKEN") or os.getenv("META_ACCESS_TOKEN")
+    candidates = _token_candidates()
+    return candidates[0] if candidates else None
 
 
 def classify(active_ads: int) -> str:
@@ -84,8 +100,8 @@ def search_ad_library(
     """Pesquisa real na Ad Library e classifica anunciantes campeoes."""
     if min_active_ads is None:
         min_active_ads = MIN_ACTIVE_BY_CURRENCY.get(currency.upper(), 15)
-    token = _get_token()
-    if not token:
+    candidates = _token_candidates()
+    if not candidates:
         return {
             "status": "error",
             "error": "missing_token",
@@ -94,6 +110,7 @@ def search_ad_library(
                 "de ambiente da Vercel para ativar a mineracao real."
             ),
         }
+    token = candidates[0]
 
     currency = currency.upper()
     target_countries = countries or CURRENCY_COUNTRIES.get(currency)
@@ -123,6 +140,13 @@ def search_ad_library(
                 resp = client.get(url, params=query)
                 data = resp.json()
                 if "error" in data:
+                    # token invalido/expirado (code 190): tenta o proximo token disponivel
+                    if data["error"].get("code") == 190 and len(candidates) > 1:
+                        candidates = candidates[1:]
+                        token = candidates[0]
+                        params["access_token"] = token
+                        url, query = AD_LIBRARY_URL, params
+                        continue
                     return {
                         "status": "error",
                         "error": "meta_api_error",
