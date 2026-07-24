@@ -334,7 +334,7 @@ def generate_sub_ads(products: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ]
 
 
-def build_site_html(product_name: str, products: list[dict[str, Any]], main_ad: dict[str, Any]) -> str:
+def build_site_html(product_name: str, products: list[dict[str, Any]], main_ad: dict[str, Any], checkout_url: str = "#checkout") -> str:
     cards = "".join(
         f"""
         <div class="card{' hero' if p['role'] == 'campeao' else ''}">
@@ -342,7 +342,7 @@ def build_site_html(product_name: str, products: list[dict[str, Any]], main_ad: 
           <h3>{p['name']}</h3>
           <p>{p['pitch']}</p>
           <div class="price">{p['price']}</div>
-          <a class="btn" href="#checkout">Comprar agora</a>
+          <a class="btn" href="{checkout_url}">Comprar agora</a>
         </div>"""
         for p in products
     )
@@ -371,7 +371,7 @@ def build_site_html(product_name: str, products: list[dict[str, Any]], main_ad: 
 <header>
   <h1>{main_ad['headline']}</h1>
   <p>{main_ad['primary_text']}</p>
-  <a class="btn" href="#checkout">{main_ad['cta']}</a>
+  <a class="btn" href="{checkout_url}">{main_ad['cta']}</a>
 </header>
 <section class="grid">{cards}
 </section>
@@ -383,8 +383,9 @@ def build_site_html(product_name: str, products: list[dict[str, Any]], main_ad: 
 def run_full_pipeline(
     search_terms: str,
     currency: str = "BRL",
-    min_active_ads: int = 15,
+    min_active_ads: int | None = None,
     product_name: str | None = None,
+    checkout_url: str = "#checkout",
 ) -> dict[str, Any]:
     """Pipeline completo: minera -> classifica -> remodela -> gera produtos/sub-anuncios/site."""
     mining = search_ad_library(search_terms, currency=currency, min_active_ads=min_active_ads)
@@ -406,7 +407,7 @@ def run_full_pipeline(
     main_ad = remodel_ad(winner, name)
     products = generate_products(name, currency.upper())
     sub_ads = generate_sub_ads(products)
-    site_html = build_site_html(name, products, main_ad)
+    site_html = build_site_html(name, products, main_ad, checkout_url=checkout_url)
 
     return {
         "status": "ok",

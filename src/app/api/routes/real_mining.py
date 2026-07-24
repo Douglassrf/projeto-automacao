@@ -29,6 +29,7 @@ class MiningRequest(BaseModel):
 
 class PipelineRequest(MiningRequest):
     product_name: str | None = None
+    checkout_url: str = "#checkout"
 
 
 @router.get("/status")
@@ -73,6 +74,7 @@ def pipeline(payload: PipelineRequest):
         currency=payload.currency,
         min_active_ads=payload.min_active_ads,
         product_name=payload.product_name,
+        checkout_url=payload.checkout_url,
     )
     if result.get("status") == "ok" and result.get("site_html"):
         _last_pipeline = result
