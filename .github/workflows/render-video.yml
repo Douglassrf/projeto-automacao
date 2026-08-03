@@ -1,0 +1,120 @@
+# .github/workflows/render-video.yml
+#
+# FABRICA DE VIDEO — roda no GitHub Actions, nao na Vercel.
+#
+# Por que aqui e nao la:
+#   Vercel Hobby = sem ffmpeg, /tmp efemero de 0 MB, 60s de limite.
+#   GitHub Actions = ffmpeg pre-instalado, 14 GB de disco, 6h de limite,
+#   e GRATUITO E ILIMITADO para repositorio publico (que e o seu caso).
+#
+# Como disparar:
+#   1) Manual: aba Actions > "Render Video" > Run workflow
+#   2) Pela API (a partir da Vercel):
+#      POST https://api.github.com/repos/Douglassrf/projeto-automacao/dispatches
+#      Header: Authorization: Bearer <GITHUB_TOKEN>
+#      Body:   {"event_type":"render-video",
+#               "client_payload":{"product_name":"...","script":"...","voice":"pt-BR-AntonioNeural"}}
+#
+# Onde sai o video:
+#   Aba Actions > execucao > secao "Artifacts" > video-final.zip
+#   (retido por 30 dias; para link permanente veja o passo opcional de Release)
+
+name: Render Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      product_name:
+        description: "Nome do produto"
+        required: true
+        default: "Produto Campeao"
+      script:
+        description: "Roteiro (uma cena por linha)"
+        required: true
+        default: |
+          Voce sente dor no pescoco depois de horas no computador?
+          Este massageador age como as maos de um especialista.
+          Alivia a tensao em 15 minutos por dia.
+          Leve, portatil e facil de usar em qualquer lugar.
+          Garanta o seu hoje com desconto de lancamento.
+      voice:
+        description: "Voz (edge-tts)"
+        required: false
+        default: "pt-BR-AntonioNeural"
+      aspect:
+        description: "Formato: 9x16 (Reels/TikTok) ou 1x1 (Feed)"
+        required: false
+        default: "9x16"
+
+  repository_dispatch:
+    types: [render-video]
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Baixar o repositorio
+        uses: actions/checkout@v4
+
+      - name: Conferir ffmpeg (ja vem no runner)
+        run: |
+          ffmpeg -version | head -n 1
+          echo "Disco disponivel:"
+          df -h / | tail -n 1
+
+      - name: Instalar Python e dependencias
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar bibliotecas
+        run: |
+          python -m pip install --upgrade pip
+          pip install edge-tts pillow
+
+      - name: Montar parametros
+        id: params
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "product_name=${{ github.event.client_payload.product_name }}" >> $GITHUB_OUTPUT
+            echo "voice=${{ github.event.client_payload.voice || 'pt-BR-AntonioNeural' }}" >> $GITHUB_OUTPUT
+            echo "aspect=${{ github.event.client_payload.aspect || '9x16' }}" >> $GITHUB_OUTPUT
+            printf '%s' "${{ github.event.client_payload.script }}" > script.txt
+          else
+            echo "product_name=${{ github.event.inputs.product_name }}" >> $GITHUB_OUTPUT
+            echo "voice=${{ github.event.inputs.voice }}" >> $GITHUB_OUTPUT
+            echo "aspect=${{ github.event.inputs.aspect }}" >> $GITHUB_OUTPUT
+            printf '%s' "${{ github.event.inputs.script }}" > script.txt
+          fi
+          echo "--- Roteiro recebido ---"
+          cat script.txt
+
+      - name: Renderizar
+        run: |
+          python scripts/render_video.py \
+            --product "${{ steps.params.outputs.product_name }}" \
+            --script-file script.txt \
+            --voice "${{ steps.params.outputs.voice }}" \
+            --aspect "${{ steps.params.outputs.aspect }}" \
+            --out out/video-final.mp4
+
+      - name: Verificar que o arquivo existe DE VERDADE
+        run: |
+          set -e
+          test -f out/video-final.mp4 || { echo "FALHA: nenhum arquivo gerado"; exit 1; }
+          BYTES=$(stat -c%s out/video-final.mp4)
+          echo "Tamanho: $BYTES bytes"
+          [ "$BYTES" -gt 50000 ] || { echo "FALHA: arquivo pequeno demais, render vazio"; exit 1; }
+          echo "--- Metadados do video ---"
+          ffprobe -v error -show_entries format=duration,size,bit_rate \
+                  -show_entries stream=codec_name,width,height,r_frame_rate \
+                  -of default=noprint_wrappers=1 out/video-final.mp4
+
+      - name: Publicar o video
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-final
+          path: out/
+          retention-days: 30

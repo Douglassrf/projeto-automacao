@@ -1,17 +1,26 @@
 """Mineracao REAL na Biblioteca de Anuncios do Facebook (Meta Ad Library API).
 
-Fluxo completo do produto:
-1. Pesquisa anuncios ATIVOS na Ad Library oficial (graph.facebook.com/ads_archive)
-   por moeda: EUR, USD e BRL (mapeadas para paises correspondentes).
-2. Agrupa por anunciante (page_id) e conta anuncios ativos.
-3. Classifica os campeoes: >=15 BRONZE, >=20 PRATA, >=25 OURO.
-4. Para o campeao, gera automaticamente:
-   - anuncio remodelado (copy pronta para subir),
-   - produto campeao + 5 produtos de subnicho do mesmo tema,
-   - 5 sub-anuncios (um por subnicho),
-   - site/landing page HTML completa com os 6 blocos de oferta.
+VERSAO CORRIGIDA — 3 bugs resolvidos:
 
-Requer o token no ambiente: META_AD_LIBRARY_TOKEN (ou META_ACCESS_TOKEN).
+  BUG 1 (CRITICO): o fallback de token engolia o erro real.
+      Antes: se o 1o token falhasse com code 190, o codigo trocava para o
+      proximo e devolvia o erro DESSE, escondendo o motivo verdadeiro.
+      Agora: cada tentativa e registrada e devolvida em `attempts`.
+
+  BUG 2: /status mentia dizendo "pronto para minerar" so porque a variavel
+      de ambiente existia, sem nunca validar o token contra a Meta.
+      Agora: validate_token() faz uma chamada real e diz a verdade.
+
+  BUG 3: os "5 subnichos" eram sufixos fixos ("Iniciantes", "Avancado"...)
+      colados em qualquer produto. Nao eram temas relevantes.
+      Agora: gerados por IA a partir do anuncio minerado, com o template
+      antigo apenas como rede de seguranca.
+
+Requer o token no ambiente. Nomes aceitos, em ordem: ver TOKEN_ENV_NAMES.
+
+IMPORTANTE: a Ad Library API (ads_archive) NAO aceita token de Usuario do
+Sistema. Exige token de USUARIO com identidade confirmada e o app aprovado
+para acesso a Ad Library.
 """
 
 from __future__ import annotations
@@ -24,16 +33,20 @@ import httpx
 
 AD_LIBRARY_URL = "https://graph.facebook.com/v21.0/ads_archive"
 
+# Ordem de preferencia. Mantidos os nomes historicos do painel da Vercel
+# para nao quebrar nada, mas o nome canonico e META_AD_LIBRARY_TOKEN.
+TOKEN_ENV_NAMES = [
+    "META_AD_LIBRARY_TOKEN",
+    "META_ACCESS_TOKEN",
+    "chaveee",
+]
+
 CURRENCY_COUNTRIES: dict[str, list[str]] = {
-    # Zona do euro completa (20 paises) + territorios franceses nas Americas
-    # (Guiana Francesa, Guadalupe, Martinica)
     "EUR": [
         "FR", "DE", "ES", "IT", "PT", "NL", "BE", "AT", "IE", "GR",
         "FI", "SK", "SI", "LT", "LV", "EE", "LU", "MT", "CY", "HR",
         "GF", "GP", "MQ",
     ],
-    # EUA + America Latina/Caribe dolarizados: Equador, El Salvador, Panama,
-    # Porto Rico, Ilhas Virgens Americanas e Britanicas, Turks e Caicos
     "USD": ["US", "EC", "SV", "PA", "PR", "VI", "VG", "TC"],
     "BRL": ["BR"],
 }
@@ -55,24 +68,114 @@ FIELDS = ",".join(
 )
 
 
-def _token_candidates() -> list[str]:
-    """Todos os tokens Meta disponiveis no ambiente, em ordem de preferencia.
+# ---------------------------------------------------------------------------
+# Tokens — BUG 1 e BUG 2
+# ---------------------------------------------------------------------------
 
-    'chaveee' e o nome que o token novo recebeu no painel da Vercel; ele vem
-    primeiro porque o META_AD_LIBRARY_TOKEN original expirou.
-    """
-    names = ["chaveee", "META_AD_LIBRARY_TOKEN", "META_ACCESS_TOKEN"]
-    seen: list[str] = []
-    for n in names:
-        v = os.getenv(n)
-        if v and v not in seen:
-            seen.append(v)
-    return seen
+# Valores usados como marcador de "desativado". Nao sao tokens.
+_PLACEHOLDERS = {"", "DESATIVADO", "DESATIVADO_PARA_DIAGNOSTICO", "DISABLED", "NONE"}
+
+
+def _token_candidates() -> list[tuple[str, str]]:
+    """Retorna [(nome_da_variavel, valor)] dos tokens disponiveis, sem duplicar."""
+    found: list[tuple[str, str]] = []
+    seen_values: set[str] = set()
+    for name in TOKEN_ENV_NAMES:
+        value = (os.getenv(name) or "").strip()
+        if not value or value.upper() in _PLACEHOLDERS:
+            continue
+        if value in seen_values:
+            continue
+        seen_values.add(value)
+        found.append((name, value))
+    return found
 
 
 def _get_token() -> str | None:
     candidates = _token_candidates()
-    return candidates[0] if candidates else None
+    return candidates[0][1] if candidates else None
+
+
+def validate_token(token: str | None = None) -> dict[str, Any]:
+    """Valida um token DE VERDADE contra a Meta. Usar no /status.
+
+    Faz a consulta mais barata possivel (limit=1) so para saber se o token
+    e aceito pelo endpoint que a gente realmente usa.
+    """
+    if token is None:
+        token = _get_token()
+    if not token:
+        return {
+            "valid": False,
+            "reason": "missing_token",
+            "message": (
+                "Nenhum token configurado. Defina META_AD_LIBRARY_TOKEN nas "
+                "variaveis de ambiente."
+            ),
+        }
+    try:
+        with httpx.Client(timeout=15) as client:
+            resp = client.get(
+                AD_LIBRARY_URL,
+                params={
+                    "search_terms": "teste",
+                    "ad_type": "ALL",
+                    "ad_reached_countries": '["BR"]',
+                    "limit": 1,
+                    "access_token": token,
+                },
+            )
+            data = resp.json()
+    except httpx.HTTPError as exc:
+        return {"valid": False, "reason": "network_error", "message": str(exc)}
+
+    if "error" in data:
+        err = data["error"]
+        code = err.get("code")
+        hint = None
+        if code == 190:
+            hint = (
+                "Token invalido ou expirado. Lembre-se: a Ad Library API NAO "
+                "aceita token de Usuario do Sistema — precisa ser token de "
+                "USUARIO, com identidade confirmada."
+            )
+        elif code in (10, 200, 803):
+            hint = (
+                "O app provavelmente nao tem acesso liberado a Ad Library API. "
+                "Verifique App Review e confirmacao de identidade."
+            )
+        return {
+            "valid": False,
+            "reason": "meta_api_error",
+            "code": code,
+            "message": err.get("message"),
+            "hint": hint,
+            "details": err,
+        }
+
+    return {"valid": True, "reason": "ok", "message": "Token aceito pela Ad Library."}
+
+
+def token_status() -> dict[str, Any]:
+    """Resumo honesto para o endpoint /status."""
+    candidates = _token_candidates()
+    if not candidates:
+        return {
+            "token_configured": False,
+            "token_valid": False,
+            "source": None,
+            "message": "Nenhum token configurado.",
+        }
+    name, value = candidates[0]
+    check = validate_token(value)
+    return {
+        "token_configured": True,
+        "token_valid": check["valid"],
+        "source": name,
+        "candidates_available": [n for n, _ in candidates],
+        "message": check.get("message"),
+        "hint": check.get("hint"),
+    }
 
 
 def classify(active_ads: int) -> str:
@@ -85,8 +188,6 @@ def classify(active_ads: int) -> str:
     return "ABAIXO_DO_CORTE"
 
 
-# Metodologia Renda em Dolar: corte de 15 ativos na LATAM/dolar/euro,
-# mas no Brasil o mercado e mais sofisticado — corte sobe para 30.
 MIN_ACTIVE_BY_CURRENCY = {"BRL": 30, "USD": 15, "EUR": 15}
 
 
@@ -100,17 +201,17 @@ def search_ad_library(
     """Pesquisa real na Ad Library e classifica anunciantes campeoes."""
     if min_active_ads is None:
         min_active_ads = MIN_ACTIVE_BY_CURRENCY.get(currency.upper(), 15)
+
     candidates = _token_candidates()
     if not candidates:
         return {
             "status": "error",
             "error": "missing_token",
             "message": (
-                "Configure META_AD_LIBRARY_TOKEN (ou META_ACCESS_TOKEN) nas variaveis "
-                "de ambiente da Vercel para ativar a mineracao real."
+                "Configure META_AD_LIBRARY_TOKEN nas variaveis de ambiente da "
+                "Vercel para ativar a mineracao real."
             ),
         }
-    token = candidates[0]
 
     currency = currency.upper()
     target_countries = countries or CURRENCY_COUNTRIES.get(currency)
@@ -121,46 +222,75 @@ def search_ad_library(
             "message": f"Moeda '{currency}' nao suportada. Use EUR, USD ou BRL.",
         }
 
-    params = {
+    base_params = {
         "search_terms": search_terms,
         "ad_type": "ALL",
         "ad_active_status": "ACTIVE",
         "ad_reached_countries": "[" + ",".join(f'"{c}"' for c in target_countries) + "]",
         "fields": FIELDS,
         "limit": min(limit, 300),
-        "access_token": token,
     }
 
-    ads: list[dict[str, Any]] = []
-    try:
-        with httpx.Client(timeout=30) as client:
-            url: str | None = AD_LIBRARY_URL
-            query: dict[str, Any] | None = params
-            for _ in range(5):  # ate 5 paginas
-                resp = client.get(url, params=query)
-                data = resp.json()
-                if "error" in data:
-                    # token invalido/expirado (code 190): tenta o proximo token disponivel
-                    if data["error"].get("code") == 190 and len(candidates) > 1:
-                        candidates = candidates[1:]
-                        token = candidates[0]
-                        params["access_token"] = token
-                        url, query = AD_LIBRARY_URL, params
-                        continue
-                    return {
-                        "status": "error",
-                        "error": "meta_api_error",
-                        "message": data["error"].get("message"),
-                        "details": data["error"],
-                    }
-                ads.extend(data.get("data", []))
-                next_url = data.get("paging", {}).get("next")
-                if not next_url or len(ads) >= limit:
-                    break
-                url, query = next_url, None
-    except httpx.HTTPError as exc:
-        return {"status": "error", "error": "network_error", "message": str(exc)}
+    # BUG 1 CORRIGIDO: tenta cada token e GUARDA o resultado de cada tentativa.
+    # Nada de erro silencioso: se todos falharem, devolvemos a lista completa.
+    attempts: list[dict[str, Any]] = []
 
+    for token_name, token_value in candidates:
+        ads: list[dict[str, Any]] = []
+        params = {**base_params, "access_token": token_value}
+        failed: dict[str, Any] | None = None
+
+        try:
+            with httpx.Client(timeout=30) as client:
+                url: str | None = AD_LIBRARY_URL
+                query: dict[str, Any] | None = params
+                for _ in range(5):  # ate 5 paginas
+                    resp = client.get(url, params=query)
+                    data = resp.json()
+                    if "error" in data:
+                        failed = {
+                            "token_source": token_name,
+                            "code": data["error"].get("code"),
+                            "message": data["error"].get("message"),
+                            "details": data["error"],
+                        }
+                        break
+                    ads.extend(data.get("data", []))
+                    next_url = data.get("paging", {}).get("next")
+                    if not next_url or len(ads) >= limit:
+                        break
+                    url, query = next_url, None
+        except httpx.HTTPError as exc:
+            failed = {
+                "token_source": token_name,
+                "code": "network_error",
+                "message": str(exc),
+            }
+
+        if failed:
+            attempts.append(failed)
+            continue  # tenta o proximo token, mas SEM apagar o erro deste
+
+        return _summarize(ads, search_terms, currency, target_countries,
+                          min_active_ads, token_name, attempts)
+
+    # Todos os tokens falharam — devolve tudo, sem mascarar nada.
+    return {
+        "status": "error",
+        "error": "meta_api_error",
+        "message": attempts[0]["message"] if attempts else "Falha desconhecida.",
+        "tokens_tried": len(attempts),
+        "attempts": attempts,
+        "hint": (
+            "Se o code for 190 em todas as tentativas: a Ad Library API nao "
+            "aceita token de Usuario do Sistema. Gere um token de USUARIO no "
+            "Graph API Explorer e estenda para 60 dias no Access Token Debugger."
+        ),
+    }
+
+
+def _summarize(ads, search_terms, currency, target_countries, min_active_ads,
+               token_source, attempts) -> dict[str, Any]:
     by_page: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for ad in ads:
         by_page[str(ad.get("page_id"))].append(ad)
@@ -192,6 +322,8 @@ def search_ad_library(
     return {
         "status": "ok",
         "mode": "real_ad_library_api",
+        "token_source": token_source,
+        "failed_attempts": attempts,  # transparencia: o que foi tentado antes
         "search_terms": search_terms,
         "currency": currency,
         "countries": target_countries,
@@ -205,19 +337,17 @@ def search_ad_library(
 
 
 # ---------------------------------------------------------------------------
-# DeepSeek (opcional): copywriting por IA quando DEEPSEEK_API_KEY estiver setada
+# DeepSeek
 # ---------------------------------------------------------------------------
 
 DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 
 
 def _deepseek_key() -> str | None:
-    # "chave" e o nome que a variavel recebeu no painel da Vercel
     return os.getenv("DEEPSEEK_API_KEY") or os.getenv("chave")
 
 
-def deepseek_copy(prompt: str) -> str | None:
-    """Chama a DeepSeek para gerar copy. Retorna None se nao houver chave ou em erro."""
+def deepseek_copy(prompt: str, max_tokens: int = 600) -> str | None:
     key = _deepseek_key()
     if not key:
         return None
@@ -240,7 +370,7 @@ def deepseek_copy(prompt: str) -> str | None:
                         {"role": "user", "content": prompt},
                     ],
                     "temperature": 0.8,
-                    "max_tokens": 600,
+                    "max_tokens": max_tokens,
                 },
             )
             data = resp.json()
@@ -250,10 +380,11 @@ def deepseek_copy(prompt: str) -> str | None:
 
 
 # ---------------------------------------------------------------------------
-# Geracao automatica: anuncio remodelado + produtos + subnichos + site
+# Geracao: anuncio remodelado + produtos + subnichos + site
 # ---------------------------------------------------------------------------
 
-SUBNICHE_ANGLES = [
+# Rede de seguranca apenas. NAO e mais o caminho principal.
+FALLBACK_ANGLES = [
     ("Iniciantes", "para quem esta comecando do zero"),
     ("Avancado", "versao premium para resultados maiores"),
     ("Kit Completo", "combo com tudo incluso e desconto"),
@@ -299,7 +430,40 @@ def remodel_ad(winner: dict[str, Any], product_name: str) -> dict[str, Any]:
     }
 
 
-def generate_products(product_name: str, currency: str) -> list[dict[str, Any]]:
+def generate_subniches(product_name: str, ad_body: str = "") -> list[tuple[str, str]]:
+    """BUG 3 CORRIGIDO: subnichos REAIS, extraidos do anuncio minerado.
+
+    Pede a IA cinco produtos complementares que o MESMO comprador compraria
+    depois — que e exatamente o objetivo do projeto. So cai no template fixo
+    se a IA estiver indisponivel.
+    """
+    ai = deepseek_copy(
+        f"Produto principal: '{product_name}'.\n"
+        f"Anuncio campeao que o vende: '{ad_body[:600]}'.\n\n"
+        "Liste 5 produtos de SUBNICHO que a MESMA pessoa que comprou o produto "
+        "principal compraria em seguida. Devem ser produtos complementares e "
+        "especificos do tema — nao variacoes genericas do mesmo item.\n"
+        "Formato exato, uma por linha, sem numeracao:\n"
+        "NOME | beneficio em ate 12 palavras",
+        max_tokens=400,
+    )
+    if ai:
+        out: list[tuple[str, str]] = []
+        for line in ai.splitlines():
+            if "|" not in line:
+                continue
+            nome, _, pitch = line.partition("|")
+            nome, pitch = nome.strip(" -•\t"), pitch.strip()
+            if nome and pitch:
+                out.append((nome, pitch))
+        if len(out) >= 3:
+            return out[:5]
+    return FALLBACK_ANGLES
+
+
+def generate_products(
+    product_name: str, currency: str, ad_body: str = ""
+) -> list[dict[str, Any]]:
     sym = CURRENCY_SYMBOL.get(currency, "R$")
     products = [
         {
@@ -309,13 +473,16 @@ def generate_products(product_name: str, currency: str) -> list[dict[str, Any]]:
             "pitch": f"{product_name} — o produto validado com dezenas de anuncios ativos.",
         }
     ]
-    for i, (angle, desc) in enumerate(SUBNICHE_ANGLES, start=1):
+    subniches = generate_subniches(product_name, ad_body)
+    ai_generated = subniches is not FALLBACK_ANGLES
+    for i, (nome, pitch) in enumerate(subniches, start=1):
         products.append(
             {
                 "role": f"subnicho_{i}",
-                "name": f"{product_name} {angle}",
+                "name": nome if ai_generated else f"{product_name} {nome}",
                 "price": f"{sym} {47 + i * 10},00",
-                "pitch": f"{product_name} {angle}: {desc}.",
+                "pitch": pitch if ai_generated else f"{product_name} {nome}: {pitch}.",
+                "generated_by": "deepseek" if ai_generated else "template",
             }
         )
     return products
@@ -334,7 +501,12 @@ def generate_sub_ads(products: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ]
 
 
-def build_site_html(product_name: str, products: list[dict[str, Any]], main_ad: dict[str, Any], checkout_url: str = "#checkout") -> str:
+def build_site_html(
+    product_name: str,
+    products: list[dict[str, Any]],
+    main_ad: dict[str, Any],
+    checkout_url: str = "#checkout",
+) -> str:
     cards = "".join(
         f"""
         <div class="card{' hero' if p['role'] == 'campeao' else ''}">
@@ -387,7 +559,7 @@ def run_full_pipeline(
     product_name: str | None = None,
     checkout_url: str = "#checkout",
 ) -> dict[str, Any]:
-    """Pipeline completo: minera -> classifica -> remodela -> gera produtos/sub-anuncios/site."""
+    """Pipeline completo: minera -> classifica -> remodela -> produtos/sub-anuncios/site."""
     mining = search_ad_library(search_terms, currency=currency, min_active_ads=min_active_ads)
     if mining.get("status") != "ok":
         return mining
@@ -404,8 +576,9 @@ def run_full_pipeline(
 
     winner = mining["winners"][0]
     name = product_name or search_terms.title()
+    ad_body = (winner.get("sample_ad") or {}).get("body") or ""
     main_ad = remodel_ad(winner, name)
-    products = generate_products(name, currency.upper())
+    products = generate_products(name, currency.upper(), ad_body=ad_body)
     sub_ads = generate_sub_ads(products)
     site_html = build_site_html(name, products, main_ad, checkout_url=checkout_url)
 
@@ -422,5 +595,6 @@ def run_full_pipeline(
             "winners_found": mining["winners_found"],
             "currency": mining["currency"],
             "countries": mining["countries"],
+            "token_source": mining.get("token_source"),
         },
     }
