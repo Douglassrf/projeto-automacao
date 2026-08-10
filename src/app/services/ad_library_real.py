@@ -222,6 +222,39 @@ def search_ad_library(
     if min_active_ads is None:
         min_active_ads = MIN_ACTIVE_BY_CURRENCY.get(currency.upper(), 15)
 
+    provider = (os.getenv("AD_LIBRARY_PROVIDER") or "meta").strip().lower()
+    if provider == "apify":
+        from app.services import apify_ad_library
+
+        currency = currency.upper()
+        target_countries = countries or CURRENCY_COUNTRIES.get(currency)
+        if not target_countries:
+            return {
+                "status": "error",
+                "error": "invalid_currency",
+                "message": f"Moeda '{currency}' nao suportada. Use EUR, USD ou BRL.",
+            }
+        apify_result = apify_ad_library.fetch_ads(
+            search_terms,
+            country=target_countries[0],
+            limit=limit,
+        )
+        if apify_result.get("status") != "ok":
+            return apify_result
+        summary = _summarize(
+            apify_result["ads"], search_terms, currency, [target_countries[0]],
+            min_active_ads, "APIFY_TOKEN", [],
+        )
+        return {
+            **summary,
+            "mode": "real_ad_library_apify",
+            "provider": "apify",
+            "actor": apify_result["actor"],
+            "free_mode": apify_result["free_mode"],
+            "requested_limit": apify_result["requested_limit"],
+            "applied_limit": apify_result["applied_limit"],
+        }
+
     candidates = _token_candidates()
     if not candidates:
         return {
