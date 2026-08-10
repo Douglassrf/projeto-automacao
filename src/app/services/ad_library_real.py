@@ -38,6 +38,11 @@ AD_LIBRARY_URL = "https://graph.facebook.com/v21.0/ads_archive"
 TOKEN_ENV_NAMES = [
     "META_AD_LIBRARY_TOKEN",
     "META_ACCESS_TOKEN",
+    # Nomes criados historicamente no painel da Vercel. Mantidos apenas para
+    # recuperar as credenciais ja existentes; novos cadastros devem usar o
+    # nome canonico acima.
+    "chaveeeeeeeee",
+    "chaveeeeeeee",
     "chaveee",
 ]
 
@@ -166,11 +171,26 @@ def token_status() -> dict[str, Any]:
             "source": None,
             "message": "Nenhum token configurado.",
         }
-    name, value = candidates[0]
-    check = validate_token(value)
+    checks: list[tuple[str, dict[str, Any]]] = []
+    for name, value in candidates:
+        check = validate_token(value)
+        checks.append((name, check))
+        if check["valid"]:
+            return {
+                "token_configured": True,
+                "token_valid": True,
+                "source": name,
+                "candidates_available": [n for n, _ in candidates],
+                "message": check.get("message"),
+                "hint": check.get("hint"),
+            }
+
+    # Nenhum candidato foi aceito. Mantem o diagnostico do candidato
+    # preferencial, mas somente depois de verificar todos os fallbacks.
+    name, check = checks[0]
     return {
         "token_configured": True,
-        "token_valid": check["valid"],
+        "token_valid": False,
         "source": name,
         "candidates_available": [n for n, _ in candidates],
         "message": check.get("message"),
