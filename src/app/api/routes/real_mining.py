@@ -22,7 +22,7 @@ from fastapi import APIRouter, Query, Request
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-from app.services import ad_library_real
+from app.services import ad_library_real, apify_ad_library
 
 router = APIRouter(prefix="/real-mining", tags=["Real Mining - Ad Library"])
 
@@ -72,10 +72,13 @@ def status():
     # Agora valida o token DE VERDADE contra a Meta, em vez de so checar
     # se a variavel de ambiente existe.
     tok = ad_library_real.token_status()
+    provider = (os.getenv("AD_LIBRARY_PROVIDER") or "meta").strip().lower()
     return {
         "status": "ok",
         "mode": "real",
+        "provider": provider,
         **tok,
+        "apify": apify_ad_library.status(),
         "deepseek_configured": ad_library_real._deepseek_key() is not None,
         "copywriter": "deepseek" if ad_library_real._deepseek_key() else "template",
         "currencies": list(ad_library_real.CURRENCY_COUNTRIES.keys()),
@@ -133,6 +136,17 @@ def cron_daily(request: Request):
         auth_header = request.headers.get("authorization", "")
         if auth_header != f"Bearer {expected_secret}":
             return {"status": "unauthorized"}
+
+    provider = (os.getenv("AD_LIBRARY_PROVIDER") or "meta").strip().lower()
+    if provider == "apify" and not apify_ad_library.status()["cron_allowed"]:
+        return {
+            "status": "blocked",
+            "reason": "apify_free_mode_cron_disabled",
+            "message": (
+                "Cron bloqueado no modo gratuito para impedir consumo automatico "
+                "da franquia. Use a busca manual."
+            ),
+        }
 
     global _last_pipeline
     runs = []

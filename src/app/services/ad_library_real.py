@@ -38,6 +38,14 @@ AD_LIBRARY_URL = "https://graph.facebook.com/v21.0/ads_archive"
 TOKEN_ENV_NAMES = [
     "META_AD_LIBRARY_TOKEN",
     "META_ACCESS_TOKEN",
+    # Alias temporario criado no painel da Vercel durante a rotacao de
+    # 20/08/2026. Fica depois dos nomes canonicos para nao virar o padrao.
+    "CHAVEEEE",
+    # Nomes criados historicamente no painel da Vercel. Mantidos apenas para
+    # recuperar as credenciais ja existentes; novos cadastros devem usar o
+    # nome canonico acima.
+    "chaveeeeeeeee",
+    "chaveeeeeeee",
     "chaveee",
 ]
 
@@ -166,11 +174,26 @@ def token_status() -> dict[str, Any]:
             "source": None,
             "message": "Nenhum token configurado.",
         }
-    name, value = candidates[0]
-    check = validate_token(value)
+    checks: list[tuple[str, dict[str, Any]]] = []
+    for name, value in candidates:
+        check = validate_token(value)
+        checks.append((name, check))
+        if check["valid"]:
+            return {
+                "token_configured": True,
+                "token_valid": True,
+                "source": name,
+                "candidates_available": [n for n, _ in candidates],
+                "message": check.get("message"),
+                "hint": check.get("hint"),
+            }
+
+    # Nenhum candidato foi aceito. Mantem o diagnostico do candidato
+    # preferencial, mas somente depois de verificar todos os fallbacks.
+    name, check = checks[0]
     return {
         "token_configured": True,
-        "token_valid": check["valid"],
+        "token_valid": False,
         "source": name,
         "candidates_available": [n for n, _ in candidates],
         "message": check.get("message"),
@@ -201,6 +224,39 @@ def search_ad_library(
     """Pesquisa real na Ad Library e classifica anunciantes campeoes."""
     if min_active_ads is None:
         min_active_ads = MIN_ACTIVE_BY_CURRENCY.get(currency.upper(), 15)
+
+    provider = (os.getenv("AD_LIBRARY_PROVIDER") or "meta").strip().lower()
+    if provider == "apify":
+        from app.services import apify_ad_library
+
+        currency = currency.upper()
+        target_countries = countries or CURRENCY_COUNTRIES.get(currency)
+        if not target_countries:
+            return {
+                "status": "error",
+                "error": "invalid_currency",
+                "message": f"Moeda '{currency}' nao suportada. Use EUR, USD ou BRL.",
+            }
+        apify_result = apify_ad_library.fetch_ads(
+            search_terms,
+            country=target_countries[0],
+            limit=limit,
+        )
+        if apify_result.get("status") != "ok":
+            return apify_result
+        summary = _summarize(
+            apify_result["ads"], search_terms, currency, [target_countries[0]],
+            min_active_ads, "APIFY_TOKEN", [],
+        )
+        return {
+            **summary,
+            "mode": "real_ad_library_apify",
+            "provider": "apify",
+            "actor": apify_result["actor"],
+            "free_mode": apify_result["free_mode"],
+            "requested_limit": apify_result["requested_limit"],
+            "applied_limit": apify_result["applied_limit"],
+        }
 
     candidates = _token_candidates()
     if not candidates:
