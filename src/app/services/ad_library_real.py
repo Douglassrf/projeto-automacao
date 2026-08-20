@@ -38,6 +38,9 @@ AD_LIBRARY_URL = "https://graph.facebook.com/v21.0/ads_archive"
 TOKEN_ENV_NAMES = [
     "META_AD_LIBRARY_TOKEN",
     "META_ACCESS_TOKEN",
+    # Alias temporario criado no painel da Vercel durante a rotacao de
+    # 20/08/2026. Fica depois dos nomes canonicos para nao virar o padrao.
+    "CHAVEEEE",
     # Nomes criados historicamente no painel da Vercel. Mantidos apenas para
     # recuperar as credenciais ja existentes; novos cadastros devem usar o
     # nome canonico acima.

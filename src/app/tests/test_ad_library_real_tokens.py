@@ -36,3 +36,13 @@ def test_token_status_reports_preferred_candidate_when_all_are_invalid(monkeypat
     assert status["token_valid"] is False
     assert status["source"] == "META_AD_LIBRARY_TOKEN"
     assert status["message"] == "expired-token"
+
+
+def test_token_candidates_accepts_temporary_vercel_rotation_alias(monkeypatch):
+    for name in ad_library_real.TOKEN_ENV_NAMES:
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("CHAVEEEE", "rotated-user-token")
+
+    assert ad_library_real._token_candidates() == [
+        ("CHAVEEEE", "rotated-user-token")
+    ]
